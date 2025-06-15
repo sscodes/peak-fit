@@ -1,6 +1,7 @@
 // src/components/UI/Sidebar.tsx
 import React from 'react';
-import { type Workout } from '../../data/types';
+import type { Workout } from '../../../../../data/types';
+import styles from './Sidebar.module.css';
 
 interface SidebarProps {
   searchTerm: string;
@@ -15,26 +16,28 @@ const Sidebar: React.FC<SidebarProps> = ({
   setSearchTerm,
   filteredWorkouts,
   selectedWorkout,
-  setSelectedWorkout
+  setSelectedWorkout,
 }) => {
   return (
-    <div className="sidebar">
+    <div className={styles.sidebar}>
       <h2>Workout Selector</h2>
-      <div className="search-container">
-        <input 
-          type="text" 
-          placeholder="Search workouts..." 
+      <div className={styles.searchContainer}>
+        <input
+          type='text'
+          placeholder='Search workouts...'
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
+          className={styles.searchInput}
         />
       </div>
-      
-      <div className="workout-list">
-        {filteredWorkouts.map(workout => (
-          <div 
+
+      <div className={styles.workoutList}>
+        {filteredWorkouts.map((workout) => (
+          <div
             key={workout.id}
-            className={`workout-item ${selectedWorkout?.id === workout.id ? 'selected' : ''}`}
+            className={`${styles.workoutItem} ${
+              selectedWorkout?.id === workout.id ? styles.selected : ''
+            }`}
             onClick={() => setSelectedWorkout(workout)}
           >
             <h3>{workout.name}</h3>
@@ -42,9 +45,9 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
         ))}
       </div>
-      
+
       {filteredWorkouts.length === 0 && (
-        <div className="no-results">
+        <div className={styles.noResults}>
           No workouts found. Try a different search term.
         </div>
       )}

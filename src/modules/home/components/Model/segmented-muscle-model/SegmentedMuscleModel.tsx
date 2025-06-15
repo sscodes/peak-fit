@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber';
 import React, { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
-import muscleGroups from '../../data/muscleGroups';
+import muscleGroups from '../../../../../data/muscleGroups';
 
 interface SegmentedMuscleModelProps {
   path: string;
@@ -48,7 +48,7 @@ const SegmentedMuscleModel: React.FC<SegmentedMuscleModelProps> = ({
   });
 
   const defaultMaterial = new THREE.MeshStandardMaterial({
-    color: new THREE.Color('#ffffff'),
+    color: new THREE.Color('#8c5c3e'),
     roughness: 0.95, // Very high roughness to eliminate shine
     metalness: 0.0, // No metalness
     transparent: false,

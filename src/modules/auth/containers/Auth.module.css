@@ -1,0 +1,9 @@
+.authPageContainer {
+  display: grid;
+  grid-template-columns: 9fr 3fr;
+  width: 100%;
+}
+
+.authImages {
+  width: 100%;
+}
