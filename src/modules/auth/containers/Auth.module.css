@@ -1,7 +1,13 @@
 .authPageContainer {
-  display: grid;
-  grid-template-columns: 9fr 3fr;
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  background-color: black;
+  /* height: calc(100vh - 75px); */
+}
+
+.stepperSection{
+  /* border: 2px solid blue; */
 }
 
 .authImages {

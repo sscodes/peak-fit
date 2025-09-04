@@ -1,13 +1,10 @@
-import SignIn from '../components/sign-in/SignIn';
+import clsx from 'clsx';
 import classes from './Auth.module.css';
 
 const Auth = () => {
   return (
-    <div className={classes.authPageContainer}>
-      <div>
-        <div>PeakFit</div>
-        <SignIn />
-      </div>
+    <div>
+      Sign up
     </div>
   );
 };

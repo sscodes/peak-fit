@@ -1,0 +1,606 @@
+/* PeakFit Theme Colors System CSS */
+
+/* ===============================
+   Root Color Variables
+   =============================== */
+:root {
+  /* ===============================
+       Primary Brand Colors
+       =============================== */
+  /* Electric Blue - Main brand color for activity/energy */
+  --primary-50: #e6f3ff;
+  --primary-100: #cce7ff;
+  --primary-200: #99cfff;
+  --primary-300: #66b7ff;
+  --primary-400: #339fff;
+  --primary-500: #0087ff; /* Main Primary */
+  --primary-600: #0069cc;
+  --primary-700: #004c99;
+  --primary-800: #003066;
+  --primary-900: #001333;
+  --primary-950: #000a1a;
+
+  /* ===============================
+       Secondary - Accent Orange (Energy/Fire)
+       =============================== */
+  --secondary-50: #fff5ed;
+  --secondary-100: #ffeadb;
+  --secondary-200: #ffd5b7;
+  --secondary-300: #ffb584;
+  --secondary-400: #ff8f4a;
+  --secondary-500: #ff6b1a; /* Main Secondary */
+  --secondary-600: #e64d00;
+  --secondary-700: #b33b00;
+  --secondary-800: #802a00;
+  --secondary-900: #4d1a00;
+  --secondary-950: #330f00;
+
+  /* ===============================
+       Neutral/Gray Scale (Blue-tinted)
+       =============================== */
+  --neutral-50: #f4f6f9;
+  --neutral-100: #e9ecf2;
+  --neutral-200: #d3d9e5;
+  --neutral-300: #a8b3c7;
+  --neutral-400: #7d8da9;
+  --neutral-500: #5a6b87;
+  --neutral-600: #445166;
+  --neutral-700: #333e4f;
+  --neutral-800: #232b38;
+  --neutral-900: #161b24;
+  --neutral-950: #0d1117;
+
+  /* ===============================
+       Background Colors (Dark Theme)
+       =============================== */
+  --bg-primary: #0a0e15; /* Main dark blue-black background */
+  --bg-secondary: #0f131b; /* Slightly lighter for cards */
+  --bg-tertiary: #141922; /* Even lighter for elevated surfaces */
+  --bg-inverse: #ffffff; /* For light mode/inverted sections */
+  --bg-overlay: rgba(10, 14, 21, 0.8); /* Modal/overlay background */
+
+  /* ===============================
+       Surface Colors (Cards, Panels, etc.)
+       =============================== */
+  --surface-primary: #0f131b;
+  --surface-secondary: #141922;
+  --surface-tertiary: #1a202c;
+  --surface-hover: #1f2633;
+  --surface-active: #252d3d;
+  --surface-disabled: #0c1016;
+
+  /* ===============================
+       Text Colors
+       =============================== */
+  --text-primary: #e8edf5; /* Main text - bright */
+  --text-secondary: #a8b3c7; /* Secondary text - muted */
+  --text-tertiary: #7d8da9; /* Even more muted */
+  --text-disabled: #445166; /* Disabled state */
+  --text-inverse: #0a0e15; /* For light backgrounds */
+  --text-on-primary: #ffffff; /* Text on primary color */
+  --text-link: #4da3ff; /* Link color */
+  --text-link-hover: #80bfff; /* Link hover */
+
+  /* ===============================
+       Semantic Colors
+       =============================== */
+  /* Success - Green */
+  --success-50: #e6f9f1;
+  --success-100: #ccf3e3;
+  --success-200: #99e7c7;
+  --success-300: #66dbab;
+  --success-400: #33cf8f;
+  --success-500: #00c373; /* Main Success */
+  --success-600: #00a25f;
+  --success-700: #007d4a;
+  --success-800: #005835;
+  --success-900: #003320;
+  --success-950: #001a10;
+
+  /* Error - Red */
+  --error-50: #ffeded;
+  --error-100: #ffdbdb;
+  --error-200: #ffb7b7;
+  --error-300: #ff9393;
+  --error-400: #ff6f6f;
+  --error-500: #ff4b4b; /* Main Error */
+  --error-600: #e62e2e;
+  --error-700: #b32424;
+  --error-800: #801a1a;
+  --error-900: #4d1010;
+  --error-950: #330a0a;
+
+  /* Warning - Amber */
+  --warning-50: #fffaed;
+  --warning-100: #fff5db;
+  --warning-200: #ffeab7;
+  --warning-300: #ffdf93;
+  --warning-400: #ffd46f;
+  --warning-500: #ffc94b; /* Main Warning */
+  --warning-600: #e6a82e;
+  --warning-700: #b38324;
+  --warning-800: #805e1a;
+  --warning-900: #4d3910;
+  --warning-950: #332608;
+
+  /* Info - Cyan */
+  --info-50: #e6f9ff;
+  --info-100: #ccf3ff;
+  --info-200: #99e7ff;
+  --info-300: #66dbff;
+  --info-400: #33cfff;
+  --info-500: #00c3ff; /* Main Info */
+  --info-600: #00a2d4;
+  --info-700: #007da3;
+  --info-800: #005872;
+  --info-900: #003341;
+  --info-950: #001a21;
+
+  /* ===============================
+       Border Colors
+       =============================== */
+  --border-default: rgba(168, 179, 199, 0.15);
+  --border-strong: rgba(168, 179, 199, 0.25);
+  --border-subtle: rgba(168, 179, 199, 0.08);
+  --border-primary: var(--primary-500);
+  --border-success: var(--success-500);
+  --border-error: var(--error-500);
+  --border-warning: var(--warning-500);
+  --border-info: var(--info-500);
+
+  /* ===============================
+       Shadow Colors
+       =============================== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.6);
+  --shadow-glow-primary: 0 0 20px rgba(0, 135, 255, 0.3);
+  --shadow-glow-secondary: 0 0 20px rgba(255, 107, 26, 0.3);
+
+  /* ===============================
+       Special Effects
+       =============================== */
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--primary-600) 0%,
+    var(--primary-400) 100%
+  );
+  --gradient-secondary: linear-gradient(
+    135deg,
+    var(--secondary-600) 0%,
+    var(--secondary-400) 100%
+  );
+  --gradient-dark: linear-gradient(
+    180deg,
+    var(--bg-primary) 0%,
+    var(--bg-secondary) 100%
+  );
+  --gradient-mesh: radial-gradient(
+      at 20% 80%,
+      var(--primary-900) 0%,
+      transparent 50%
+    ),
+    radial-gradient(at 80% 20%, var(--secondary-900) 0%, transparent 50%),
+    radial-gradient(at 40% 40%, var(--info-900) 0%, transparent 50%);
+}
+
+/* ===============================
+     Background Classes
+     =============================== */
+.bg-primary {
+  background-color: var(--bg-primary);
+}
+.bg-secondary {
+  background-color: var(--bg-secondary);
+}
+.bg-tertiary {
+  background-color: var(--bg-tertiary);
+}
+.bg-inverse {
+  background-color: var(--bg-inverse);
+}
+
+/* Surface backgrounds */
+.surface-primary {
+  background-color: var(--surface-primary);
+}
+.surface-secondary {
+  background-color: var(--surface-secondary);
+}
+.surface-tertiary {
+  background-color: var(--surface-tertiary);
+}
+.surface-hover {
+  background-color: var(--surface-hover);
+}
+.surface-active {
+  background-color: var(--surface-active);
+}
+
+/* Brand backgrounds */
+.bg-brand-primary {
+  background-color: var(--primary-500);
+}
+.bg-brand-secondary {
+  background-color: var(--secondary-500);
+}
+
+/* Semantic backgrounds */
+.bg-success {
+  background-color: var(--success-500);
+}
+.bg-error {
+  background-color: var(--error-500);
+}
+.bg-warning {
+  background-color: var(--warning-500);
+}
+.bg-info {
+  background-color: var(--info-500);
+}
+
+/* Subtle semantic backgrounds */
+.bg-success-subtle {
+  background-color: var(--success-950);
+}
+.bg-error-subtle {
+  background-color: var(--error-950);
+}
+.bg-warning-subtle {
+  background-color: var(--warning-950);
+}
+.bg-info-subtle {
+  background-color: var(--info-950);
+}
+
+/* Gradient backgrounds */
+.bg-gradient-primary {
+  background: var(--gradient-primary);
+}
+.bg-gradient-secondary {
+  background: var(--gradient-secondary);
+}
+.bg-gradient-dark {
+  background: var(--gradient-dark);
+}
+.bg-gradient-mesh {
+  background: var(--gradient-mesh);
+}
+
+/* ===============================
+     Text Color Classes
+     =============================== */
+.text-primary {
+  color: var(--text-primary);
+}
+.text-secondary {
+  color: var(--text-secondary);
+}
+.text-tertiary {
+  color: var(--text-tertiary);
+}
+.text-disabled {
+  color: var(--text-disabled);
+}
+.text-inverse {
+  color: var(--text-inverse);
+}
+
+/* Brand text colors */
+.text-brand-primary {
+  color: var(--primary-400);
+}
+.text-brand-secondary {
+  color: var(--secondary-400);
+}
+
+/* Semantic text colors */
+.text-success {
+  color: var(--success-400);
+}
+.text-error {
+  color: var(--error-400);
+}
+.text-warning {
+  color: var(--warning-400);
+}
+.text-info {
+  color: var(--info-400);
+}
+
+/* Link colors */
+.text-link {
+  color: var(--text-link);
+  transition: color 0.2s ease;
+}
+.text-link:hover {
+  color: var(--text-link-hover);
+}
+
+/* ===============================
+     Border Color Classes
+     =============================== */
+.border-default {
+  border-color: var(--border-default);
+}
+.border-strong {
+  border-color: var(--border-strong);
+}
+.border-subtle {
+  border-color: var(--border-subtle);
+}
+.border-primary {
+  border-color: var(--border-primary);
+}
+.border-secondary {
+  border-color: var(--secondary-500);
+}
+.border-success {
+  border-color: var(--border-success);
+}
+.border-error {
+  border-color: var(--border-error);
+}
+.border-warning {
+  border-color: var(--border-warning);
+}
+.border-info {
+  border-color: var(--border-info);
+}
+
+/* ===============================
+     Button Color Variants
+     =============================== */
+/* Primary button */
+.btn-primary {
+  background-color: var(--primary-500);
+  color: var(--text-on-primary);
+  border: 1px solid var(--primary-500);
+}
+.btn-primary:hover {
+  background-color: var(--primary-600);
+  border-color: var(--primary-600);
+}
+.btn-primary:active {
+  background-color: var(--primary-700);
+  border-color: var(--primary-700);
+}
+.btn-primary:disabled {
+  background-color: var(--primary-900);
+  border-color: var(--primary-900);
+  color: var(--text-disabled);
+}
+
+/* Secondary button */
+.btn-secondary {
+  background-color: var(--secondary-500);
+  color: var(--text-on-primary);
+  border: 1px solid var(--secondary-500);
+}
+.btn-secondary:hover {
+  background-color: var(--secondary-600);
+  border-color: var(--secondary-600);
+}
+
+/* Ghost button */
+.btn-ghost {
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+}
+.btn-ghost:hover {
+  background-color: var(--surface-hover);
+  border-color: var(--border-strong);
+}
+
+/* Outline button */
+.btn-outline-primary {
+  background-color: transparent;
+  color: var(--primary-400);
+  border: 1px solid var(--primary-500);
+}
+.btn-outline-primary:hover {
+  background-color: var(--primary-500);
+  color: var(--text-on-primary);
+}
+
+/* Semantic buttons */
+.btn-success {
+  background-color: var(--success-500);
+  color: var(--text-on-primary);
+  border: 1px solid var(--success-500);
+}
+.btn-error {
+  background-color: var(--error-500);
+  color: var(--text-on-primary);
+  border: 1px solid var(--error-500);
+}
+.btn-warning {
+  background-color: var(--warning-500);
+  color: var(--neutral-900);
+  border: 1px solid var(--warning-500);
+}
+.btn-info {
+  background-color: var(--info-500);
+  color: var(--text-on-primary);
+  border: 1px solid var(--info-500);
+}
+
+/* ===============================
+     Badge/Pill Color Variants
+     =============================== */
+.badge-primary {
+  background-color: var(--primary-900);
+  color: var(--primary-300);
+  border: 1px solid var(--primary-800);
+}
+.badge-secondary {
+  background-color: var(--secondary-900);
+  color: var(--secondary-300);
+  border: 1px solid var(--secondary-800);
+}
+.badge-success {
+  background-color: var(--success-950);
+  color: var(--success-400);
+  border: 1px solid var(--success-900);
+}
+.badge-error {
+  background-color: var(--error-950);
+  color: var(--error-400);
+  border: 1px solid var(--error-900);
+}
+.badge-warning {
+  background-color: var(--warning-950);
+  color: var(--warning-400);
+  border: 1px solid var(--warning-900);
+}
+.badge-info {
+  background-color: var(--info-950);
+  color: var(--info-400);
+  border: 1px solid var(--info-900);
+}
+.badge-neutral {
+  background-color: var(--neutral-800);
+  color: var(--neutral-300);
+  border: 1px solid var(--neutral-700);
+}
+
+/* ===============================
+     Alert/Notification Variants
+     =============================== */
+.alert-success {
+  background-color: var(--success-950);
+  color: var(--success-300);
+  border-left: 4px solid var(--success-500);
+}
+.alert-error {
+  background-color: var(--error-950);
+  color: var(--error-300);
+  border-left: 4px solid var(--error-500);
+}
+.alert-warning {
+  background-color: var(--warning-950);
+  color: var(--warning-300);
+  border-left: 4px solid var(--warning-500);
+}
+.alert-info {
+  background-color: var(--info-950);
+  color: var(--info-300);
+  border-left: 4px solid var(--info-500);
+}
+
+/* ===============================
+     Shadow Classes
+     =============================== */
+.shadow-sm {
+  box-shadow: var(--shadow-sm);
+}
+.shadow-md {
+  box-shadow: var(--shadow-md);
+}
+.shadow-lg {
+  box-shadow: var(--shadow-lg);
+}
+.shadow-xl {
+  box-shadow: var(--shadow-xl);
+}
+.shadow-glow-primary {
+  box-shadow: var(--shadow-glow-primary);
+}
+.shadow-glow-secondary {
+  box-shadow: var(--shadow-glow-secondary);
+}
+
+/* ===============================
+     Focus States (Accessibility)
+     =============================== */
+.focus-ring-primary:focus {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+.focus-ring-secondary:focus {
+  outline: 2px solid var(--secondary-500);
+  outline-offset: 2px;
+}
+
+/* ===============================
+     Hover Effects
+     =============================== */
+.hover-glow-primary {
+  transition: box-shadow 0.3s ease;
+}
+.hover-glow-primary:hover {
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.hover-glow-secondary {
+  transition: box-shadow 0.3s ease;
+}
+.hover-glow-secondary:hover {
+  box-shadow: var(--shadow-glow-secondary);
+}
+
+/* ===============================
+     Fitness-Specific Color Classes
+     =============================== */
+.muscle-primary {
+  background-color: var(--primary-800);
+  color: var(--primary-200);
+}
+.muscle-secondary {
+  background-color: var(--secondary-800);
+  color: var(--secondary-200);
+}
+.muscle-active {
+  background-color: var(--secondary-500);
+  color: var(--text-on-primary);
+  box-shadow: var(--shadow-glow-secondary);
+}
+
+.workout-intensity-low {
+  background-color: var(--success-900);
+  color: var(--success-300);
+}
+.workout-intensity-medium {
+  background-color: var(--warning-900);
+  color: var(--warning-300);
+}
+.workout-intensity-high {
+  background-color: var(--error-900);
+  color: var(--error-300);
+}
+
+/* ===============================
+     Utility Classes
+     =============================== */
+.opacity-90 {
+  opacity: 0.9;
+}
+.opacity-75 {
+  opacity: 0.75;
+}
+.opacity-50 {
+  opacity: 0.5;
+}
+.opacity-25 {
+  opacity: 0.25;
+}
+.opacity-10 {
+  opacity: 0.1;
+}
+
+/* Backdrop blur for modern glass effect */
+.glass-effect {
+  background-color: rgba(15, 19, 27, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-subtle);
+}
+
+/* ===============================
+     Dark Mode Override (if needed)
+     =============================== */
+@media (prefers-color-scheme: light) {
+  /* You can add light mode overrides here if needed */
+  /* For now, keeping it dark-first as requested */
+}

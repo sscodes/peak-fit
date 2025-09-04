@@ -1,0 +1,551 @@
+/* PeakFit Typography System CSS */
+
+/* ===============================
+   Font Imports
+   =============================== */
+@import url('https://fonts.googleapis.com/css2?family=Fugaz+One&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* ===============================
+      Root Variables
+      =============================== */
+:root {
+  --font-logo: 'Fugaz One', cursive;
+  --font-ui: 'Poppins', sans-serif;
+  --font-content: 'Lora', serif;
+  --font-mono: 'Monaco', 'Courier New', monospace;
+}
+
+/* ===============================
+      Display & Heroes
+      =============================== */
+.hero-large {
+  font-family: var(--font-logo);
+  font-size: 4.5rem;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-style: normal;
+}
+
+.hero {
+  font-family: var(--font-logo);
+  font-size: 3.5rem;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  font-style: normal;
+}
+
+.display {
+  font-family: var(--font-logo);
+  font-size: 2.75rem;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-style: normal;
+}
+
+/* ===============================
+      Headings
+      =============================== */
+.heading-1,
+.h1 {
+  font-family: var(--font-ui);
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-style: normal;
+}
+
+.heading-2,
+.h2 {
+  font-family: var(--font-ui);
+  font-size: 1.875rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  font-style: normal;
+}
+
+.heading-3,
+.h3 {
+  font-family: var(--font-ui);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.heading-4,
+.h4 {
+  font-family: var(--font-ui);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.heading-5,
+.h5 {
+  font-family: var(--font-ui);
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.heading-6,
+.h6 {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.005em;
+  font-style: normal;
+}
+
+/* ===============================
+      Body Content
+      =============================== */
+.body-large {
+  font-family: var(--font-content);
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.75;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.body,
+.body-regular {
+  font-family: var(--font-content);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.body-small {
+  font-family: var(--font-content);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0.002em;
+  font-style: normal;
+}
+
+.body-bold {
+  font-family: var(--font-content);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.65;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.body-italic {
+  font-family: var(--font-content);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: 0;
+  font-style: italic;
+}
+
+/* ===============================
+      UI Components - Buttons
+      =============================== */
+.button-large {
+  font-family: var(--font-ui);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  font-style: normal;
+  text-transform: none;
+}
+
+.button,
+.button-regular {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.015em;
+  font-style: normal;
+  text-transform: none;
+}
+
+.button-small {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  font-style: normal;
+  text-transform: none;
+}
+
+/* ===============================
+      UI Components - Forms & Labels
+      =============================== */
+.label {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  font-style: normal;
+  text-transform: none;
+}
+
+.input-text {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.placeholder {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+/* ===============================
+      Navigation
+      =============================== */
+.navigation,
+.nav-link {
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  font-style: normal;
+}
+
+/* ===============================
+      Supporting Text
+      =============================== */
+.subtitle-large {
+  font-family: var(--font-ui);
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.005em;
+  font-style: normal;
+}
+
+.subtitle,
+.subtitle-regular {
+  font-family: var(--font-ui);
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.003em;
+  font-style: normal;
+}
+
+.caption {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.03em;
+  font-style: normal;
+}
+
+.overline {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+.badge {
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+/* ===============================
+      Interactive Elements
+      =============================== */
+.link {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  font-style: normal;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.125em;
+}
+
+.link-standalone {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;
+  font-style: normal;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.125em;
+}
+
+/* ===============================
+      Chat/Messaging
+      =============================== */
+.chat-message {
+  font-family: var(--font-content);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.chat-timestamp {
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  font-style: normal;
+}
+
+.chat-username {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  font-style: normal;
+}
+
+.chat-typing {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  font-style: italic;
+}
+
+/* ===============================
+      Special Content
+      =============================== */
+.quote,
+.blockquote {
+  font-family: var(--font-content);
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  font-style: italic;
+}
+
+.quote-author {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  font-style: normal;
+}
+
+.code-inline {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  font-weight: 400;
+  line-height: inherit;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.code-block {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+/* ===============================
+      Lists & Data
+      =============================== */
+.list-item {
+  font-family: var(--font-content);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.data-label {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+.data-value {
+  font-family: var(--font-ui);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-style: normal;
+}
+
+/* ===============================
+      Fitness-Specific Typography
+      =============================== */
+.workout-title {
+  font-family: var(--font-ui);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  font-style: normal;
+}
+
+.exercise-name {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.reps-sets {
+  font-family: var(--font-ui);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  font-style: normal;
+}
+
+.muscle-group {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+.stats-number {
+  font-family: var(--font-logo);
+  font-size: 2.5rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-style: normal;
+}
+
+.stats-label {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  font-style: normal;
+}
+
+/* ===============================
+      Responsive Typography
+      =============================== */
+@media (max-width: 768px) {
+  .hero-large {
+    font-size: 3rem;
+  }
+
+  .hero {
+    font-size: 2.5rem;
+  }
+
+  .display {
+    font-size: 2rem;
+  }
+
+  .heading-1,
+  .h1 {
+    font-size: 1.875rem;
+  }
+
+  .heading-2,
+  .h2 {
+    font-size: 1.5rem;
+  }
+
+  .heading-3,
+  .h3 {
+    font-size: 1.25rem;
+  }
+
+  .stats-number {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-large {
+    font-size: 2.5rem;
+  }
+
+  .hero {
+    font-size: 2rem;
+  }
+
+  .display {
+    font-size: 1.75rem;
+  }
+
+  .heading-1,
+  .h1 {
+    font-size: 1.5rem;
+  }
+
+  .heading-2,
+  .h2 {
+    font-size: 1.25rem;
+  }
+
+  .heading-3,
+  .h3 {
+    font-size: 1.125rem;
+  }
+
+  .stats-number {
+    font-size: 1.75rem;
+  }
+}
