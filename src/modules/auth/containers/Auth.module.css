@@ -1,15 +1,50 @@
-.authPageContainer {
+.step * {
+  background-color: var(--bg-tertiary);
+}
+
+.welcomeIcon {
+  display: flex;
+  justify-content: center;
+  padding-left: 20px;
+  padding-bottom: 20px;
+}
+
+.title {
+  text-align: center;
+  color: var(--text-primary);
+}
+.subTitle {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.step {
+  margin-bottom: 25px;
+  min-height: 300px;
+  background-color: var(--bg-tertiary);
+}
+
+input {
+  all: unset;
+}
+
+.input {
+  background-color: var(--primary-200) !important;
+  box-shadow: var(--shadow-inset);
+  padding: 8px;
+  width: 100%;
+  border-radius: 8px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.signUp {
+  margin-top: 17px;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  background-color: black;
-  /* height: calc(100vh - 75px); */
-}
-
-.stepperSection{
-  /* border: 2px solid blue; */
-}
-
-.authImages {
-  width: 100%;
+  justify-content: center;
+  text-align: center;
+  row-gap: 8px;
+  color: var(--text-primary);
+  background-color: var(--bg-tertiary) !important;
 }

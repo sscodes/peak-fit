@@ -1,0 +1,94 @@
+.stepperContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stepperWrapper {
+  background-color: var(--bg-tertiary);
+  border-radius: 20px;
+  padding: 48px;
+  width: 100%;
+  height: 575px;
+  max-width: 480px;
+  box-shadow: var(--shadow-glow-primary);
+  position: relative;
+  /* display: flex;
+  flex-direction: column;
+  justify-content: space-between; */
+}
+
+.progressBar {
+  height: 4px;
+  border-radius: 2px;
+  margin-bottom: 32px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  background-color: var(--bg-inverse);
+}
+
+.stepIndicators {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 48px;
+  background-color: var(--bg-tertiary);
+}
+
+.stepDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--bg-inverse);
+  transition: all 0.3s ease;
+}
+
+.stepDot.active {
+  background: var(--bg-primary);
+}
+
+.stepDot.current {
+  transform: scale(1.3);
+  background: var(--primary-700);
+}
+
+.stepContent {
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+  background-color: var(--bg-tertiary);
+}
+
+.navigationButtons {
+  background-color: var(--bg-tertiary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .stepperWrapper {
+    padding: 32px 24px;
+    border-radius: 0;
+    max-width: 100%;
+    min-height: 100vh;
+  }
+}

@@ -6,11 +6,13 @@ import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { RouterProvider, createBrowserRouter } from 'react-router';
 import App from './App';
+import AuthInitializer from './modules/auth/components/auth-initializer/AuthInitializer';
 import ErrorBoundary from './modules/error/ErrorBoundary';
+import PageBrokenError from './modules/error/broken/PageBrokenError';
 import { store } from './store';
 import './styles/globals.css';
-import AuthInitializer from './modules/auth/components/auth-initializer/AuthInitializer';
-import PageBrokenError from './modules/error/broken/PageBrokenError';
+import './styles/typography.css';
+import './styles/variables.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import * as React from 'react';
-import { BUTTON_TYPE, BUTTON_VARIANT } from '../../helpers/types';
+import { BUTTON_SIZE, BUTTON_TYPE, BUTTON_VARIANT } from '../../helpers/types';
 import classes from './styles.module.css';
 
 interface ButtonProps {
@@ -9,6 +9,7 @@ interface ButtonProps {
   type?: BUTTON_TYPE;
   disabled?: boolean;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  size?: BUTTON_SIZE;
 }
 
 const Button = ({
@@ -17,6 +18,7 @@ const Button = ({
   type = BUTTON_TYPE.SUBMIT,
   disabled = false,
   onClick,
+  size = BUTTON_SIZE.REGULAR,
 }: ButtonProps) => {
   return (
     <button
@@ -27,7 +29,7 @@ const Button = ({
         classes[variant],
         classes.button,
         disabled ? classes.disabled : '',
-        'tm-button-text'
+        classes[`button-${size}`]
       )}
     >
       {children}

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import TopBarProgress from 'react-topbar-progress-indicator';
 import { Navigate, Route, Routes } from 'react-router';
-// import './App.css';
+import './App.css';
 import AuthRouter from './modules/auth/AuthRouter';
 import Home from './modules/home/containers/Home';
 import PublicRoute from './routes/public-route/PublicRoute';

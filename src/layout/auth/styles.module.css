@@ -1,13 +1,16 @@
-/* .app {
-  min-height: 100vh;
+.authLayoutContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-} */
+  justify-content: space-evenly;
+  min-height: 100vh;
+}
 
-/* .authLayout {
-  display: flex;
-  align-items: center;
-  width: 90vw;
-  height: calc(100vh - 70px);
-} */
+.logo {
+  color: var(--text-primary);
+}
+
+.authLayout {
+  width: 100%;
+  height: fit-content;
+}
