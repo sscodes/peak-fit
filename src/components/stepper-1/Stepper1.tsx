@@ -188,7 +188,7 @@ export const Stepper1: React.FC<StepperProps> = ({
           </div>
         )}
 
-        {hideFooterSteps.includes(currentStep) ? null : footer}
+        {hideFooterSteps.includes(currentStep - 1) ? null : footer}
       </div>
     </div>
   );

@@ -1,5 +1,10 @@
 export const ASSETS = {
   illustrations: {
-    authentication: '/assets/illustrations/Auth.png',
+    SignUp: '/assets/illustrations/SignUp.png',
+    SignIn: '/assets/illustrations/SignIn.png',
+  },
+  logo: {
+    facebook: '/assets/logo/facebook.png',
+    google: '/assets/logo/google.png',
   },
 };

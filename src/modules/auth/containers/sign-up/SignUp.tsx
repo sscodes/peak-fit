@@ -1,19 +1,22 @@
 import clsx from 'clsx';
-import { Step, Stepper1 } from '../../../components/stepper-1/Stepper1';
-import { ASSETS } from '../../../helpers/assets';
-import classes from './Auth.module.css';
-import Button from '../../../components/button/Button';
+import { Step, Stepper1 } from '../../../../components/stepper-1/Stepper1';
+import { ASSETS } from '../../../../helpers/assets';
+import classes from './styles.module.css';
+import Button from '../../../../components/button/Button';
+import { useNavigate } from 'react-router';
+import { SIGN_IN } from '../../../../helpers/getters';
 
 const Footer = () => {
+  const navigate = useNavigate();
   return (
-    <div className={clsx(classes.signUp, 'nav-link')}>
-      First rep? Join us today!
-      <Button onClick={() => {}}>Sign up</Button>
+    <div className={clsx(classes.signIn, 'label')}>
+      Already on board?
+      <Button onClick={() => navigate(SIGN_IN)}>Sign in</Button>
     </div>
   );
 };
 
-const Auth = () => {
+const SignUp = () => {
   return (
     <div className={classes.authContainer}>
       <Stepper1
@@ -23,16 +26,12 @@ const Auth = () => {
         backButtonText='Previous'
         nextButtonText='Next'
         footer={<Footer />}
-        hideFooterSteps={[1]}
+        hideFooterSteps={[0, 2]}
       >
         <Step hideBackButton>
           <div className={classes.step}>
             <div className={classes.welcomeIcon}>
-              <img
-                src={ASSETS.illustrations.authentication}
-                width={200}
-                alt=''
-              />
+              <img src={ASSETS.illustrations.SignUp} width={200} alt='' />
             </div>
             <div className={clsx(classes.title, 'heading-1')}>
               Welcome to PeakFit
@@ -46,9 +45,11 @@ const Auth = () => {
         <Step onNext={() => true}>
           <div className={classes.step}>
             <div className={clsx(classes.title, 'label')}>
-              Already sweating with us?
+              Ready to sweat with us?
             </div>
-            <div className={clsx(classes.title, 'label')}>Jump back in!</div>
+            <div className={clsx(classes.title, 'label')}>
+              Let's get moving!
+            </div>
             <div className={classes.inputGroup}>
               <input
                 type='email'
@@ -61,14 +62,25 @@ const Auth = () => {
               {/* {errors.email && (
                 <span className={classes.errorMessage}>{errors.email}</span>
               )} */}
+              <div className={classes.orSection}>
+                <div className={classes.divider}></div>
+                <div className={clsx('heading-6', classes.or)}>or</div>
+                <div className={classes.divider}></div>
+              </div>
+              <div className={classes.oAuthSection}>
+                <img
+                  src={ASSETS.logo.facebook}
+                  className={classes.oAuthOption}
+                />
+                <img src={ASSETS.logo.google} className={classes.oAuthOption} />
+              </div>
             </div>
           </div>
         </Step>
 
         <Step onNext={() => true} nextButtonText='Submit'>
           <div className={classes.step}>
-            <h2 className={classes.h2}>Enter Your Password</h2>
-            <p className={classes.p}>Secure access to your fitness profile</p>
+            <div className={clsx(classes.title, 'label')}>Enter Password</div>
             <div className={classes.inputGroup}>
               <input
                 type='password'
@@ -78,18 +90,30 @@ const Auth = () => {
                 // className={`${classes.input} ${
                 //   errors.password ? classes.error : ''
                 // }`}
+                className={clsx(classes.input, 'input-text')}
                 autoFocus
               />
               {/* {errors.password && (
                 <span className={classes.errorMessage}>{errors.password}</span>
               )} */}
             </div>
-            <button
-              className={classes.forgotPassword}
-              onClick={() => console.log('Forgot password')}
-            >
-              Forgot password?
-            </button>
+            <div className={clsx(classes.title, classes.confirmPwd, 'label')}>Confirm Password</div>
+            <div className={classes.inputGroup}>
+              <input
+                type='password'
+                placeholder='••••••••'
+                // value={formData.password}
+                onChange={() => {}}
+                // className={`${classes.input} ${
+                //   errors.password ? classes.error : ''
+                // }`}
+                className={clsx(classes.input, 'input-text')}
+                autoFocus
+              />
+              {/* {errors.password && (
+                <span className={classes.errorMessage}>{errors.password}</span>
+              )} */}
+            </div>
           </div>
         </Step>
       </Stepper1>
@@ -97,4 +121,4 @@ const Auth = () => {
   );
 };
 
-export default Auth;
+export default SignUp;
