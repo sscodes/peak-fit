@@ -1,10 +1,19 @@
+// src/components/auth/AuthInitializer/index.tsx
 import * as React from 'react';
 import classes from './styles.module.css';
 // import { LOADING_COPIES } from '@/helpers/constants';
-import { initializeAuth, selectIsInitialized, setInitialized } from '../../../../store/authSlice';
+import { 
+  initializeAuth, 
+  selectIsInitialized, 
+  setInitialized,
+  clearAuth,
+  setAuthData
+} from '../../../../store/authSlice';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
-import { authService } from '../../../../services/auth/auth.service';
-import { useCurrentUser } from '../../../../services/auth/auth.data';
+import { supabaseAuth } from '../../../../lib/supabaseAuth';
+import { supabaseProfile } from '../../../../lib/supabaseProfile';
+import type { Session } from '@supabase/supabase-js';
+import type { UserProfile } from '../../../../store/authSlice';
 
 interface AuthInitializerProps {
   children: React.ReactNode;
@@ -13,8 +22,8 @@ interface AuthInitializerProps {
 const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
   const dispatch = useAppDispatch();
   const isInitialized = useAppSelector(selectIsInitialized);
-  const [isRefreshing, setIsRefreshing] = React.useState(false);
-//   const [loaderCopyIndex, setLoaderCopyIndex] = React.useState(0);
+  const [isLoading, setIsLoading] = React.useState(true);
+  // const [loaderCopyIndex, setLoaderCopyIndex] = React.useState(0);
   const isMountedRef = React.useRef(true);
 
   React.useEffect(() => {
@@ -23,71 +32,147 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
     };
   }, []);
 
-//   React.useEffect(() => {
-//     setLoaderCopyIndex(Math.floor(Math.random() * LOADING_COPIES.length));
-//   }, []);
+  // React.useEffect(() => {
+  //   setLoaderCopyIndex(Math.floor(Math.random() * LOADING_COPIES.length));
+  // }, []);
 
-  // First, try to refresh token if no access token exists
   React.useEffect(() => {
-    const initializeAuthCallback = async () => {
-      const token = sessionStorage.getItem('access_token');
+    let authListener: { unsubscribe: () => void } | null = null;
 
-      if (!token && !isInitialized) {
-        if (isMountedRef.current) setIsRefreshing(true);
-        try {
-          // Try to refresh using the httpOnly cookie
-          const refreshData = await authService.refreshToken();
-          if (refreshData) {
-            // Now we have access_token, fetch user data
-            const userResponse = await authService.fetchCurrentUser();
-            const userData = await userResponse.json();
+    const initializeAuthState = async () => {
+      try {
+        // Check for existing session (Supabase checks localStorage automatically)
+        const { session, error } = await supabaseAuth.getSession();
 
-            if (userResponse.ok) {
-              dispatch(
-                initializeAuth({
-                  user: userData.user,
-                  access_token: refreshData.access_token,
-                })
-              );
-            } else {
-              dispatch(setInitialized());
-            }
-          } else {
-            dispatch(setInitialized());
+        if (error) {
+          console.error('Auth initialization error:', error);
+          dispatch(setInitialized(true));
+          return;
+        }
+
+        if (session) {
+          // We have a valid session, get the user profile
+          const { data: profile } = await supabaseProfile.getCurrentUserProfile();
+          
+          if (isMountedRef.current) {
+            dispatch(initializeAuth({ 
+              session, 
+              profile: profile as UserProfile || null 
+            }));
           }
-        } catch (error) {
-          dispatch(setInitialized());
-        } finally {
-          if (isMountedRef.current) setIsRefreshing(false);
+        } else {
+          // No session found
+          if (isMountedRef.current) {
+            dispatch(setInitialized(true));
+          }
+        }
+
+        // Set up auth state change listener
+        authListener = supabaseAuth.onAuthStateChange(
+          async (event: string, session: Session | null) => {
+            if (!isMountedRef.current) return;
+
+            switch (event) {
+              case 'SIGNED_IN':
+                if (session) {
+                  // Get user profile when signed in
+                  const { data: profile } = await supabaseProfile.getCurrentUserProfile();
+                  dispatch(setAuthData({ 
+                    session, 
+                    profile: profile as UserProfile || undefined 
+                  }));
+                }
+                break;
+
+              case 'SIGNED_OUT':
+                dispatch(clearAuth());
+                break;
+
+              case 'TOKEN_REFRESHED':
+                if (session) {
+                  // Update session with new tokens
+                  const { data: profile } = await supabaseProfile.getCurrentUserProfile();
+                  dispatch(setAuthData({ 
+                    session, 
+                    profile: profile as UserProfile || undefined 
+                  }));
+                }
+                break;
+
+              case 'USER_UPDATED':
+                if (session) {
+                  // User data was updated (e.g., email change)
+                  const { data: profile } = await supabaseProfile.getCurrentUserProfile();
+                  dispatch(setAuthData({ 
+                    session, 
+                    profile: profile as UserProfile || undefined 
+                  }));
+                }
+                break;
+
+              default:
+                break;
+            }
+          }
+        );
+
+      } catch (error) {
+        console.error('Failed to initialize auth:', error);
+        if (isMountedRef.current) {
+          dispatch(setInitialized(true));
+        }
+      } finally {
+        if (isMountedRef.current) {
+          setIsLoading(false);
         }
       }
     };
 
-    initializeAuthCallback();
+    // Only initialize if not already initialized
+    if (!isInitialized) {
+      initializeAuthState();
+    } else {
+      setIsLoading(false);
+    }
+
+    // Cleanup function
+    return () => {
+      if (authListener) {
+        authListener.unsubscribe();
+      }
+    };
   }, [dispatch, isInitialized]);
 
-  // Then use the existing query if we have a token
-  const token = sessionStorage.getItem('access_token');
-  const { data, isLoading, isError } = useCurrentUser({
-    enabled: !!token && !isInitialized,
-  });
-
+  // Handle OAuth callback (for OAuth flows)
   React.useEffect(() => {
-    if (data && !isInitialized) {
-      dispatch(initializeAuth(data));
-    } else if (isError && token && !isInitialized) {
-      dispatch(setInitialized());
-    }
-  }, [data, isError, token, isInitialized, dispatch]);
+    const handleOAuthCallback = async () => {
+      // Check if we're on the callback URL with an auth code
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const searchParams = new URLSearchParams(window.location.search);
+      
+      const error = hashParams.get('error') || searchParams.get('error');
+      const errorDescription = hashParams.get('error_description') || searchParams.get('error_description');
+      
+      if (error) {
+        console.error('OAuth error:', error, errorDescription);
+        return;
+      }
 
-  if (!isInitialized && (isLoading || isRefreshing)) {
+      // Supabase handles the code exchange automatically via the auth state listener
+      // The SIGNED_IN event will fire when the exchange is complete
+    };
+
+    handleOAuthCallback();
+  }, []);
+
+  if (!isInitialized && isLoading) {
     return (
       <div className={classes.authInitializerContainer}>
         <span className={classes.loader}></span>
         <div className={classes.textSection}>
-          <h2 className='tm-h3'>loading copies</h2>
+          <h2 className='tm-h3'>Loading PeakFit</h2>
           <p className='tm-subheading'>
-            loading copies
+            Preparing your fitness journey...
           </p>
         </div>
       </div>

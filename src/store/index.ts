@@ -1,11 +1,12 @@
+// src/store/index.ts
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './authSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    // Add other slices here
   },
+  // Remove authMiddleware - not needed with Supabase
 });
 
 export type RootState = ReturnType<typeof store.getState>;

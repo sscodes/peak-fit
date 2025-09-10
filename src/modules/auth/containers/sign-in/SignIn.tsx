@@ -44,11 +44,8 @@ const SignIn = () => {
 
         <Step onNext={() => true}>
           <div className={classes.step}>
-            <div className={clsx(classes.title, 'label')}>
-              Already sweating with us?
-            </div>
-            <div className={clsx(classes.title, 'label')}>Jump back in!</div>
             <div className={classes.inputGroup}>
+              <div className={clsx(classes.title, 'label')}>Enter Email</div>
               <input
                 type='email'
                 placeholder='your@email.com'

@@ -44,13 +44,22 @@ const SignUp = () => {
 
         <Step onNext={() => true}>
           <div className={classes.step}>
-            <div className={clsx(classes.title, 'label')}>
-              Ready to sweat with us?
-            </div>
-            <div className={clsx(classes.title, 'label')}>
-              Let's get moving!
+            <div className={classes.inputGroup}>
+              <div className={clsx(classes.title, 'label')}>Enter Name</div>
+              <input
+                type='name'
+                placeholder='John Doe'
+                // value={formData.email}
+                onChange={() => {}}
+                autoFocus
+                className={clsx(classes.input, 'input-text')}
+              />
+              {/* {errors.email && (
+                <span className={classes.errorMessage}>{errors.email}</span>
+              )} */}
             </div>
             <div className={classes.inputGroup}>
+              <div className={clsx(classes.title, 'label')}>Enter Email</div>
               <input
                 type='email'
                 placeholder='your@email.com'
@@ -97,7 +106,9 @@ const SignUp = () => {
                 <span className={classes.errorMessage}>{errors.password}</span>
               )} */}
             </div>
-            <div className={clsx(classes.title, classes.confirmPwd, 'label')}>Confirm Password</div>
+            <div className={clsx(classes.title, classes.confirmPwd, 'label')}>
+              Confirm Password
+            </div>
             <div className={classes.inputGroup}>
               <input
                 type='password'
