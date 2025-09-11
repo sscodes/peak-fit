@@ -77,17 +77,11 @@ export const useCreateUser = () => {
       }
 
       // Get or create profile
-      const { data: profile, error: profileError } =
-        await supabaseProfile.getCurrentUserProfile();
-
-      if (profileError) {
-        console.warn('Profile fetch after sign-up failed:', profileError);
-        // Profile might not exist yet due to trigger delay, this is not critical
-      }
+      const { data: profile } = await supabaseProfile.getCurrentUserProfile();
 
       return {
         session,
-        profile: profile || null, // Changed to ensure null instead of undefined
+        profile,
         requiresEmailConfirmation: false,
       };
     },
@@ -123,10 +117,6 @@ export const useCreateUser = () => {
       console.error('Sign up error:', apiError);
       throw apiError;
     },
-    onSettled: () => {
-      // Always clear loading state regardless of outcome
-      dispatch(setLoading(false));
-    },
   });
 };
 
@@ -149,15 +139,9 @@ export const useLoginUser = () => {
       if (!session) throw new Error('No session returned');
 
       // Get user profile
-      const { data: profile, error: profileError } =
-        await supabaseProfile.getCurrentUserProfile();
+      const { data: profile } = await supabaseProfile.getCurrentUserProfile();
 
-      if (profileError) {
-        console.warn('Profile fetch after login failed:', profileError);
-        // Continue with login even if profile fetch fails
-      }
-
-      return { session, profile: profile || null };
+      return { session, profile };
     },
     onSuccess: (data) => {
       // Set auth data in Redux
@@ -184,10 +168,6 @@ export const useLoginUser = () => {
       const apiError = handleSupabaseError(error);
       console.error('Login error:', apiError);
       throw apiError;
-    },
-    onSettled: () => {
-      // Always clear loading state regardless of outcome
-      dispatch(setLoading(false));
     },
   });
 };
