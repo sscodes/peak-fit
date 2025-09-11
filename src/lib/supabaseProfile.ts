@@ -531,24 +531,24 @@ export const supabaseProfile = {
     const errorType = this.getErrorType(error);
 
     switch (errorType) {
-      case 'database':
+      case 'database': {
         const dbError = error as PostgrestError;
         if (dbError.code === '23505') return 'This record already exists';
         if (dbError.code === '23503') return 'Referenced record not found';
         if (dbError.code === '42501') return 'Insufficient permissions';
         return dbError.message || 'Database operation failed';
-
-      case 'auth':
+      }
+      case 'auth': {
         const authError = error as AuthError;
         if (authError.message.includes('not authenticated'))
           return 'Please sign in first';
         return authError.message || 'Authentication failed';
-
-      case 'storage':
+      }
+      case 'storage': {
         if (error.message.includes('size')) return 'File too large';
         if (error.message.includes('type')) return 'Invalid file type';
         return 'File upload failed';
-
+      }
       default:
         return error.message || 'An unexpected error occurred';
     }

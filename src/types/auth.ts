@@ -1,6 +1,6 @@
 export interface User {
   id: string;
-  name: string;
+  fullName: string;
   email: string;
   username?: string;
   // createdAt?: string;
@@ -39,12 +39,18 @@ export interface AuthResponse {
 }
 
 export interface SignUpPayload {
-  name: string;
+  fullName: string;
   email: string;
   password: string;
 }
 
-export interface SignInPayload {
+export interface LoginPayload {
   email: string;
   password: string;
+}
+
+export interface ApiError {
+  message: string;
+  code?: string;
+  status?: number;
 }

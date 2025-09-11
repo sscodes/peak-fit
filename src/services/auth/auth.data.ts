@@ -11,25 +11,8 @@ import {
   setLoading,
   updateProfile as updateProfileState,
 } from '../../store/authSlice';
+import type { ApiError, LoginPayload, SignUpPayload } from '../../types/auth';
 import { authKeys } from '../query-key-factory';
-
-// Types
-interface SignUpPayload {
-  email: string;
-  password: string;
-  fullName?: string;
-}
-
-interface LoginPayload {
-  email: string;
-  password: string;
-}
-
-export interface ApiError {
-  message: string;
-  code?: string;
-  status?: number;
-}
 
 // Helper function to handle Supabase errors
 const handleSupabaseError = (error: any): ApiError => {
