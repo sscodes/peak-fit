@@ -45,8 +45,12 @@ const SignIn = () => {
         <Step onNext={() => true}>
           <div className={classes.step}>
             <div className={classes.inputGroup}>
-              <div className={clsx(classes.title, 'label')}>Enter Email</div>
+              <label htmlFor='email' className={clsx(classes.title, 'label')}>
+                Enter Email
+              </label>
               <input
+                id='email'
+                name='email'
                 type='email'
                 placeholder='your@email.com'
                 // value={formData.email}
@@ -75,9 +79,16 @@ const SignIn = () => {
 
         <Step onNext={() => true} nextButtonText='Submit'>
           <div className={classes.step}>
-            <div className={clsx(classes.title, 'label')}>Enter Password</div>
             <div className={classes.inputGroup}>
+              <label
+                htmlFor='password'
+                className={clsx(classes.title, 'label')}
+              >
+                Enter Password
+              </label>
               <input
+                id='password'
+                name='password'
                 type='password'
                 placeholder='••••••••'
                 // value={formData.password}

@@ -31,9 +31,9 @@ export interface UserProfile {
 
 export interface AuthState {
   isAuthenticated: boolean;
-  user: SupabaseUser | null;  // Supabase auth.users data
+  user: SupabaseUser | null; // Supabase auth.users data
   profile: UserProfile | null; // Your public.profiles data
-  session: Session | null;     // Full Supabase session (includes tokens)
+  session: Session | null; // Full Supabase session (includes tokens)
   isInitialized: boolean;
   isLoading: boolean;
 }
@@ -52,10 +52,13 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     // Set complete auth data after sign in/up
-    setAuthData: (state, action: PayloadAction<{
-      session: Session;
-      profile?: UserProfile;
-    }>) => {
+    setAuthData: (
+      state,
+      action: PayloadAction<{
+        session: Session;
+        profile?: UserProfile;
+      }>
+    ) => {
       const { session, profile } = action.payload;
       state.isAuthenticated = true;
       state.session = session;
@@ -90,10 +93,13 @@ const authSlice = createSlice({
     },
 
     // Initialize auth on app load
-    initializeAuth: (state, action: PayloadAction<{
-      session: Session | null;
-      profile?: UserProfile | null;
-    }>) => {
+    initializeAuth: (
+      state,
+      action: PayloadAction<{
+        session: Session | null;
+        profile?: UserProfile | null;
+      }>
+    ) => {
       const { session, profile } = action.payload;
       if (session) {
         state.isAuthenticated = true;
@@ -149,7 +155,7 @@ export const {
 export const selectAuth = (state: RootState): AuthState => state.auth;
 export const selectIsAuthenticated = (state: RootState): boolean =>
   state.auth.isAuthenticated;
-export const selectUser = (state: RootState): SupabaseUser | null => 
+export const selectUser = (state: RootState): SupabaseUser | null =>
   state.auth.user;
 export const selectProfile = (state: RootState): UserProfile | null =>
   state.auth.profile;
@@ -163,3 +169,10 @@ export const selectOnboardingCompleted = (state: RootState): boolean =>
   state.auth.profile?.onboarding_completed || false;
 
 export default authSlice.reducer;
+
+// Export action types for middleware configuration
+export const AUTH_ACTION_TYPES = {
+  SET_AUTH_DATA: setAuthData.type,
+  INITIALIZE_AUTH: initializeAuth.type,
+  UPDATE_USER: updateUser.type,
+} as const;

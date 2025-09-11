@@ -45,9 +45,16 @@ const SignUp = () => {
         <Step onNext={() => true}>
           <div className={classes.step}>
             <div className={classes.inputGroup}>
-              <div className={clsx(classes.title, 'label')}>Enter Name</div>
+              <label
+                htmlFor='fullName'
+                className={clsx(classes.title, 'label')}
+              >
+                Enter Name
+              </label>
               <input
-                type='name'
+                id='fullName'
+                name='fullName'
+                type='text'
                 placeholder='John Doe'
                 // value={formData.email}
                 onChange={() => {}}
@@ -59,8 +66,12 @@ const SignUp = () => {
               )} */}
             </div>
             <div className={classes.inputGroup}>
-              <div className={clsx(classes.title, 'label')}>Enter Email</div>
+              <label htmlFor='email' className={clsx(classes.title, 'label')}>
+                Enter Email
+              </label>
               <input
+                id='email'
+                name='email'
                 type='email'
                 placeholder='your@email.com'
                 // value={formData.email}
@@ -89,9 +100,16 @@ const SignUp = () => {
 
         <Step onNext={() => true} nextButtonText='Submit'>
           <div className={classes.step}>
-            <div className={clsx(classes.title, 'label')}>Enter Password</div>
             <div className={classes.inputGroup}>
+              <label
+                htmlFor='password'
+                className={clsx(classes.title, 'label')}
+              >
+                Enter Password
+              </label>
               <input
+                id='password'
+                name='password'
                 type='password'
                 placeholder='••••••••'
                 // value={formData.password}
@@ -106,11 +124,16 @@ const SignUp = () => {
                 <span className={classes.errorMessage}>{errors.password}</span>
               )} */}
             </div>
-            <div className={clsx(classes.title, classes.confirmPwd, 'label')}>
-              Confirm Password
-            </div>
             <div className={classes.inputGroup}>
+              <label
+                htmlFor='confirmPassword'
+                className={clsx(classes.title, classes.confirmPwd, 'label')}
+              >
+                Confirm Password
+              </label>
               <input
+                id='confirmPassword'
+                name='confirmPassword'
                 type='password'
                 placeholder='••••••••'
                 // value={formData.password}
