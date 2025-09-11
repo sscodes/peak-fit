@@ -144,3 +144,10 @@ export const selectOnboardingCompleted = (state: RootState): boolean =>
   state.auth.profile?.onboarding_completed || false;
 
 export default authSlice.reducer;
+
+// Export action types for middleware configuration
+export const AUTH_ACTION_TYPES = {
+  SET_AUTH_DATA: setAuthData.type,
+  INITIALIZE_AUTH: initializeAuth.type,
+  UPDATE_USER: updateUser.type,
+} as const;

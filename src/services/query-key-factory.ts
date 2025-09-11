@@ -1,5 +1,7 @@
 // src/services/query-key-factory.ts
 
+import type { QueryClient } from "@tanstack/react-query";
+
 /**
  * Query Key Factory
  * Centralized query key management for React Query
@@ -47,11 +49,11 @@ export const onboardingKeys = {
 };
 
 // Helper function to invalidate all queries for a specific domain
-export const invalidateAuthQueries = (queryClient: any) => {
+export const invalidateAuthQueries = (queryClient: QueryClient) => {
   queryClient.invalidateQueries({ queryKey: authKeys.all });
 };
 
-export const invalidateProfileQueries = (queryClient: any, userId?: string) => {
+export const invalidateProfileQueries = (queryClient: QueryClient, userId?: string) => {
   if (userId) {
     queryClient.invalidateQueries({ queryKey: profileKeys.byId(userId) });
   } else {
@@ -59,7 +61,7 @@ export const invalidateProfileQueries = (queryClient: any, userId?: string) => {
   }
 };
 
-export const invalidateWorkoutQueries = (queryClient: any, userId?: string) => {
+export const invalidateWorkoutQueries = (queryClient: QueryClient, userId?: string) => {
   if (userId) {
     queryClient.invalidateQueries({ queryKey: workoutKeys.userSessions(userId) });
   } else {

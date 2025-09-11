@@ -79,15 +79,13 @@ export const supabaseProfile = {
         .single();
 
       if (error) throw error;
-
+      
       // Ensure onboarding_completed has a default value
-      const profile = data
-        ? {
-            ...data,
-            onboarding_completed: data.onboarding_completed ?? false,
-          }
-        : null;
-
+      const profile = data ? {
+        ...data,
+        onboarding_completed: data.onboarding_completed ?? false
+      } : null;
+      
       return { data: profile, error: null };
     } catch (error) {
       return { data: null, error: error as PostgrestError };
@@ -99,10 +97,7 @@ export const supabaseProfile = {
    */
   async getCurrentUserProfile(): Promise<ProfileResponse> {
     try {
-      const {
-        data: { user },
-        error: authError,
-      } = await supabase.auth.getUser();
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
       if (authError || !user) throw authError || new Error('No user found');
 
       return await this.getProfile(user.id);
@@ -114,9 +109,7 @@ export const supabaseProfile = {
   /**
    * Create a new profile (usually not needed due to trigger)
    */
-  async createProfile(
-    profileData: Partial<ProfileData>
-  ): Promise<ProfileResponse> {
+  async createProfile(profileData: Partial<ProfileData>): Promise<ProfileResponse> {
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -273,9 +266,7 @@ export const supabaseProfile = {
         updated_at: new Date().toISOString(),
       };
 
-      return this.updateProfile(userId, {
-        nutrition_profile: updatedNutrition,
-      });
+      return this.updateProfile(userId, { nutrition_profile: updatedNutrition });
     } catch (error) {
       return { data: null, error: error as PostgrestError };
     }
@@ -285,7 +276,7 @@ export const supabaseProfile = {
    * Complete onboarding
    */
   async completeOnboarding(userId: string): Promise<ProfileResponse> {
-    return this.updateProfile(userId, {
+    return this.updateProfile(userId, { 
       onboarding_completed: true,
       updated_at: new Date().toISOString(),
     });
@@ -299,18 +290,42 @@ export const supabaseProfile = {
     file: File
   ): Promise<{ url: string | null; error: Error | null }> {
     try {
-      const fileExt = file.name.split('.').pop();
+      // Extract file extension safely
+      const lastDotIndex = file.name.lastIndexOf('.');
+      let fileExt: string;
+      
+      if (lastDotIndex > 0 && lastDotIndex < file.name.length - 1) {
+        // Has extension
+        const ext = file.name.substring(lastDotIndex + 1).toLowerCase();
+        // Validate extension length and use common image formats
+        if (ext.length <= 5 && ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) {
+          fileExt = ext;
+        } else {
+          // Invalid or unusual extension, determine from MIME type
+          fileExt = this.getExtensionFromMimeType(file.type);
+        }
+      } else {
+        // No extension, determine from MIME type
+        fileExt = this.getExtensionFromMimeType(file.type);
+      }
+      
       const fileName = `${userId}/avatar.${fileExt}`;
 
-      // Upload to Supabase Storage
+      // Upload to Supabase Storage with content type
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(fileName, file, { upsert: true });
+        .upload(fileName, file, { 
+          upsert: true,
+          contentType: file.type || `image/${fileExt}`,
+          cacheControl: '3600' // 1 hour cache
+        });
 
       if (uploadError) throw uploadError;
 
       // Get public URL
-      const { data } = supabase.storage.from('avatars').getPublicUrl(fileName);
+      const { data } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
 
       // Update profile with avatar URL
       await this.updateProfile(userId, { avatar_url: data.publicUrl });
@@ -319,6 +334,24 @@ export const supabaseProfile = {
     } catch (error) {
       return { url: null, error: error as Error };
     }
+  },
+
+  /**
+   * Helper to get file extension from MIME type
+   */
+  getExtensionFromMimeType(mimeType: string): string {
+    const mimeToExt: Record<string, string> = {
+      'image/jpeg': 'jpg',
+      'image/jpg': 'jpg',
+      'image/png': 'png',
+      'image/gif': 'gif',
+      'image/webp': 'webp',
+      'image/svg+xml': 'svg',
+      'image/bmp': 'bmp',
+      'image/tiff': 'tiff'
+    };
+    
+    return mimeToExt[mimeType.toLowerCase()] || 'jpg'; // Default to jpg
   },
 
   /**
@@ -334,27 +367,19 @@ export const supabaseProfile = {
         health: ['health_medical'],
         fitness: ['fitness_level', 'training_history'],
         goals: ['primary_goal', 'goal_importance'],
-        preferences: [
-          'training_days_per_week',
-          'session_duration',
-          'training_location',
-        ],
+        preferences: ['training_days_per_week', 'session_duration', 'training_location'],
       };
 
       let completed = 0;
       let total = 0;
 
-      Object.values(sections)
-        .flat()
-        .forEach((field) => {
-          total++;
-          if (
-            profile[field as keyof ProfileData] !== null &&
-            profile[field as keyof ProfileData] !== undefined
-          ) {
-            completed++;
-          }
-        });
+      Object.values(sections).flat().forEach(field => {
+        total++;
+        if (profile[field as keyof ProfileData] !== null && 
+            profile[field as keyof ProfileData] !== undefined) {
+          completed++;
+        }
+      });
 
       return Math.round((completed / total) * 100);
     } catch (error) {
