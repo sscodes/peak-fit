@@ -2,6 +2,8 @@ import React, { useState, type ReactNode } from 'react';
 import classes from './styles.module.css';
 import Button from '../button/Button';
 import { BUTTON_VARIANT, STEPPER_1_PROGRESS } from '../../helpers/types';
+import { HiChevronRight, HiChevronLeft } from 'react-icons/hi';
+import Icon from '../icon/Icon';
 
 interface StepperProps {
   children: ReactNode;
@@ -174,6 +176,9 @@ export const Stepper1: React.FC<StepperProps> = ({
                 onClick={handlePrev}
                 disabled={isProcessing}
               >
+                <div className={classes.btnIcon}>
+                  <Icon icon={HiChevronLeft} />
+                </div>
                 {backText}
               </Button>
             ) : (
@@ -183,6 +188,9 @@ export const Stepper1: React.FC<StepperProps> = ({
             {showNextButton && (
               <Button onClick={handleNext} disabled={isProcessing}>
                 {isProcessing ? 'Processing...' : nextText}
+                <div className={classes.btnIcon}>
+                  <Icon icon={HiChevronRight} /> 
+                </div>
               </Button>
             )}
           </div>

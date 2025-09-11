@@ -1,39 +1,14 @@
 // src/store/authSlice.ts
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { User as SupabaseUser, Session } from '@supabase/supabase-js';
+import type { Session, User as SupabaseUser } from '@supabase/supabase-js';
+import type { ProfileData } from '../lib/supabaseProfile';
 import type { RootState } from './index';
-
-// Define your Profile type based on the database schema
-export interface UserProfile {
-  id: string;
-  email: string;
-  full_name: string;
-  age?: number;
-  gender?: string;
-  height_cm?: number;
-  weight_kg?: number;
-  body_fat_percentage?: number;
-  fitness_level?: string;
-  primary_goal?: string;
-  training_days_per_week?: number;
-  training_location?: string;
-  onboarding_completed: boolean;
-  avatar_url?: string;
-  created_at?: string;
-  updated_at?: string;
-  // JSONB fields
-  health_medical?: any;
-  movement_assessment?: any;
-  equipment_access?: any;
-  nutrition_profile?: any;
-  // Add other profile fields as needed
-}
 
 export interface AuthState {
   isAuthenticated: boolean;
-  user: SupabaseUser | null;  // Supabase auth.users data
-  profile: UserProfile | null; // Your public.profiles data
-  session: Session | null;     // Full Supabase session (includes tokens)
+  user: SupabaseUser | null; // Supabase auth.users data
+  profile: ProfileData | null; // Your public.profiles data
+  session: Session | null; // Full Supabase session (includes tokens)
   isInitialized: boolean;
   isLoading: boolean;
 }
@@ -52,10 +27,13 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     // Set complete auth data after sign in/up
-    setAuthData: (state, action: PayloadAction<{
-      session: Session;
-      profile?: UserProfile;
-    }>) => {
+    setAuthData: (
+      state,
+      action: PayloadAction<{
+        session: Session;
+        profile?: ProfileData;
+      }>
+    ) => {
       const { session, profile } = action.payload;
       state.isAuthenticated = true;
       state.session = session;
@@ -65,7 +43,7 @@ const authSlice = createSlice({
     },
 
     // Update just the profile data
-    updateProfile: (state, action: PayloadAction<Partial<UserProfile>>) => {
+    updateProfile: (state, action: PayloadAction<Partial<ProfileData>>) => {
       if (state.profile) {
         state.profile = { ...state.profile, ...action.payload };
       }
@@ -90,10 +68,13 @@ const authSlice = createSlice({
     },
 
     // Initialize auth on app load
-    initializeAuth: (state, action: PayloadAction<{
-      session: Session | null;
-      profile?: UserProfile | null;
-    }>) => {
+    initializeAuth: (
+      state,
+      action: PayloadAction<{
+        session: Session | null;
+        profile?: ProfileData | null;
+      }>
+    ) => {
       const { session, profile } = action.payload;
       if (session) {
         state.isAuthenticated = true;
@@ -149,9 +130,9 @@ export const {
 export const selectAuth = (state: RootState): AuthState => state.auth;
 export const selectIsAuthenticated = (state: RootState): boolean =>
   state.auth.isAuthenticated;
-export const selectUser = (state: RootState): SupabaseUser | null => 
+export const selectUser = (state: RootState): SupabaseUser | null =>
   state.auth.user;
-export const selectProfile = (state: RootState): UserProfile | null =>
+export const selectProfile = (state: RootState): ProfileData | null =>
   state.auth.profile;
 export const selectSession = (state: RootState): Session | null =>
   state.auth.session;

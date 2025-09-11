@@ -73,6 +73,12 @@
   align-items: center;
 }
 
+.btnIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

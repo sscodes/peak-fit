@@ -1,20 +1,17 @@
-// src/services/auth/auth.data.ts
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
-import { AUTH_HOME, HOME } from '../../helpers/getters';
+import { AUTH_HOME, HOME, VERIFY_EMAIL } from '../../helpers/getters';
 import { useAppDispatch } from '../../hooks/redux';
+import { supabaseAuth } from '../../lib/supabaseAuth';
+import { supabaseProfile, type ProfileData } from '../../lib/supabaseProfile';
 import {
   clearAuth,
   setAuthData,
-  setLoading,
   setAuthError,
+  setLoading,
   updateProfile as updateProfileState,
 } from '../../store/authSlice';
-import type { UserProfile } from '../../store/authSlice';
 import { authKeys } from '../query-key-factory';
-import { supabaseAuth } from '../../lib/supabaseAuth';
-import { supabaseProfile } from '../../lib/supabaseProfile';
-import type { User } from '@supabase/supabase-js';
 
 // Types
 interface SignUpPayload {
@@ -28,7 +25,7 @@ interface LoginPayload {
   password: string;
 }
 
-interface ApiError {
+export interface ApiError {
   message: string;
   code?: string;
   status?: number;
@@ -88,7 +85,9 @@ export const useCreateUser = () => {
     onSuccess: (data) => {
       if (data.requiresEmailConfirmation) {
         // Navigate to email confirmation page
-        navigate('/auth/verify-email');
+        navigate(VERIFY_EMAIL, {
+          state: { email: data.profile?.email },
+        });
         dispatch(setLoading(false));
       } else if (data.session) {
         // Set auth data in Redux
@@ -105,7 +104,7 @@ export const useCreateUser = () => {
 
         // Navigate to onboarding or home
         if (!data.profile?.onboarding_completed) {
-          navigate('/onboarding');
+          navigate('/dashboard');
         } else {
           navigate(HOME);
         }
@@ -359,13 +358,13 @@ export const useRefreshSession = () => {
       dispatch(
         setAuthData({
           session: data.session,
-          profile: (data.profile as UserProfile) || undefined,
+          profile: (data.profile as ProfileData) || undefined,
         })
       );
 
       // Invalidate all auth queries
       queryClient.invalidateQueries({
-        queryKey: authKeys.base,
+        queryKey: authKeys.all,
       });
     },
     onError: (error: any) => {
@@ -423,7 +422,7 @@ export const useUpdateProfile = () => {
       updates,
     }: {
       userId: string;
-      updates: Partial<UserProfile>;
+      updates: Partial<ProfileData>;
     }) => {
       const { data, error } = await supabaseProfile.updateProfile(
         userId,

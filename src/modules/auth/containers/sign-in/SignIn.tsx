@@ -1,10 +1,15 @@
 import clsx from 'clsx';
+import { useFormik } from 'formik';
+import { useNavigate } from 'react-router';
+import { ToastContainer, toast } from 'react-toastify';
+import Button from '../../../../components/button/Button';
 import { Step, Stepper1 } from '../../../../components/stepper-1/Stepper1';
 import { ASSETS } from '../../../../helpers/assets';
-import classes from './styles.module.css';
-import Button from '../../../../components/button/Button';
-import { useNavigate } from 'react-router';
+import { notificationProperties } from '../../../../helpers/constants';
 import { SIGN_UP } from '../../../../helpers/getters';
+import { useLoginUser } from '../../../../services/auth/auth.data';
+import { signInValidation } from '../../../../utils/validation';
+import classes from './styles.module.css';
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -17,91 +22,164 @@ const Footer = () => {
 };
 
 const SignIn = () => {
+  const { mutateAsync: loginUser } = useLoginUser();
+
+  const notifyError = (error: string) =>
+    toast.error(error, notificationProperties);
+
+  const signIn = async () => {
+    const user = {
+      email: formik.values.email,
+      password: formik.values.password,
+    };
+    try {
+      await loginUser({ user });
+    } catch (error) {
+      const msg =
+        error instanceof Error
+          ? error.message
+          : 'Unable to sign in - please try again';
+      notifyError(msg);
+    }
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validationSchema: signInValidation,
+    onSubmit: signIn,
+  });
+
+  // Helper function to validate specific fields
+  const validateStep2 = async () => {
+    // Touch the fields to trigger validation display
+    formik.setFieldTouched('email', true);
+
+    // Validate the entire form
+    const errors = await formik.validateForm();
+
+    // Check if these specific fields have errors
+    return !errors.email;
+  };
+
+  const validateStep3 = async () => {
+    // Touch password fields
+    formik.setFieldTouched('password', true);
+
+    // Validate the entire form
+    const errors = await formik.validateForm();
+
+    // Check if password fields have errors
+    return !errors.password;
+  };
+
   return (
-    <div className={classes.authContainer}>
-      <Stepper1
-        initialStep={1}
-        onStepChange={(step) => console.log('Step changed to:', step)}
-        onFinalStepCompleted={() => {}}
-        backButtonText='Previous'
-        nextButtonText='Next'
-        footer={<Footer />}
-        hideFooterSteps={[0, 2]}
-      >
-        <Step hideBackButton>
-          <div className={classes.step}>
-            <div className={classes.welcomeIcon}>
-              <img src={ASSETS.illustrations.SignIn} width={200} alt='' />
-            </div>
-            <div className={clsx(classes.title, 'heading-1')}>
-              Welcome back!
-            </div>
-            <div className={clsx(classes.subTitle, 'body-large')}>
-              Let's pick up where you left off.
-            </div>
-          </div>
-        </Step>
-
-        <Step onNext={() => true}>
-          <div className={classes.step}>
-            <div className={classes.inputGroup}>
-              <div className={clsx(classes.title, 'label')}>Enter Email</div>
-              <input
-                type='email'
-                placeholder='your@email.com'
-                // value={formData.email}
-                onChange={() => {}}
-                autoFocus
-                className={clsx(classes.input, 'input-text')}
-              />
-              {/* {errors.email && (
-                <span className={classes.errorMessage}>{errors.email}</span>
-              )} */}
-              <div className={classes.orSection}>
-                <div className={classes.divider}></div>
-                <div className={clsx('heading-6', classes.or)}>or</div>
-                <div className={classes.divider}></div>
+    <>
+      <div className={classes.authContainer}>
+        <Stepper1
+          initialStep={1}
+          onStepChange={(step) => console.log('Step changed to:', step)}
+          onFinalStepCompleted={() => formik.handleSubmit()}
+          backButtonText='Previous'
+          nextButtonText='Next'
+          footer={<Footer />}
+          hideFooterSteps={[0, 2]}
+        >
+          <Step hideBackButton>
+            <div className={classes.step}>
+              <div className={classes.welcomeIcon}>
+                <img src={ASSETS.illustrations.SignIn} width={200} alt='' />
               </div>
-              <div className={classes.oAuthSection}>
-                <img
-                  src={ASSETS.logo.facebook}
-                  className={classes.oAuthOption}
+              <div className={clsx(classes.title, 'heading-1')}>
+                Welcome back!
+              </div>
+              <div className={clsx(classes.subTitle, 'body-large')}>
+                Let's pick up where you left off.
+              </div>
+            </div>
+          </Step>
+
+          <Step onNext={validateStep2} hideBackButton>
+            <div className={classes.step}>
+              <div className={classes.inputGroup}>
+                <div className={clsx(classes.title, 'label')}>Enter Email</div>
+                <input
+                  type='email'
+                  name='email'
+                  placeholder='your@email.com'
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className={clsx(
+                    classes.input,
+                    'input-text',
+                    formik.touched.email && formik.errors.email
+                      ? classes.error
+                      : ''
+                  )}
                 />
-                <img src={ASSETS.logo.google} className={classes.oAuthOption} />
+                {formik.touched.email && formik.errors.email && (
+                  <div className={classes.errors}>{formik.errors.email}</div>
+                )}
+                <div className={classes.orSection}>
+                  <div className={classes.divider}></div>
+                  <div className={clsx('heading-6', classes.or)}>or</div>
+                  <div className={classes.divider}></div>
+                </div>
+                <div className={classes.oAuthSection}>
+                  <img
+                    src={ASSETS.logo.facebook}
+                    className={classes.oAuthOption}
+                  />
+                  <img
+                    src={ASSETS.logo.google}
+                    className={classes.oAuthOption}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        </Step>
+          </Step>
 
-        <Step onNext={() => true} nextButtonText='Submit'>
-          <div className={classes.step}>
-            <div className={clsx(classes.title, 'label')}>Enter Password</div>
-            <div className={classes.inputGroup}>
-              <input
-                type='password'
-                placeholder='••••••••'
-                // value={formData.password}
-                onChange={() => {}}
-                // className={`${classes.input} ${
-                //   errors.password ? classes.error : ''
-                // }`}
-                className={clsx(classes.input, 'input-text')}
-                autoFocus
-              />
-              {/* {errors.password && (
-                <span className={classes.errorMessage}>{errors.password}</span>
-              )} */}
+          <Step onNext={validateStep3} nextButtonText='Submit'>
+            <div className={classes.step}>
+              <div className={clsx(classes.title, 'label')}>Enter Password</div>
+              <div className={classes.inputGroup}>
+                <input
+                  type='password'
+                  name='password'
+                  placeholder='••••••••'
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className={clsx(
+                    classes.input,
+                    'input-text',
+                    formik.touched.password && formik.errors.password
+                      ? classes.error
+                      : ''
+                  )}
+                  autoFocus
+                />
+                {formik.touched.password && formik.errors.password && (
+                  <span className={classes.errorMessage}>
+                    {formik.errors.password}
+                  </span>
+                )}
+              </div>
+              <a
+                className={clsx(classes.forgotPassword, 'link')}
+                onClick={() => console.log('Forgot password')}
+              >
+                Forgot password?
+              </a>
             </div>
-            <a
-              className={clsx(classes.forgotPassword, 'link')}
-              onClick={() => console.log('Forgot password')}
-            >
-              Forgot password?
-            </a>
-          </div>
-        </Step>
-      </Stepper1>
-    </div>
+          </Step>
+        </Stepper1>
+      </div>
+      <ToastContainer />
+    </>
   );
 };
 

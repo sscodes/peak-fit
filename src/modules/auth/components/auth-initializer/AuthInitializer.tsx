@@ -2,18 +2,21 @@
 import * as React from 'react';
 import classes from './styles.module.css';
 // import { LOADING_COPIES } from '@/helpers/constants';
-import { 
-  initializeAuth, 
-  selectIsInitialized, 
-  setInitialized,
-  clearAuth,
-  setAuthData
-} from '../../../../store/authSlice';
+import type { Session } from '@supabase/supabase-js';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { supabaseAuth } from '../../../../lib/supabaseAuth';
-import { supabaseProfile } from '../../../../lib/supabaseProfile';
-import type { Session } from '@supabase/supabase-js';
-import type { UserProfile } from '../../../../store/authSlice';
+import {
+  supabaseProfile,
+  type ProfileData,
+} from '../../../../lib/supabaseProfile';
+import {
+  clearAuth,
+  initializeAuth,
+  selectIsInitialized,
+  setAuthData,
+  setInitialized,
+} from '../../../../store/authSlice';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 interface AuthInitializerProps {
   children: React.ReactNode;
@@ -52,13 +55,16 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
 
         if (session) {
           // We have a valid session, get the user profile
-          const { data: profile } = await supabaseProfile.getCurrentUserProfile();
-          
+          const { data: profile } =
+            await supabaseProfile.getCurrentUserProfile();
+
           if (isMountedRef.current) {
-            dispatch(initializeAuth({ 
-              session, 
-              profile: profile as UserProfile || null 
-            }));
+            dispatch(
+              initializeAuth({
+                session,
+                profile: (profile as ProfileData) || null,
+              })
+            );
           }
         } else {
           // No session found
@@ -76,11 +82,14 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
               case 'SIGNED_IN':
                 if (session) {
                   // Get user profile when signed in
-                  const { data: profile } = await supabaseProfile.getCurrentUserProfile();
-                  dispatch(setAuthData({ 
-                    session, 
-                    profile: profile as UserProfile || undefined 
-                  }));
+                  const { data: profile } =
+                    await supabaseProfile.getCurrentUserProfile();
+                  dispatch(
+                    setAuthData({
+                      session,
+                      profile: (profile as ProfileData) || undefined,
+                    })
+                  );
                 }
                 break;
 
@@ -91,22 +100,28 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
               case 'TOKEN_REFRESHED':
                 if (session) {
                   // Update session with new tokens
-                  const { data: profile } = await supabaseProfile.getCurrentUserProfile();
-                  dispatch(setAuthData({ 
-                    session, 
-                    profile: profile as UserProfile || undefined 
-                  }));
+                  const { data: profile } =
+                    await supabaseProfile.getCurrentUserProfile();
+                  dispatch(
+                    setAuthData({
+                      session,
+                      profile: (profile as ProfileData) || undefined,
+                    })
+                  );
                 }
                 break;
 
               case 'USER_UPDATED':
                 if (session) {
                   // User data was updated (e.g., email change)
-                  const { data: profile } = await supabaseProfile.getCurrentUserProfile();
-                  dispatch(setAuthData({ 
-                    session, 
-                    profile: profile as UserProfile || undefined 
-                  }));
+                  const { data: profile } =
+                    await supabaseProfile.getCurrentUserProfile();
+                  dispatch(
+                    setAuthData({
+                      session,
+                      profile: (profile as ProfileData) || undefined,
+                    })
+                  );
                 }
                 break;
 
@@ -115,7 +130,6 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
             }
           }
         );
-
       } catch (error) {
         console.error('Failed to initialize auth:', error);
         if (isMountedRef.current) {
@@ -149,10 +163,12 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
       // Check if we're on the callback URL with an auth code
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
       const searchParams = new URLSearchParams(window.location.search);
-      
+
       const error = hashParams.get('error') || searchParams.get('error');
-      const errorDescription = hashParams.get('error_description') || searchParams.get('error_description');
-      
+      const errorDescription =
+        hashParams.get('error_description') ||
+        searchParams.get('error_description');
+
       if (error) {
         console.error('OAuth error:', error, errorDescription);
         return;
@@ -168,13 +184,11 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
   if (!isInitialized && isLoading) {
     return (
       <div className={classes.authInitializerContainer}>
-        <span className={classes.loader}></span>
-        <div className={classes.textSection}>
-          <h2 className='tm-h3'>Loading PeakFit</h2>
-          <p className='tm-subheading'>
-            Preparing your fitness journey...
-          </p>
-        </div>
+        <DotLottieReact
+          src='https://lottie.host/2ecc5382-8ea7-4709-b6fb-41b9a3f527ad/O63lCPhknw.lottie'
+          loop
+          autoplay
+        />
       </div>
     );
   }

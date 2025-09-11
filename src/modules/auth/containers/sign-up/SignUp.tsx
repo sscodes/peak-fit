@@ -1,10 +1,13 @@
 import clsx from 'clsx';
+import { useFormik } from 'formik';
+import { useNavigate } from 'react-router';
+import Button from '../../../../components/button/Button';
 import { Step, Stepper1 } from '../../../../components/stepper-1/Stepper1';
 import { ASSETS } from '../../../../helpers/assets';
-import classes from './styles.module.css';
-import Button from '../../../../components/button/Button';
-import { useNavigate } from 'react-router';
 import { SIGN_IN } from '../../../../helpers/getters';
+import { useCreateUser } from '../../../../services/auth/auth.data';
+import { signUpValidation } from '../../../../utils/validation';
+import classes from './styles.module.css';
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -17,12 +20,60 @@ const Footer = () => {
 };
 
 const SignUp = () => {
+  const { mutateAsync: createUser } = useCreateUser();
+
+  const formik = useFormik({
+    initialValues: {
+      fullName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    validationSchema: signUpValidation,
+    onSubmit: async () => {
+      const payload = {
+        user: {
+          fullName: formik.values.fullName,
+          email: formik.values.email,
+          password: formik.values.password,
+        },
+      };
+      await createUser(payload);
+      formik.resetForm();
+    },
+  });
+
+  // Helper function to validate specific fields
+  const validateStep2 = async () => {
+    // Touch the fields to trigger validation display
+    formik.setFieldTouched('fullName', true);
+    formik.setFieldTouched('email', true);
+
+    // Validate the entire form
+    const errors = await formik.validateForm();
+
+    // Check if these specific fields have errors
+    return !errors.fullName && !errors.email;
+  };
+
+  const validateStep3 = async () => {
+    // Touch password fields
+    formik.setFieldTouched('password', true);
+    formik.setFieldTouched('confirmPassword', true);
+
+    // Validate the entire form
+    const errors = await formik.validateForm();
+
+    // Check if password fields have errors
+    return !errors.password && !errors.confirmPassword;
+  };
+
   return (
     <div className={classes.authContainer}>
       <Stepper1
         initialStep={1}
         onStepChange={(step) => console.log('Step changed to:', step)}
-        onFinalStepCompleted={() => {}}
+        onFinalStepCompleted={() => formik.handleSubmit()}
         backButtonText='Previous'
         nextButtonText='Next'
         footer={<Footer />}
@@ -42,35 +93,50 @@ const SignUp = () => {
           </div>
         </Step>
 
-        <Step onNext={() => true}>
+        <Step onNext={validateStep2} hideBackButton>
           <div className={classes.step}>
             <div className={classes.inputGroup}>
               <div className={clsx(classes.title, 'label')}>Enter Name</div>
               <input
-                type='name'
+                type='text'
+                name='fullName'
                 placeholder='John Doe'
-                // value={formData.email}
-                onChange={() => {}}
+                value={formik.values.fullName}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 autoFocus
-                className={clsx(classes.input, 'input-text')}
+                className={clsx(
+                  classes.input,
+                  'input-text',
+                  formik.touched.fullName && formik.errors.fullName
+                    ? classes.error
+                    : ''
+                )}
               />
-              {/* {errors.email && (
-                <span className={classes.errorMessage}>{errors.email}</span>
-              )} */}
+              {formik.touched.fullName && formik.errors.fullName && (
+                <div className={classes.errors}>{formik.errors.fullName}</div>
+              )}
             </div>
             <div className={classes.inputGroup}>
               <div className={clsx(classes.title, 'label')}>Enter Email</div>
               <input
                 type='email'
+                name='email'
                 placeholder='your@email.com'
-                // value={formData.email}
-                onChange={() => {}}
-                autoFocus
-                className={clsx(classes.input, 'input-text')}
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={clsx(
+                  classes.input,
+                  'input-text',
+                  formik.touched.email && formik.errors.email
+                    ? classes.error
+                    : ''
+                )}
               />
-              {/* {errors.email && (
-                <span className={classes.errorMessage}>{errors.email}</span>
-              )} */}
+              {formik.touched.email && formik.errors.email && (
+                <div className={classes.errors}>{formik.errors.email}</div>
+              )}
               <div className={classes.orSection}>
                 <div className={classes.divider}></div>
                 <div className={clsx('heading-6', classes.or)}>or</div>
@@ -80,31 +146,43 @@ const SignUp = () => {
                 <img
                   src={ASSETS.logo.facebook}
                   className={classes.oAuthOption}
+                  alt='Facebook'
                 />
-                <img src={ASSETS.logo.google} className={classes.oAuthOption} />
+                <img
+                  src={ASSETS.logo.google}
+                  className={classes.oAuthOption}
+                  alt='Google'
+                />
               </div>
             </div>
           </div>
         </Step>
 
-        <Step onNext={() => true} nextButtonText='Submit'>
+        <Step onNext={validateStep3} nextButtonText='Submit'>
           <div className={classes.step}>
             <div className={clsx(classes.title, 'label')}>Enter Password</div>
             <div className={classes.inputGroup}>
               <input
                 type='password'
+                name='password'
                 placeholder='••••••••'
-                // value={formData.password}
-                onChange={() => {}}
-                // className={`${classes.input} ${
-                //   errors.password ? classes.error : ''
-                // }`}
-                className={clsx(classes.input, 'input-text')}
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={clsx(
+                  classes.input,
+                  'input-text',
+                  formik.touched.password && formik.errors.password
+                    ? classes.error
+                    : ''
+                )}
                 autoFocus
               />
-              {/* {errors.password && (
-                <span className={classes.errorMessage}>{errors.password}</span>
-              )} */}
+              {formik.touched.password && formik.errors.password && (
+                <span className={classes.errorMessage}>
+                  {formik.errors.password}
+                </span>
+              )}
             </div>
             <div className={clsx(classes.title, classes.confirmPwd, 'label')}>
               Confirm Password
@@ -112,18 +190,26 @@ const SignUp = () => {
             <div className={classes.inputGroup}>
               <input
                 type='password'
+                name='confirmPassword'
                 placeholder='••••••••'
-                // value={formData.password}
-                onChange={() => {}}
-                // className={`${classes.input} ${
-                //   errors.password ? classes.error : ''
-                // }`}
-                className={clsx(classes.input, 'input-text')}
-                autoFocus
+                value={formik.values.confirmPassword}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={clsx(
+                  classes.input,
+                  'input-text',
+                  formik.touched.confirmPassword &&
+                    formik.errors.confirmPassword
+                    ? classes.error
+                    : ''
+                )}
               />
-              {/* {errors.password && (
-                <span className={classes.errorMessage}>{errors.password}</span>
-              )} */}
+              {formik.touched.confirmPassword &&
+                formik.errors.confirmPassword && (
+                  <span className={classes.errorMessage}>
+                    {formik.errors.confirmPassword}
+                  </span>
+                )}
             </div>
           </div>
         </Step>
