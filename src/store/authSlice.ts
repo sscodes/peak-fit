@@ -1,98 +1,153 @@
+// src/store/authSlice.ts
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { Session, User as SupabaseUser } from '@supabase/supabase-js';
+import type { ProfileData } from '../lib/supabaseProfile';
 import type { RootState } from './index';
-import type { AuthState, User, AuthResponse } from '../types/auth';
+
+export interface AuthState {
+  isAuthenticated: boolean;
+  user: SupabaseUser | null; // Supabase auth.users data
+  profile: ProfileData | null; // Your public.profiles data
+  session: Session | null; // Full Supabase session (includes tokens)
+  isInitialized: boolean;
+  isLoading: boolean;
+}
 
 const initialState: AuthState = {
   isAuthenticated: false,
   user: null,
-  accessToken: null,
+  profile: null,
+  session: null,
   isInitialized: false,
+  isLoading: false,
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setAuthData: (state, action: PayloadAction<AuthResponse>) => {
-      const { user, access_token } = action.payload;
+    // Set complete auth data after sign in/up
+    setAuthData: (
+      state,
+      action: PayloadAction<{
+        session: Session;
+        profile?: ProfileData;
+      }>
+    ) => {
+      const { session, profile } = action.payload;
       state.isAuthenticated = true;
-      state.user = user;
-      state.accessToken = access_token;
-      sessionStorage.setItem('access_token', access_token);
+      state.session = session;
+      state.user = session.user;
+      state.profile = profile || null;
+      state.isLoading = false;
     },
 
-    updateUser: (state, action: PayloadAction<Partial<User>>) => {
-      if (state.user) {
-        state.user = { ...state.user, ...action.payload };
+    // Update just the profile data
+    updateProfile: (state, action: PayloadAction<Partial<ProfileData>>) => {
+      if (state.profile) {
+        state.profile = { ...state.profile, ...action.payload };
       }
     },
 
+    // Update Supabase user metadata
+    updateUser: (state, action: PayloadAction<SupabaseUser>) => {
+      state.user = action.payload;
+      if (state.session) {
+        state.session.user = action.payload;
+      }
+    },
+
+    // Clear all auth data on logout
     clearAuth: (state) => {
       state.isAuthenticated = false;
       state.user = null;
-      state.accessToken = null;
-      sessionStorage.removeItem('access_token');
+      state.profile = null;
+      state.session = null;
+      state.isLoading = false;
+      // Note: Supabase client will handle clearing localStorage
     },
 
-    initializeAuth: (state, action: PayloadAction<AuthResponse | null>) => {
-      if (action.payload) {
+    // Initialize auth on app load
+    initializeAuth: (
+      state,
+      action: PayloadAction<{
+        session: Session | null;
+        profile?: ProfileData | null;
+      }>
+    ) => {
+      const { session, profile } = action.payload;
+      if (session) {
         state.isAuthenticated = true;
-        state.user = action.payload.user;
-        state.accessToken = action.payload.access_token;
+        state.session = session;
+        state.user = session.user;
+        state.profile = profile || null;
       }
       state.isInitialized = true;
+      state.isLoading = false;
     },
 
-    setInitialized: (state) => {
-      state.isInitialized = true;
+    // Set loading state
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
     },
 
-    // TaskMate specific actions
-    // updateLastActive: (state) => {
-    //   if (state.user) {
-    //     state.user.lastActive = new Date().toISOString();
-    //   }
-    // },
+    // Set initialized flag
+    setInitialized: (state, action: PayloadAction<boolean>) => {
+      state.isInitialized = action.payload;
+    },
 
-    // incrementLoginStreak: (state) => {
-    //   if (state.user) {
-    //     state.user.loginStreak = (state.user.loginStreak || 0) + 1;
-    //   }
-    // },
+    // Update onboarding status
+    setOnboardingCompleted: (state, action: PayloadAction<boolean>) => {
+      if (state.profile) {
+        state.profile.onboarding_completed = action.payload;
+      }
+    },
 
-    // updateOnboardingStatus: (
-    //   state,
-    //   action: PayloadAction<User['onboardingStatus']>
-    // ) => {
-    //   if (state.user) {
-    //     state.user.onboardingStatus = action.payload;
-    //   }
-    // },
+    // Handle auth error
+    setAuthError: (state) => {
+      state.isAuthenticated = false;
+      state.user = null;
+      state.profile = null;
+      state.session = null;
+      state.isLoading = false;
+    },
   },
 });
 
 export const {
   setAuthData,
+  updateProfile,
   updateUser,
   clearAuth,
   initializeAuth,
+  setLoading,
   setInitialized,
-  //   updateLastActive,
-  //   incrementLoginStreak,
-  //   updateOnboardingStatus,
+  setOnboardingCompleted,
+  setAuthError,
 } = authSlice.actions;
 
-// Selectors with proper typing
+// Selectors
 export const selectAuth = (state: RootState): AuthState => state.auth;
 export const selectIsAuthenticated = (state: RootState): boolean =>
   state.auth.isAuthenticated;
-export const selectUser = (state: RootState): User | null => state.auth.user;
-export const selectAccessToken = (state: RootState): string | null =>
-  state.auth.accessToken;
+export const selectUser = (state: RootState): SupabaseUser | null =>
+  state.auth.user;
+export const selectProfile = (state: RootState): ProfileData | null =>
+  state.auth.profile;
+export const selectSession = (state: RootState): Session | null =>
+  state.auth.session;
 export const selectIsInitialized = (state: RootState): boolean =>
   state.auth.isInitialized;
-// export const selectOnboardingStatus = (
-//   state: RootState
-// ): User['onboardingStatus'] | undefined => state.auth.user?.onboardingStatus;
+export const selectIsLoading = (state: RootState): boolean =>
+  state.auth.isLoading;
+export const selectOnboardingCompleted = (state: RootState): boolean =>
+  state.auth.profile?.onboarding_completed || false;
 
 export default authSlice.reducer;
+
+// Export action types for middleware configuration
+export const AUTH_ACTION_TYPES = {
+  SET_AUTH_DATA: setAuthData.type,
+  INITIALIZE_AUTH: initializeAuth.type,
+  UPDATE_USER: updateUser.type,
+} as const;

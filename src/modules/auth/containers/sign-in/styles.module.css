@@ -29,8 +29,9 @@ input {
 }
 
 .input {
-  background-color: var(--primary-200) !important;
+  background-color: var(--primary-200);
   box-shadow: var(--shadow-inset);
+  color: var(--text-inverse);
   padding: 8px;
   width: 100%;
   border-radius: 8px;
@@ -46,7 +47,7 @@ input {
   text-align: center;
   row-gap: 8px;
   color: var(--text-primary);
-  background-color: var(--bg-tertiary) !important;
+  background-color: var(--bg-tertiary);
 }
 
 .divider {
@@ -88,4 +89,9 @@ input {
 .forgotPassword {
   color: var(--text-tertiary);
   cursor: pointer;
+}
+
+.errors {
+  color: var(--error-500);
+  margin-top: 5px;
 }

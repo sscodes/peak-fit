@@ -1,3 +1,61 @@
-* {
+body {
   background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Then add these overrides for toast */
+.Toastify__toast-icon,
+.Toastify__toast-icon > svg,
+.Toastify__toast-icon > * {
+  background-color: transparent !important;
+}
+
+/* Fix close button styling */
+.Toastify__close-button,
+.Toastify__close-button--colored,
+.Toastify__close-button > svg,
+.Toastify__close-button > * {
+  background-color: transparent !important;
+}
+
+.Toastify__toast-theme--colored.Toastify__toast--error {
+  border: 2px solid var(--error-700) !important;
+  background-color: var(--error-200);
+  color: var(--error-700);
+}
+
+.Toastify__toast-theme--colored.Toastify__toast--error .Toastify__close-button {
+  color: var(--error-700) !important;
+}
+
+.Toastify__toast-theme--colored.Toastify__toast--success {
+  border: 2px solid var(--success-700) !important;
+  background-color: var(--success-200);
+  color: var(--success-700);
+}
+
+.Toastify__toast-theme--colored.Toastify__toast--success
+  .Toastify__close-button {
+  color: var(--success-700) !important;
+}
+
+.Toastify__toast-theme--colored.Toastify__toast--info {
+  border: 2px solid var(--info-700) !important;
+  background-color: var(--info-200);
+  color: var(--info-700);
+}
+
+.Toastify__toast-theme--colored.Toastify__toast--info .Toastify__close-button {
+  color: var(--info-700) !important;
+}
+
+.Toastify__toast-theme--colored.Toastify__toast--warning {
+  border: 2px solid var(--warning-700) !important;
+  background-color: var(--warning-200);
+  color: var(--warning-700);
+}
+
+.Toastify__toast-theme--colored.Toastify__toast--warning
+  .Toastify__close-button {
+  color: var(--warning-700) !important;
 }
