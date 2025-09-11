@@ -1,6 +1,8 @@
 // src/lib/supabaseProfile.ts
+import type { AuthError, PostgrestError } from '@supabase/supabase-js';
 import { supabase } from './supabase';
-import type { PostgrestError } from '@supabase/supabase-js';
+
+type SupabaseError = PostgrestError | AuthError | Error;
 
 // Types based on your database schema
 export interface ProfileData {
@@ -79,13 +81,15 @@ export const supabaseProfile = {
         .single();
 
       if (error) throw error;
-      
+
       // Ensure onboarding_completed has a default value
-      const profile = data ? {
-        ...data,
-        onboarding_completed: data.onboarding_completed ?? false
-      } : null;
-      
+      const profile = data
+        ? {
+            ...data,
+            onboarding_completed: data.onboarding_completed ?? false,
+          }
+        : null;
+
       return { data: profile, error: null };
     } catch (error) {
       return { data: null, error: error as PostgrestError };
@@ -97,7 +101,10 @@ export const supabaseProfile = {
    */
   async getCurrentUserProfile(): Promise<ProfileResponse> {
     try {
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser();
       if (authError || !user) throw authError || new Error('No user found');
 
       return await this.getProfile(user.id);
@@ -109,7 +116,9 @@ export const supabaseProfile = {
   /**
    * Create a new profile (usually not needed due to trigger)
    */
-  async createProfile(profileData: Partial<ProfileData>): Promise<ProfileResponse> {
+  async createProfile(
+    profileData: Partial<ProfileData>
+  ): Promise<ProfileResponse> {
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -266,7 +275,9 @@ export const supabaseProfile = {
         updated_at: new Date().toISOString(),
       };
 
-      return this.updateProfile(userId, { nutrition_profile: updatedNutrition });
+      return this.updateProfile(userId, {
+        nutrition_profile: updatedNutrition,
+      });
     } catch (error) {
       return { data: null, error: error as PostgrestError };
     }
@@ -276,7 +287,7 @@ export const supabaseProfile = {
    * Complete onboarding
    */
   async completeOnboarding(userId: string): Promise<ProfileResponse> {
-    return this.updateProfile(userId, { 
+    return this.updateProfile(userId, {
       onboarding_completed: true,
       updated_at: new Date().toISOString(),
     });
@@ -293,12 +304,15 @@ export const supabaseProfile = {
       // Extract file extension safely
       const lastDotIndex = file.name.lastIndexOf('.');
       let fileExt: string;
-      
+
       if (lastDotIndex > 0 && lastDotIndex < file.name.length - 1) {
         // Has extension
         const ext = file.name.substring(lastDotIndex + 1).toLowerCase();
         // Validate extension length and use common image formats
-        if (ext.length <= 5 && ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) {
+        if (
+          ext.length <= 5 &&
+          ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)
+        ) {
           fileExt = ext;
         } else {
           // Invalid or unusual extension, determine from MIME type
@@ -308,24 +322,22 @@ export const supabaseProfile = {
         // No extension, determine from MIME type
         fileExt = this.getExtensionFromMimeType(file.type);
       }
-      
+
       const fileName = `${userId}/avatar.${fileExt}`;
 
       // Upload to Supabase Storage with content type
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(fileName, file, { 
+        .upload(fileName, file, {
           upsert: true,
           contentType: file.type || `image/${fileExt}`,
-          cacheControl: '3600' // 1 hour cache
+          cacheControl: '3600', // 1 hour cache
         });
 
       if (uploadError) throw uploadError;
 
       // Get public URL
-      const { data } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(fileName);
+      const { data } = supabase.storage.from('avatars').getPublicUrl(fileName);
 
       // Update profile with avatar URL
       await this.updateProfile(userId, { avatar_url: data.publicUrl });
@@ -348,9 +360,9 @@ export const supabaseProfile = {
       'image/webp': 'webp',
       'image/svg+xml': 'svg',
       'image/bmp': 'bmp',
-      'image/tiff': 'tiff'
+      'image/tiff': 'tiff',
     };
-    
+
     return mimeToExt[mimeType.toLowerCase()] || 'jpg'; // Default to jpg
   },
 
@@ -367,19 +379,27 @@ export const supabaseProfile = {
         health: ['health_medical'],
         fitness: ['fitness_level', 'training_history'],
         goals: ['primary_goal', 'goal_importance'],
-        preferences: ['training_days_per_week', 'session_duration', 'training_location'],
+        preferences: [
+          'training_days_per_week',
+          'session_duration',
+          'training_location',
+        ],
       };
 
       let completed = 0;
       let total = 0;
 
-      Object.values(sections).flat().forEach(field => {
-        total++;
-        if (profile[field as keyof ProfileData] !== null && 
-            profile[field as keyof ProfileData] !== undefined) {
-          completed++;
-        }
-      });
+      Object.values(sections)
+        .flat()
+        .forEach((field) => {
+          total++;
+          if (
+            profile[field as keyof ProfileData] !== null &&
+            profile[field as keyof ProfileData] !== undefined
+          ) {
+            completed++;
+          }
+        });
 
       return Math.round((completed / total) * 100);
     } catch (error) {
@@ -481,6 +501,56 @@ export const supabaseProfile = {
     } catch (error) {
       console.error('Error getting AI context:', error);
       return null;
+    }
+  },
+
+  /**
+   * Helper to identify error type for better error handling
+   */
+  getErrorType(
+    error: SupabaseError
+  ): 'auth' | 'database' | 'storage' | 'unknown' {
+    if ('code' in error && 'details' in error && 'hint' in error) {
+      return 'database'; // PostgrestError
+    }
+    if ('status' in error && 'name' in error && error.name.includes('Auth')) {
+      return 'auth'; // AuthError
+    }
+    if (error.message?.includes('storage')) {
+      return 'storage';
+    }
+    return 'unknown';
+  },
+
+  /**
+   * Helper to get user-friendly error message
+   */
+  getErrorMessage(error: SupabaseError | null): string {
+    if (!error) return '';
+
+    const errorType = this.getErrorType(error);
+
+    switch (errorType) {
+      case 'database':
+        const dbError = error as PostgrestError;
+        if (dbError.code === '23505') return 'This record already exists';
+        if (dbError.code === '23503') return 'Referenced record not found';
+        if (dbError.code === '42501') return 'Insufficient permissions';
+        return dbError.message || 'Database operation failed';
+
+      case 'auth':
+        const authError = error as AuthError;
+        if (authError.message.includes('not authenticated'))
+          return 'Please sign in first';
+        return authError.message || 'Authentication failed';
+
+      case 'storage':
+        if (error.message.includes('size')) return 'File too large';
+        if (error.message.includes('type')) return 'Invalid file type';
+        return 'File upload failed';
+
+      default:
+        return error.message || 'An unexpected error occurred';
     }
   },
 };

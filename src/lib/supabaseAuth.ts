@@ -1,6 +1,11 @@
 // src/lib/supabaseAuth.ts
 import { supabase } from './supabase';
-import type { Session, User, AuthError } from '@supabase/supabase-js';
+import type {
+  Session,
+  User,
+  AuthError,
+  AuthChangeEvent,
+} from '@supabase/supabase-js';
 
 export interface SignUpData {
   email: string;
@@ -27,7 +32,11 @@ export const supabaseAuth = {
   /**
    * Sign up a new user with email and password
    */
-  async signUp({ email, password, fullName }: SignUpData): Promise<AuthResponse> {
+  async signUp({
+    email,
+    password,
+    fullName,
+  }: SignUpData): Promise<AuthResponse> {
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -98,9 +107,15 @@ export const supabaseAuth = {
   /**
    * Get the current session (checks localStorage and validates)
    */
-  async getSession(): Promise<{ session: Session | null; error: AuthError | null }> {
+  async getSession(): Promise<{
+    session: Session | null;
+    error: AuthError | null;
+  }> {
     try {
-      const { data: { session }, error } = await supabase.auth.getSession();
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
       if (error) throw error;
       return { session, error: null };
     } catch (error) {
@@ -111,9 +126,15 @@ export const supabaseAuth = {
   /**
    * Get current user (fetches fresh user data from Supabase)
    */
-  async getCurrentUser(): Promise<{ user: User | null; error: AuthError | null }> {
+  async getCurrentUser(): Promise<{
+    user: User | null;
+    error: AuthError | null;
+  }> {
     try {
-      const { data: { user }, error } = await supabase.auth.getUser();
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
       if (error) throw error;
       return { user, error: null };
     } catch (error) {
@@ -139,7 +160,9 @@ export const supabaseAuth = {
   /**
    * Update user password (requires current session)
    */
-  async updatePassword(newPassword: string): Promise<{ user: User | null; error: AuthError | null }> {
+  async updatePassword(
+    newPassword: string
+  ): Promise<{ user: User | null; error: AuthError | null }> {
     try {
       const { data, error } = await supabase.auth.updateUser({
         password: newPassword,
@@ -154,7 +177,9 @@ export const supabaseAuth = {
   /**
    * Update user email (will send confirmation to new email)
    */
-  async updateEmail(newEmail: string): Promise<{ user: User | null; error: AuthError | null }> {
+  async updateEmail(
+    newEmail: string
+  ): Promise<{ user: User | null; error: AuthError | null }> {
     try {
       const { data, error } = await supabase.auth.updateUser({
         email: newEmail,
@@ -169,7 +194,9 @@ export const supabaseAuth = {
   /**
    * Resend confirmation email
    */
-  async resendConfirmation(email: string): Promise<{ error: AuthError | null }> {
+  async resendConfirmation(
+    email: string
+  ): Promise<{ error: AuthError | null }> {
     try {
       const { error } = await supabase.auth.resend({
         type: 'signup',
@@ -237,18 +264,26 @@ export const supabaseAuth = {
    * Returns unsubscribe function
    */
   onAuthStateChange(
-    callback: (event: string, session: Session | null) => void
+    callback: (event: AuthChangeEvent, session: Session | null) => void
   ): { unsubscribe: () => void } {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(callback);
-    return { unsubscribe: subscription.unsubscribe };
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(callback);
+    return { unsubscribe: () => subscription.unsubscribe() };
   },
 
   /**
    * Refresh the current session (force token refresh)
    */
-  async refreshSession(): Promise<{ session: Session | null; error: AuthError | null }> {
+  async refreshSession(): Promise<{
+    session: Session | null;
+    error: AuthError | null;
+  }> {
     try {
-      const { data: { session }, error } = await supabase.auth.refreshSession();
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.refreshSession();
       if (error) throw error;
       return { session, error: null };
     } catch (error) {
@@ -268,14 +303,16 @@ export const supabaseAuth = {
    */
   getErrorMessage(error: AuthError | null): string {
     if (!error) return '';
-    
+
     // Common error messages mapping
     const errorMessages: Record<string, string> = {
       'Invalid login credentials': 'Invalid email or password',
       'Email not confirmed': 'Please check your email and confirm your account',
       'User already registered': 'An account with this email already exists',
-      'Password should be at least 6 characters': 'Password must be at least 6 characters long',
-      'Unable to validate email address: invalid format': 'Please enter a valid email address',
+      'Password should be at least 6 characters':
+        'Password must be at least 6 characters long',
+      'Unable to validate email address: invalid format':
+        'Please enter a valid email address',
     };
 
     return errorMessages[error.message] || error.message;

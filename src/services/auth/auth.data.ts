@@ -88,13 +88,12 @@ export const useCreateUser = () => {
         requiresEmailConfirmation: false,
       };
     },
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       if (data.requiresEmailConfirmation) {
         // Navigate to email confirmation page
         navigate(VERIFY_EMAIL, {
-          state: { email: data.profile?.email },
+          state: { email: variables.user.email },
         });
-        dispatch(setLoading(false));
       } else if (data.session) {
         // Set auth data in Redux
         dispatch(

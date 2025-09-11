@@ -1,7 +1,7 @@
 // src/services/auth/auth.service.ts
+import type { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
 import { supabaseAuth } from '../../lib/supabaseAuth';
 import { supabaseProfile } from '../../lib/supabaseProfile';
-import type { Session, User } from '@supabase/supabase-js';
 
 /**
  * Auth Service Class - Wrapper around Supabase auth functions
@@ -204,7 +204,7 @@ export class AuthService {
    * Set up auth state change listener
    */
   onAuthStateChange(
-    callback: (event: string, session: Session | null) => void
+    callback: (event: AuthChangeEvent, session: Session | null) => void
   ) {
     return supabaseAuth.onAuthStateChange(callback);
   }

@@ -1,14 +1,15 @@
 import clsx from 'clsx';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import Button from '../../../../components/button/Button';
 import { Step, Stepper1 } from '../../../../components/stepper-1/Stepper1';
 import { ASSETS } from '../../../../helpers/assets';
-import { notificationProperties } from '../../../../helpers/constants';
 import { SIGN_UP } from '../../../../helpers/getters';
+import { notifyError } from '../../../../helpers/helper';
+import { supabaseAuth } from '../../../../lib/supabaseAuth';
 import { useLoginUser } from '../../../../services/auth/auth.data';
-import { signInValidation } from '../../../../utils/validation';
+import { signInValidation } from '../../utils/validation';
 import classes from './styles.module.css';
 
 const Footer = () => {
@@ -24,9 +25,6 @@ const Footer = () => {
 const SignIn = () => {
   const { mutateAsync: loginUser } = useLoginUser();
 
-  const notifyError = (error: string) =>
-    toast.error(error, notificationProperties);
-
   const signIn = async () => {
     const user = {
       email: formik.values.email,
@@ -34,12 +32,10 @@ const SignIn = () => {
     };
     try {
       await loginUser({ user });
-    } catch (error) {
-      const msg =
-        error instanceof Error
-          ? error.message
-          : 'Unable to sign in - please try again';
-      notifyError(msg);
+      formik.resetForm();
+    } catch (error: any) {
+      const message = supabaseAuth.getErrorMessage(error);
+      notifyError(message);
     }
   };
 
@@ -177,7 +173,7 @@ const SignIn = () => {
                   autoFocus
                 />
                 {formik.touched.password && formik.errors.password && (
-                  <span className={classes.errorMessage}>
+                  <span className={classes.errors}>
                     {formik.errors.password}
                   </span>
                 )}

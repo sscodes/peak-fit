@@ -10,7 +10,7 @@
   text-align: center;
 }
 
-.buttonText{
+.buttonText {
   display: flex;
   align-items: center;
   column-gap: 4px;
@@ -67,4 +67,9 @@
     background-position: -30px 11px, -30px 35px, -30px 60px;
     opacity: 0;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader { animation: none; }
+  .loader:after { animation: none; }
 }

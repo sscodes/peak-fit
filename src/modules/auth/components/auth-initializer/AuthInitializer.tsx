@@ -2,7 +2,7 @@
 import * as React from 'react';
 import classes from './styles.module.css';
 // import { LOADING_COPIES } from '@/helpers/constants';
-import type { Session } from '@supabase/supabase-js';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { supabaseAuth } from '../../../../lib/supabaseAuth';
 import {
@@ -75,7 +75,7 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
 
         // Set up auth state change listener
         authListener = supabaseAuth.onAuthStateChange(
-          async (event: string, session: Session | null) => {
+          async (event: AuthChangeEvent, session: Session | null) => {
             if (!isMountedRef.current) return;
 
             switch (event) {

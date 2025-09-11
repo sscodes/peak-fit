@@ -5,8 +5,10 @@ import Button from '../../../../components/button/Button';
 import { Step, Stepper1 } from '../../../../components/stepper-1/Stepper1';
 import { ASSETS } from '../../../../helpers/assets';
 import { SIGN_IN } from '../../../../helpers/getters';
+import { notifyError } from '../../../../helpers/helper';
+import { supabaseAuth } from '../../../../lib/supabaseAuth';
 import { useCreateUser } from '../../../../services/auth/auth.data';
-import { signUpValidation } from '../../../../utils/validation';
+import { signUpValidation } from '../../utils/validation';
 import classes from './styles.module.css';
 
 const Footer = () => {
@@ -38,8 +40,13 @@ const SignUp = () => {
           password: formik.values.password,
         },
       };
-      await createUser(payload);
-      formik.resetForm();
+      try {
+        await createUser(payload);
+        formik.resetForm();
+      } catch (error: any) {
+        const message = supabaseAuth.getErrorMessage(error);
+        notifyError(message);
+      }
     },
   });
 

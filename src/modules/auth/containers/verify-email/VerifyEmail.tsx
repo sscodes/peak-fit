@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { FaRedo } from 'react-icons/fa';
 import { useLocation } from 'react-router';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import Button from '../../../../components/button/Button';
 import Icon from '../../../../components/icon/Icon';
-import { notificationProperties } from '../../../../helpers/constants';
+import { notifyError, notifySuccess } from '../../../../helpers/helper';
+import { supabaseAuth } from '../../../../lib/supabaseAuth';
 import { useResendConfirmationEmail } from '../../../../services/auth/auth.data';
 import classes from './styles.module.css';
 
@@ -21,22 +22,16 @@ const VerifyEmail = () => {
     error,
   } = useResendConfirmationEmail();
 
-  const notifyMailResent = (message: string) =>
-    toast.success(message, notificationProperties);
-
-  const notifyMailError = (message: string) =>
-    toast.error(message, notificationProperties);
-
   React.useEffect(() => {
     if (isSuccess && clickedResend > 0) {
-      notifyMailResent('Email re-sent successfully');
+      notifySuccess('Email re-sent successfully');
     }
   }, [isSuccess]);
 
   React.useEffect(() => {
     if (isError && clickedResend > 0) {
-      console.log(error.message);
-      notifyMailError(error.message);
+      const message = supabaseAuth.getErrorMessage(error);
+      notifyError(message);
     }
   }, [isError]);
 
@@ -53,13 +48,20 @@ const VerifyEmail = () => {
         <Button
           onClick={async () => {
             try {
-              await resendEmail({ email: email });
+              if (!email) {
+                notifyError(
+                  'Missing email. Please sign in or restart the sign-up flow.'
+                );
+                return;
+              }
+              await resendEmail({ email });
               setClickedResend((e) => e + 1);
             } catch (error: any) {
-              notifyMailError(error.message);
+              const message = supabaseAuth.getErrorMessage(error);
+              notifyError(message);
             }
           }}
-          disabled={isPending}
+          disabled={isPending || !email}
         >
           <div className={classes.buttonText}>
             {isPending ? (

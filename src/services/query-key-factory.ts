@@ -1,6 +1,6 @@
 // src/services/query-key-factory.ts
 
-import type { QueryClient } from "@tanstack/react-query";
+import type { QueryClient } from '@tanstack/react-query';
 
 /**
  * Query Key Factory
@@ -23,28 +23,35 @@ export const authKeys = {
 
 export const profileKeys = {
   all: ['profile'] as const,
-  byId: (userId: string) => [...profileKeys.all, userId] as const,
+  byId: (userId: string) => [...profileKeys.all, 'user', userId] as const,
   current: () => [...profileKeys.all, 'current'] as const,
-  completion: (userId: string) => [...profileKeys.all, 'completion', userId] as const,
-  aiContext: (userId: string) => [...profileKeys.all, 'aiContext', userId] as const,
-  avatar: (userId: string) => [...profileKeys.all, 'avatar', userId] as const,
+  completion: (userId: string) =>
+    [...profileKeys.all, 'user', userId, 'completion'] as const,
+  aiContext: (userId: string) =>
+    [...profileKeys.all, 'user', userId, 'aiContext'] as const,
+  avatar: (userId: string) =>
+    [...profileKeys.all, 'user', userId, 'avatar'] as const,
 };
 
 export const workoutKeys = {
   all: ['workout'] as const,
   sessions: () => [...workoutKeys.all, 'sessions'] as const,
-  sessionById: (sessionId: string) => [...workoutKeys.all, 'sessions', sessionId] as const,
-  userSessions: (userId: string) => [...workoutKeys.all, 'sessions', 'user', userId] as const,
-  userSessionsByDate: (userId: string, date: string) => 
+  sessionById: (sessionId: string) =>
+    [...workoutKeys.all, 'sessions', sessionId] as const,
+  userSessions: (userId: string) =>
+    [...workoutKeys.all, 'sessions', 'user', userId] as const,
+  userSessionsByDate: (userId: string, date: string) =>
     [...workoutKeys.all, 'sessions', 'user', userId, date] as const,
   generated: () => [...workoutKeys.all, 'generated'] as const,
-  generatedById: (workoutId: string) => [...workoutKeys.all, 'generated', workoutId] as const,
+  generatedById: (workoutId: string) =>
+    [...workoutKeys.all, 'generated', workoutId] as const,
 };
 
 export const onboardingKeys = {
   all: ['onboarding'] as const,
-  progress: (userId: string) => [...onboardingKeys.all, 'progress', userId] as const,
-  section: (userId: string, section: string) => 
+  progress: (userId: string) =>
+    [...onboardingKeys.all, 'progress', userId] as const,
+  section: (userId: string, section: string) =>
     [...onboardingKeys.all, 'section', userId, section] as const,
 };
 
@@ -53,7 +60,10 @@ export const invalidateAuthQueries = (queryClient: QueryClient) => {
   queryClient.invalidateQueries({ queryKey: authKeys.all });
 };
 
-export const invalidateProfileQueries = (queryClient: QueryClient, userId?: string) => {
+export const invalidateProfileQueries = (
+  queryClient: QueryClient,
+  userId?: string
+) => {
   if (userId) {
     queryClient.invalidateQueries({ queryKey: profileKeys.byId(userId) });
   } else {
@@ -61,9 +71,14 @@ export const invalidateProfileQueries = (queryClient: QueryClient, userId?: stri
   }
 };
 
-export const invalidateWorkoutQueries = (queryClient: QueryClient, userId?: string) => {
+export const invalidateWorkoutQueries = (
+  queryClient: QueryClient,
+  userId?: string
+) => {
   if (userId) {
-    queryClient.invalidateQueries({ queryKey: workoutKeys.userSessions(userId) });
+    queryClient.invalidateQueries({
+      queryKey: workoutKeys.userSessions(userId),
+    });
   } else {
     queryClient.invalidateQueries({ queryKey: workoutKeys.all });
   }
