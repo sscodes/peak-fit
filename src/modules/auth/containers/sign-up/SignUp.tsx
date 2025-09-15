@@ -160,14 +160,24 @@ const SignUp = () => {
               </div>
               <div className={classes.oAuthSection}>
                 <img
-                  src={ASSETS.logo.facebook}
-                  className={classes.oAuthOption}
-                  alt='Facebook'
-                />
-                <img
                   src={ASSETS.logo.google}
                   className={classes.oAuthOption}
-                  alt='Google'
+                  alt='google-logo'
+                />
+                <img
+                  src={ASSETS.logo.facebook}
+                  className={classes.oAuthOption}
+                  alt='facebook-logo'
+                />
+                <img
+                  src={ASSETS.logo.twitter}
+                  className={classes.oAuthOption}
+                  alt='twitter-logo'
+                />
+                <img
+                  src={ASSETS.logo.apple}
+                  className={classes.oAuthOption}
+                  alt='apple-logo'
                 />
               </div>
             </div>

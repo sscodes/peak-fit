@@ -4,6 +4,8 @@ export const ASSETS = {
     SignIn: '/assets/illustrations/SignIn.png',
   },
   logo: {
+    twitter: '/assets/logo/twitter.png',
+    apple: '/assets/logo/apple.png',
     facebook: '/assets/logo/facebook.png',
     google: '/assets/logo/google.png',
   },
