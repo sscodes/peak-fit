@@ -8,6 +8,7 @@
 
 .logo {
   color: var(--text-primary);
+  cursor: pointer;
 }
 
 .authLayout {

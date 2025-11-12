@@ -1,11 +1,17 @@
-import { Outlet } from 'react-router';
-import classes from './styles.module.css';
 import clsx from 'clsx';
+import { Outlet, useNavigate } from 'react-router';
+import classes from './styles.module.css';
 
 const AuthLayout = () => {
+  const navigate = useNavigate();
   return (
     <div className={classes.authLayoutContainer}>
-      <div className={clsx(classes.logo, 'hero-large')}>PeakFit</div>
+      <div
+        className={clsx(classes.logo, 'hero-large')}
+        onClick={() => navigate('/')}
+      >
+        PeakFit
+      </div>
       <div className={classes.authLayout}>
         <Outlet />
       </div>
