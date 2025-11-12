@@ -212,7 +212,7 @@ export const useSendPasswordResetEmail = () => {
 
   return useMutation({
     mutationFn: async ({ email }: { email: string }) => {
-      const { error } = await supabaseAuth.resetPassword(email);
+      const { error } = await supabaseAuth.sendPasswordResetEmail(email);
 
       if (error) throw error;
 
@@ -226,64 +226,6 @@ export const useSendPasswordResetEmail = () => {
     onError: (error: any) => {
       const apiError = handleSupabaseError(error);
       console.error('Password reset error:', apiError);
-      throw apiError;
-    },
-  });
-};
-
-// Verify OTP Hook (for email confirmation or password reset)
-export const useVerifyOtp = () => {
-  const queryClient = useQueryClient();
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-
-  return useMutation({
-    mutationFn: async ({
-      email,
-      token,
-      type,
-    }: {
-      email: string;
-      token: string;
-      type: 'signup' | 'recovery';
-    }) => {
-      const { session, error } = await supabaseAuth.verifyOtp(
-        email,
-        token,
-        type
-      );
-
-      if (error) throw error;
-      if (!session) throw new Error('Verification failed');
-
-      // Get user profile
-      const { data: profile } = await supabaseProfile.getCurrentUserProfile();
-
-      return { session, profile };
-    },
-    onSuccess: (data) => {
-      // Set auth data in Redux
-      dispatch(
-        setAuthData({
-          session: data.session,
-          profile: data.profile || undefined,
-        })
-      );
-
-      queryClient.invalidateQueries({
-        queryKey: authKeys.checkOTP(),
-      });
-
-      // Navigate based on context
-      if (!data.profile?.onboarding_completed) {
-        navigate('/onboarding');
-      } else {
-        navigate(HOME);
-      }
-    },
-    onError: (error: any) => {
-      const apiError = handleSupabaseError(error);
-      console.error('OTP verification error:', apiError);
       throw apiError;
     },
   });

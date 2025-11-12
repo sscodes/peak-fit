@@ -7,7 +7,10 @@ export const signUpValidation = yup.object().shape({
     .max(50, 'Name cannot be more than 50 characters')
     .required('Name is required'),
   email: yup.string().email('Invalid email').required('Email is required'),
-  password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+  password: yup
+    .string()
+    .min(6, 'Password must be at least 6 characters')
+    .required('Password is required'),
   confirmPassword: yup
     .string()
     .oneOf([yup.ref('password')], 'Passwords must match')
@@ -16,22 +19,17 @@ export const signUpValidation = yup.object().shape({
 
 export const signInValidation = yup.object().shape({
   email: yup.string().email('Invalid email').required('Email is required'),
-  password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+  password: yup
+    .string()
+    .min(6, 'Password must be at least 6 characters')
+    .required('Password is required'),
 });
 
-export const sendOTPMailValidation = yup.object().shape({
+export const emailValidation = yup.object().shape({
   email: yup.string().email('Invalid email').required('Email is required'),
 });
 
-export const otpValidation = yup.object().shape({
-  otp: yup
-    .string()
-    .required('OTP is required')
-    .matches(/^[0-9]+$/, 'OTP must contain only numbers')
-    .length(6, 'OTP must be exactly 6 digits'),
-});
-
-export const forgotPasswordValidation = yup.object().shape({
+export const passwordResetValidation = yup.object().shape({
   password: yup.string().required('Password is required'),
   confirmPassword: yup
     .string()

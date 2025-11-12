@@ -145,10 +145,11 @@ export const supabaseAuth = {
   /**
    * Send password reset email
    */
-  async resetPassword(email: string): Promise<{ error: AuthError | null }> {
+  async sendPasswordResetEmail(email: string): Promise<{ error: AuthError | null }> {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth/reset-password`,
+        captchaToken: undefined,
       });
       if (error) throw error;
       return { error: null };
@@ -210,35 +211,6 @@ export const supabaseAuth = {
   },
 
   /**
-   * Verify OTP (for email confirmation or password reset)
-   */
-  async verifyOtp(
-    email: string,
-    token: string,
-    type: 'signup' | 'recovery' | 'email'
-  ): Promise<AuthResponse> {
-    try {
-      const { data, error } = await supabase.auth.verifyOtp({
-        email,
-        token,
-        type,
-      });
-      if (error) throw error;
-      return {
-        user: data.user,
-        session: data.session,
-        error: null,
-      };
-    } catch (error) {
-      return {
-        user: null,
-        session: null,
-        error: error as AuthError,
-      };
-    }
-  },
-
-  /**
    * Exchange auth code for session (for OAuth or magic link flows)
    */
   async exchangeCodeForSession(code: string): Promise<AuthResponse> {
@@ -295,7 +267,7 @@ export const supabaseAuth = {
    * Check if user needs to confirm email
    */
   isWaitingForEmailConfirmation(user: User | null): boolean {
-    return user?.email_confirmed_at === null ?? false;
+    return user?.email_confirmed_at === null;
   },
 
   /**
@@ -304,17 +276,6 @@ export const supabaseAuth = {
   getErrorMessage(error: AuthError | null): string {
     if (!error) return '';
 
-    // Common error messages mapping
-    const errorMessages: Record<string, string> = {
-      'Invalid login credentials': 'Invalid email or password',
-      'Email not confirmed': 'Please check your email and confirm your account',
-      'User already registered': 'An account with this email already exists',
-      'Password should be at least 6 characters':
-        'Password must be at least 6 characters long',
-      'Unable to validate email address: invalid format':
-        'Please enter a valid email address',
-    };
-
-    return errorMessages[error.message] || error.message;
+    return error.message;
   },
 };

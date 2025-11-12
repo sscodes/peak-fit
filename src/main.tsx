@@ -1,10 +1,11 @@
-// src/index.tsx
 import { disableReactDevTools } from '@fvilers/disable-react-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { RouterProvider, createBrowserRouter } from 'react-router';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import App from './App';
 import AuthInitializer from './modules/auth/components/auth-initializer/AuthInitializer';
 import ErrorBoundary from './modules/error/ErrorBoundary';
@@ -24,7 +25,7 @@ const queryClient = new QueryClient({
   },
 });
 
-if (process.env.NODE_ENV === 'production') disableReactDevTools();
+if (import.meta.env.NODE_ENV === 'production') disableReactDevTools();
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -38,7 +39,9 @@ const router = createBrowserRouter([
     path: '/*',
     element: (
       <ErrorBoundary fallback={<PageBrokenError />}>
-        <App />
+        <AuthInitializer>
+          <App />
+        </AuthInitializer>
       </ErrorBoundary>
     ),
     errorElement: <PageBrokenError />,
@@ -48,10 +51,9 @@ const router = createBrowserRouter([
 root.render(
   <QueryClientProvider client={queryClient}>
     <Provider store={store}>
-      <AuthInitializer>
-        <RouterProvider router={router} />
-        <ReactQueryDevtools initialIsOpen={false} position='top' />
-      </AuthInitializer>
+      <RouterProvider router={router} />
+      <ReactQueryDevtools initialIsOpen={false} position='top' />
+      <ToastContainer />
     </Provider>
   </QueryClientProvider>
 );

@@ -76,34 +76,13 @@ export class AuthService {
    * Send password reset email
    */
   async sendPasswordResetEmail(email: string) {
-    const { error } = await supabaseAuth.resetPassword(email);
+    const { error } = await supabaseAuth.sendPasswordResetEmail(email);
 
     if (error) {
       throw error;
     }
 
     return { success: true };
-  }
-
-  /**
-   * Verify OTP token
-   */
-  async verifyOtp(
-    email: string,
-    token: string,
-    type: 'signup' | 'recovery' | 'email'
-  ) {
-    const { user, session, error } = await supabaseAuth.verifyOtp(
-      email,
-      token,
-      type
-    );
-
-    if (error) {
-      throw error;
-    }
-
-    return { user, session };
   }
 
   /**
