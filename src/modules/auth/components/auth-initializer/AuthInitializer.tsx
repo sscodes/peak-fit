@@ -1,22 +1,23 @@
-// src/components/auth/AuthInitializer/index.tsx
 import * as React from 'react';
 import classes from './styles.module.css';
-// import { LOADING_COPIES } from '@/helpers/constants';
-import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
+import {
+  initializeAuth,
+  selectIsInitialized,
+  setInitialized,
+  clearAuth,
+  setAuthData,
+} from '../../../../store/authSlice';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { supabaseAuth } from '../../../../lib/supabaseAuth';
 import {
   supabaseProfile,
   type ProfileData,
 } from '../../../../lib/supabaseProfile';
-import {
-  clearAuth,
-  initializeAuth,
-  selectIsInitialized,
-  setAuthData,
-  setInitialized,
-} from '../../../../store/authSlice';
+import type { Session, AuthChangeEvent } from '@supabase/supabase-js';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { notifyError } from '../../../../helpers/helper';
+import { useNavigate } from 'react-router';
+import { FORGOT_PASSWORD } from '../../../../helpers/getters';
 
 interface AuthInitializerProps {
   children: React.ReactNode;
@@ -26,8 +27,8 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
   const dispatch = useAppDispatch();
   const isInitialized = useAppSelector(selectIsInitialized);
   const [isLoading, setIsLoading] = React.useState(true);
-  // const [loaderCopyIndex, setLoaderCopyIndex] = React.useState(0);
   const isMountedRef = React.useRef(true);
+  const navigate = useNavigate()
 
   React.useEffect(() => {
     return () => {
@@ -35,16 +36,28 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
     };
   }, []);
 
-  // React.useEffect(() => {
-  //   setLoaderCopyIndex(Math.floor(Math.random() * LOADING_COPIES.length));
-  // }, []);
-
   React.useEffect(() => {
     let authListener: { unsubscribe: () => void } | null = null;
 
     const initializeAuthState = async () => {
       try {
-        // Check for existing session (Supabase checks localStorage automatically)
+        // First check if this is a recovery/magic link flow
+        const hashParams = new URLSearchParams(
+          window.location.hash.substring(1)
+        );
+        const type = hashParams.get('type');
+        const accessToken = hashParams.get('access_token');
+
+        // If it's a recovery link, let the reset-password page handle it
+        if (type === 'recovery' && accessToken) {
+          console.log('Password recovery link detected, skipping auto-auth');
+          // Don't initialize auth, let the reset-password page handle it
+          dispatch(setInitialized(true));
+          setIsLoading(false);
+          return;
+        }
+
+        // Check for existing session (normal flow)
         const { session, error } = await supabaseAuth.getSession();
 
         if (error) {
@@ -169,8 +182,10 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
         hashParams.get('error_description') ||
         searchParams.get('error_description');
 
-      if (error) {
+      if (error && errorDescription) {
         console.error('OAuth error:', error, errorDescription);
+        notifyError(errorDescription);
+        navigate(FORGOT_PASSWORD)
         return;
       }
 

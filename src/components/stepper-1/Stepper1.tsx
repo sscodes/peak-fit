@@ -176,9 +176,11 @@ export const Stepper1: React.FC<StepperProps> = ({
                 onClick={handlePrev}
                 disabled={isProcessing}
               >
-                <div className={classes.btnIcon}>
-                  <Icon icon={HiChevronLeft} />
-                </div>
+                {!isProcessing && (
+                  <div className={classes.btnIcon}>
+                    <Icon icon={HiChevronLeft} />
+                  </div>
+                )}
                 {backText}
               </Button>
             ) : (
@@ -187,10 +189,12 @@ export const Stepper1: React.FC<StepperProps> = ({
 
             {showNextButton && (
               <Button onClick={handleNext} disabled={isProcessing}>
-                {isProcessing ? 'Processing...' : nextText}
-                <div className={classes.btnIcon}>
-                  <Icon icon={HiChevronRight} /> 
-                </div>
+                {nextText}
+                {!isProcessing && (
+                  <div className={classes.btnIcon}>
+                    <Icon icon={HiChevronRight} />
+                  </div>
+                )}
               </Button>
             )}
           </div>

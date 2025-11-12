@@ -1,4 +1,3 @@
-// src/index.tsx
 import { disableReactDevTools } from '@fvilers/disable-react-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -13,6 +12,7 @@ import { store } from './store';
 import './styles/globals.css';
 import './styles/typography.css';
 import './styles/variables.css';
+import { ToastContainer } from 'react-toastify';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,7 +24,7 @@ const queryClient = new QueryClient({
   },
 });
 
-if (process.env.NODE_ENV === 'production') disableReactDevTools();
+if (import.meta.env.NODE_ENV === 'production') disableReactDevTools();
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -38,7 +38,9 @@ const router = createBrowserRouter([
     path: '/*',
     element: (
       <ErrorBoundary fallback={<PageBrokenError />}>
-        <App />
+        <AuthInitializer>
+          <App />
+        </AuthInitializer>
       </ErrorBoundary>
     ),
     errorElement: <PageBrokenError />,
@@ -48,10 +50,9 @@ const router = createBrowserRouter([
 root.render(
   <QueryClientProvider client={queryClient}>
     <Provider store={store}>
-      <AuthInitializer>
-        <RouterProvider router={router} />
-        <ReactQueryDevtools initialIsOpen={false} position='top' />
-      </AuthInitializer>
+      <RouterProvider router={router} />
+      <ReactQueryDevtools initialIsOpen={false} position='top' />
+      <ToastContainer />
     </Provider>
   </QueryClientProvider>
 );
