@@ -4,6 +4,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { RouterProvider, createBrowserRouter } from 'react-router';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import App from './App';
 import AuthInitializer from './modules/auth/components/auth-initializer/AuthInitializer';
 import ErrorBoundary from './modules/error/ErrorBoundary';
@@ -12,7 +14,6 @@ import { store } from './store';
 import './styles/globals.css';
 import './styles/typography.css';
 import './styles/variables.css';
-import { ToastContainer } from 'react-toastify';
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -21,12 +21,9 @@
   color: var(--text-secondary);
 }
 
-input {
+.input {
   all: unset;
   box-sizing: border-box;
-}
-
-.input {
   background-color: var(--primary-200);
   box-shadow: var(--shadow-inset);
   padding: 8px;
