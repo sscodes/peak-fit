@@ -28,7 +28,7 @@
 }
 
 .input {
-  all: unset;
+  border: 0;
   box-sizing: border-box;
   background-color: var(--primary-200);
   box-shadow: var(--shadow-inset);
@@ -83,6 +83,7 @@
   display: flex;
   justify-content: center;
   column-gap: 24px;
+  margin-top: 16px;
 }
 
 .oAuthOption {

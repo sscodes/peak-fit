@@ -78,7 +78,6 @@ const SignUp = () => {
   return (
     <Stepper1
       initialStep={1}
-      onStepChange={(step) => console.log('Step changed to:', step)}
       onFinalStepCompleted={() => formik.handleSubmit()}
       backButtonText='Previous'
       nextButtonText='Next'

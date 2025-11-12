@@ -87,58 +87,56 @@ const SignIn = () => {
         <Step onNext={validateStep2} hideBackButton>
           <div className={classes.step}>
             <div className={classes.inputGroup}>
-              <div className={classes.inputGroup}>
-                <label htmlFor='email' className={clsx(classes.title, 'label')}>
-                  Enter Email
-                </label>
-                <input
-                  id='email'
-                  type='email'
-                  name='email'
-                  placeholder='your@email.com'
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={clsx(
-                    classes.input,
-                    'input-text',
-                    formik.touched.email && formik.errors.email
-                      ? classes.error
-                      : ''
-                  )}
-                />
-                {formik.touched.email && formik.errors.email ? (
-                  <div className={classes.errors}>{formik.errors.email}</div>
-                ) : (
-                  <div className={classes.errorsFiller}>error filler</div>
+              <label htmlFor='email' className={clsx(classes.title, 'label')}>
+                Enter Email
+              </label>
+              <input
+                id='email'
+                type='email'
+                name='email'
+                placeholder='your@email.com'
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={clsx(
+                  classes.input,
+                  'input-text',
+                  formik.touched.email && formik.errors.email
+                    ? classes.error
+                    : ''
                 )}
-                <div className={classes.orSection}>
-                  <div className={classes.divider}></div>
-                  <div className={clsx('heading-6', classes.or)}>or</div>
-                  <div className={classes.divider}></div>
-                </div>
-                <div className={classes.oAuthSection}>
-                  <img
-                    src={ASSETS.logo.google}
-                    className={classes.oAuthOption}
-                    alt='google-logo'
-                  />
-                  <img
-                    src={ASSETS.logo.facebook}
-                    className={classes.oAuthOption}
-                    alt='facebook-logo'
-                  />
-                  <img
-                    src={ASSETS.logo.twitter}
-                    className={classes.oAuthOption}
-                    alt='twitter-logo'
-                  />
-                  <img
-                    src={ASSETS.logo.apple}
-                    className={classes.oAuthOption}
-                    alt='apple-logo'
-                  />
-                </div>
+              />
+              {formik.touched.email && formik.errors.email ? (
+                <div className={classes.errors}>{formik.errors.email}</div>
+              ) : (
+                <div className={classes.errorsFiller}>error filler</div>
+              )}
+              <div className={classes.orSection}>
+                <div className={classes.divider}></div>
+                <div className={clsx('heading-6', classes.or)}>or</div>
+                <div className={classes.divider}></div>
+              </div>
+              <div className={classes.oAuthSection}>
+                <img
+                  src={ASSETS.logo.google}
+                  className={classes.oAuthOption}
+                  alt='google-logo'
+                />
+                <img
+                  src={ASSETS.logo.facebook}
+                  className={classes.oAuthOption}
+                  alt='facebook-logo'
+                />
+                <img
+                  src={ASSETS.logo.twitter}
+                  className={classes.oAuthOption}
+                  alt='twitter-logo'
+                />
+                <img
+                  src={ASSETS.logo.apple}
+                  className={classes.oAuthOption}
+                  alt='apple-logo'
+                />
               </div>
             </div>
           </div>
