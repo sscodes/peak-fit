@@ -45,7 +45,6 @@ function App() {
         element={<Navigate to={isAuthenticated ? HOME : AUTH_HOME} />}
       />
     </Routes>
-    // <ToastContainer />
   );
 }
 

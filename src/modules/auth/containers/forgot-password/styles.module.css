@@ -9,7 +9,7 @@
 }
 
 .input {
-  all: unset;
+  border: 0;
   box-sizing: border-box;
   background-color: var(--primary-200);
   box-shadow: var(--shadow-inset);
