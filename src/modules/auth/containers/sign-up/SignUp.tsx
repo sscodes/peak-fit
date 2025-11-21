@@ -7,9 +7,13 @@ import { ASSETS } from '../../../../helpers/assets';
 import { SIGN_IN } from '../../../../helpers/getters';
 import { notifyError } from '../../../../helpers/helper';
 import { supabaseAuth } from '../../../../lib/supabaseAuth';
-import { useCreateUser } from '../../../../services/auth/auth.data';
+import {
+  useCreateUser,
+  useOAuthSignIn,
+} from '../../../../services/auth/auth.data';
 import { signUpValidation } from '../../utils/validation';
 import classes from './styles.module.css';
+import { BUTTON_VARIANT } from '../../../../helpers/types';
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -23,6 +27,7 @@ const Footer = () => {
 
 const SignUp = () => {
   const { mutateAsync: createUser } = useCreateUser();
+  const { mutate: signInWithOAuth } = useOAuthSignIn();
 
   const formik = useFormik({
     initialValues: {
@@ -156,26 +161,17 @@ const SignUp = () => {
               <div className={classes.divider}></div>
             </div>
             <div className={classes.oAuthSection}>
-              <img
-                src={ASSETS.logo.google}
-                className={classes.oAuthOption}
-                alt='google-logo'
-              />
-              <img
-                src={ASSETS.logo.facebook}
-                className={classes.oAuthOption}
-                alt='facebook-logo'
-              />
-              <img
-                src={ASSETS.logo.twitter}
-                className={classes.oAuthOption}
-                alt='twitter-logo'
-              />
-              <img
-                src={ASSETS.logo.apple}
-                className={classes.oAuthOption}
-                alt='apple-logo'
-              />
+              <Button
+                variant={BUTTON_VARIANT.MINIMAL}
+                onClick={() => signInWithOAuth()}
+              >
+                Sign in with Google{' '}
+                <img
+                  src={ASSETS.logo.google}
+                  className={classes.oAuthOption}
+                  alt='google-logo'
+                />
+              </Button>
             </div>
           </div>
         </div>
