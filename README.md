@@ -47,10 +47,13 @@ git clone https://github.com/yourusername/peak-fit.git
 cd peak-fit
 
 # Install dependencies
-npm install
+pnpm install
 
 # Start development server
-npm run dev
+pnpm run dev
+
+# Start production server
+pnpm run start
 ```
 
 ## 🎮 Usage
