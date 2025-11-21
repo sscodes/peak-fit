@@ -15,6 +15,7 @@ export enum BUTTON_VARIANT {
   DANGER = 'danger',
   WARNING = 'warning',
   INFO = 'info',
+  MINIMAL = 'minimal',
 }
 
 export enum BUTTON_TYPE {

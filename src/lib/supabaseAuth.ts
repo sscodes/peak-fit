@@ -30,6 +30,29 @@ export interface AuthResponse {
  */
 export const supabaseAuth = {
   /**
+   * Sign in with Google
+   */
+  async signInWithGoogle() {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent', // Force consent screen to get refresh token
+          },
+        },
+      });
+
+      if (error) throw error;
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error: error as AuthError };
+    }
+  },
+
+  /**
    * Sign up a new user with email and password
    */
   async signUp({
@@ -145,7 +168,9 @@ export const supabaseAuth = {
   /**
    * Send password reset email
    */
-  async sendPasswordResetEmail(email: string): Promise<{ error: AuthError | null }> {
+  async sendPasswordResetEmail(
+    email: string
+  ): Promise<{ error: AuthError | null }> {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth/reset-password`,

@@ -77,25 +77,19 @@
   align-items: center;
   column-gap: 10px;
   margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 .oAuthSection {
   display: flex;
   justify-content: center;
-  column-gap: 24px;
+  flex-direction: column;
   margin-top: 16px;
 }
 
 .oAuthOption {
-  border: 2px solid var(--border-subtle);
-  padding: 10px;
-  border-radius: 25px;
-  width: 50px;
-  cursor: pointer;
-}
-
-.oAuthOption:hover {
-  background-color: var(--bg-secondary);
+  width: 16px;
+  margin-left: 8px;
 }
 
 .forgotPasswordSection {

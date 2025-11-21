@@ -460,3 +460,32 @@ export const useUploadAvatar = () => {
     },
   });
 };
+
+// src/services/auth/auth.data.ts
+// Add this new hook:
+
+export const useOAuthSignIn = () => {
+  const dispatch = useAppDispatch();
+
+  return useMutation({
+    mutationFn: async () => {
+      dispatch(setLoading(true));
+
+      let result = await supabaseAuth.signInWithGoogle();
+
+      if (result.error) throw result.error;
+
+      // OAuth redirects to provider, no immediate session
+      return result.data;
+    },
+    onError: (error: any) => {
+      dispatch(setLoading(false));
+      const apiError = handleSupabaseError(error);
+      console.error('OAuth error:', apiError);
+      throw apiError;
+    },
+    onSettled: () => {
+      dispatch(setLoading(false));
+    },
+  });
+};

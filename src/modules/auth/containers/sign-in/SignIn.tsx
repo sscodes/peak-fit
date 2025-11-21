@@ -6,8 +6,12 @@ import { Step, Stepper1 } from '../../../../components/stepper-1/Stepper1';
 import { ASSETS } from '../../../../helpers/assets';
 import { FORGOT_PASSWORD, SIGN_UP } from '../../../../helpers/getters';
 import { notifyError } from '../../../../helpers/helper';
+import { BUTTON_VARIANT } from '../../../../helpers/types';
 import { supabaseAuth } from '../../../../lib/supabaseAuth';
-import { useLoginUser } from '../../../../services/auth/auth.data';
+import {
+  useLoginUser,
+  useOAuthSignIn,
+} from '../../../../services/auth/auth.data';
 import { signInValidation } from '../../utils/validation';
 import classes from './styles.module.css';
 
@@ -23,6 +27,7 @@ const Footer = () => {
 
 const SignIn = () => {
   const { mutateAsync: loginUser } = useLoginUser();
+  const { mutate: signInWithOAuth } = useOAuthSignIn();
   const navigate = useNavigate();
 
   const signIn = async () => {
@@ -117,26 +122,17 @@ const SignIn = () => {
                 <div className={classes.divider}></div>
               </div>
               <div className={classes.oAuthSection}>
-                <img
-                  src={ASSETS.logo.google}
-                  className={classes.oAuthOption}
-                  alt='google-logo'
-                />
-                <img
-                  src={ASSETS.logo.facebook}
-                  className={classes.oAuthOption}
-                  alt='facebook-logo'
-                />
-                <img
-                  src={ASSETS.logo.twitter}
-                  className={classes.oAuthOption}
-                  alt='twitter-logo'
-                />
-                <img
-                  src={ASSETS.logo.apple}
-                  className={classes.oAuthOption}
-                  alt='apple-logo'
-                />
+                <Button
+                  variant={BUTTON_VARIANT.MINIMAL}
+                  onClick={() => signInWithOAuth()}
+                >
+                  Sign in with Google{' '}
+                  <img
+                    src={ASSETS.logo.google}
+                    className={classes.oAuthOption}
+                    alt='google-logo'
+                  />
+                </Button>
               </div>
             </div>
           </div>
