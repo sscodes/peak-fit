@@ -27,8 +27,10 @@ const Dock = ({
         const isActive = selectedRoute === item.route;
 
         return (
-          <div
+          <button
             key={item.id}
+            type='button'
+            aria-label={item.label}
             className={classes.itemContainerStyle}
             onMouseEnter={() => setHoveredItem(item.id)}
             onMouseLeave={() => setHoveredItem(null)}
@@ -51,7 +53,7 @@ const Dock = ({
             >
               {item.icon}
             </div>
-          </div>
+          </button>
         );
       })}
     </div>

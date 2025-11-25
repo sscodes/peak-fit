@@ -10,6 +10,7 @@
 }
 
 .itemContainerStyle {
+  all: unset;
   position: relative;
   display: flex;
   flex-direction: column;

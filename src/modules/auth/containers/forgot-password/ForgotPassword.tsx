@@ -61,34 +61,28 @@ const ForgotPassword = () => {
           hideBackButton
         >
           <div className={classes.step}>
-            <div className={classes.inputGroup}>
-              <div className={classes.inputGroup}>
-                <label htmlFor='email' className={clsx(classes.title, 'label')}>
-                  Enter Email
-                </label>
-                <input
-                  id='email'
-                  type='email'
-                  name='email'
-                  placeholder='your@email.com'
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={clsx(
-                    classes.input,
-                    'input-text',
-                    formik.touched.email && formik.errors.email
-                      ? classes.error
-                      : ''
-                  )}
-                />
-                {formik.touched.email && formik.errors.email ? (
-                  <div className={classes.errors}>{formik.errors.email}</div>
-                ) : (
-                  <div className={classes.errorsFiller}>error filler</div>
-                )}
-              </div>
-            </div>
+            <label htmlFor='email' className={clsx(classes.title, 'label')}>
+              Enter Email
+            </label>
+            <input
+              id='email'
+              type='email'
+              name='email'
+              placeholder='your@email.com'
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className={clsx(
+                classes.input,
+                'input-text',
+                formik.touched.email && formik.errors.email ? classes.error : ''
+              )}
+            />
+            {formik.touched.email && formik.errors.email ? (
+              <div className={classes.errors}>{formik.errors.email}</div>
+            ) : (
+              <div className={classes.errorsFiller}>error filler</div>
+            )}
           </div>
         </Step>
 
