@@ -19,8 +19,6 @@ function App() {
         <Route path='auth/*' element={<AuthRouter />} />
       </Route>
 
-      {/* <Route path='*' element={!token && <Navigate to={AUTH_HOME} />} /> */}
-
       <Route element={<PrivateRoute />}>
         <Route path='*' element={<PrivateRoutes />} />
       </Route>

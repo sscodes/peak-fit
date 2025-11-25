@@ -33,6 +33,7 @@ const PrivateRoutes = () => {
             </SuspendedView>
           }
         />
+        <Route path='*' element={<Navigate to='/error/404' replace />} />
       </Route>
     </Routes>
   );
