@@ -1,4 +1,4 @@
-// src/pages/Home/Home.tsx
+// src/pages/Explore/Explore.tsx
 import React, { useState } from 'react';
 import {
   Scene,
@@ -13,9 +13,9 @@ import useFilteredWorkouts from '../../../hooks/useFilteredWorkouts';
 import SegmentedMuscleModel from '../components/Model/segmented-muscle-model/SegmentedMuscleModel';
 
 // Import CSS modules
-import styles from './Home.module.css';
+import styles from './Explore.module.css';
 
-const Home: React.FC = () => {
+const Explore: React.FC = () => {
   const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
   const { searchTerm, setSearchTerm, filteredWorkouts } =
     useFilteredWorkouts(workouts);
@@ -74,4 +74,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Explore;

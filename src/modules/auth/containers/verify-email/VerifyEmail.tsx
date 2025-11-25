@@ -7,7 +7,7 @@ import Icon from '../../../../components/icon/Icon';
 import { notifyError, notifySuccess } from '../../../../helpers/helper';
 import { supabaseAuth } from '../../../../lib/supabaseAuth';
 import { useResendConfirmationEmail } from '../../../../services/auth/auth.data';
-import classes from './styles.module.css';
+import classes from './VerifyEmail.module.css';
 
 const VerifyEmail = () => {
   const [clickedResend, setClickedResend] = React.useState(0);

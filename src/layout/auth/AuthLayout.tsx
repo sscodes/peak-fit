@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { Outlet, useNavigate } from 'react-router';
-import classes from './styles.module.css';
+import classes from './AuthLayout.module.css';
 
 const AuthLayout = () => {
   const navigate = useNavigate();

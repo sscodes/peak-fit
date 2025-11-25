@@ -1,9 +1,9 @@
 import React, { useState, type ReactNode } from 'react';
-import classes from './styles.module.css';
-import Button from '../button/Button';
+import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import { BUTTON_VARIANT, STEPPER_1_PROGRESS } from '../../helpers/types';
-import { HiChevronRight, HiChevronLeft } from 'react-icons/hi';
+import Button from '../button/Button';
 import Icon from '../icon/Icon';
+import classes from './Stepper.module.css';
 
 interface StepperProps {
   children: ReactNode;
@@ -39,8 +39,8 @@ export const Step: React.FC<StepProps> = ({ children }) => {
   return <>{children}</>;
 };
 
-// Main Stepper1 Component
-export const Stepper1: React.FC<StepperProps> = ({
+// Main Stepper Component
+export const Stepper: React.FC<StepperProps> = ({
   children,
   initialStep = 1,
   onStepChange,

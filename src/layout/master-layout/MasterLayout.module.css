@@ -1,0 +1,13 @@
+.masterLayout {
+  min-height: 100vh;
+  min-width: 100vw;
+  position: relative;
+}
+
+.footer {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}

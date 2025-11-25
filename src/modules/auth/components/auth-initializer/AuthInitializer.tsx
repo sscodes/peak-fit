@@ -1,23 +1,23 @@
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import * as React from 'react';
-import classes from './styles.module.css';
-import {
-  initializeAuth,
-  selectIsInitialized,
-  setInitialized,
-  clearAuth,
-  setAuthData,
-} from '../../../../store/authSlice';
+import { useNavigate } from 'react-router';
+import { FORGOT_PASSWORD } from '../../../../helpers/getters';
+import { notifyError } from '../../../../helpers/helper';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { supabaseAuth } from '../../../../lib/supabaseAuth';
 import {
   supabaseProfile,
   type ProfileData,
 } from '../../../../lib/supabaseProfile';
-import type { Session, AuthChangeEvent } from '@supabase/supabase-js';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import { notifyError } from '../../../../helpers/helper';
-import { useNavigate } from 'react-router';
-import { FORGOT_PASSWORD } from '../../../../helpers/getters';
+import {
+  clearAuth,
+  initializeAuth,
+  selectIsInitialized,
+  setAuthData,
+  setInitialized,
+} from '../../../../store/authSlice';
+import classes from './AuthInitializer.module.css';
 
 interface AuthInitializerProps {
   children: React.ReactNode;
@@ -28,7 +28,7 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
   const isInitialized = useAppSelector(selectIsInitialized);
   const [isLoading, setIsLoading] = React.useState(true);
   const isMountedRef = React.useRef(true);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     return () => {
@@ -185,7 +185,7 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
       if (error && errorDescription) {
         console.error('OAuth error:', error, errorDescription);
         notifyError(errorDescription);
-        navigate(FORGOT_PASSWORD)
+        navigate(FORGOT_PASSWORD);
         return;
       }
 

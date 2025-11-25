@@ -1,12 +1,12 @@
 import clsx from 'clsx';
 import { useFormik } from 'formik';
-import { Step, Stepper1 } from '../../../../components/stepper-1/Stepper1';
+import { Step, Stepper } from '../../../../components/stepper/Stepper';
 import { ASSETS } from '../../../../helpers/assets';
 import { notifyError, notifySuccess } from '../../../../helpers/helper';
 import { supabaseAuth } from '../../../../lib/supabaseAuth';
 import { useSendPasswordResetEmail } from '../../../../services/auth/auth.data';
 import { emailValidation } from '../../utils/validation';
-import classes from './styles.module.css';
+import classes from './ForgotPassword.module.css';
 
 const Footer = () => {
   return (
@@ -54,41 +54,35 @@ const ForgotPassword = () => {
 
   return (
     <>
-      <Stepper1 initialStep={1} footer={<Footer />} hideFooterSteps={[0]}>
+      <Stepper initialStep={1} footer={<Footer />} hideFooterSteps={[0]}>
         <Step
           onNext={validateEmail}
           nextButtonText={isPending ? 'Sending email...' : 'Send email'}
           hideBackButton
         >
           <div className={classes.step}>
-            <div className={classes.inputGroup}>
-              <div className={classes.inputGroup}>
-                <label htmlFor='email' className={clsx(classes.title, 'label')}>
-                  Enter Email
-                </label>
-                <input
-                  id='email'
-                  type='email'
-                  name='email'
-                  placeholder='your@email.com'
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={clsx(
-                    classes.input,
-                    'input-text',
-                    formik.touched.email && formik.errors.email
-                      ? classes.error
-                      : ''
-                  )}
-                />
-                {formik.touched.email && formik.errors.email ? (
-                  <div className={classes.errors}>{formik.errors.email}</div>
-                ) : (
-                  <div className={classes.errorsFiller}>error filler</div>
-                )}
-              </div>
-            </div>
+            <label htmlFor='email' className={clsx(classes.title, 'label')}>
+              Enter Email
+            </label>
+            <input
+              id='email'
+              type='email'
+              name='email'
+              placeholder='your@email.com'
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className={clsx(
+                classes.input,
+                'input-text',
+                formik.touched.email && formik.errors.email ? classes.error : ''
+              )}
+            />
+            {formik.touched.email && formik.errors.email ? (
+              <div className={classes.errors}>{formik.errors.email}</div>
+            ) : (
+              <div className={classes.errorsFiller}>error filler</div>
+            )}
           </div>
         </Step>
 
@@ -105,7 +99,7 @@ const ForgotPassword = () => {
             </div>
           </div>
         </Step>
-      </Stepper1>
+      </Stepper>
     </>
   );
 };

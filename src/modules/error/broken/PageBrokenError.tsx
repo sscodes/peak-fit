@@ -1,10 +1,10 @@
 // import SVG from 'react-inlinesvg';
 // import { ASSETS } from '../../../helpers/assets';
-import classes from './styles.module.css';
 import { useNavigate } from 'react-router';
 import Button from '../../../components/button/Button';
-import { HOME } from '../../../helpers/getters';
-import { BUTTON_VARIANT, BUTTON_TYPE } from '../../../helpers/types';
+import { DASHBOARD } from '../../../helpers/getters';
+import { BUTTON_TYPE, BUTTON_VARIANT } from '../../../helpers/types';
+import classes from './PageBrokenError.module.css';
 
 const PageBrokenError = () => {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const PageBrokenError = () => {
         >
           Reload
         </Button>
-        <Button type={BUTTON_TYPE.BUTTON} onClick={() => navigate(HOME)}>
+        <Button type={BUTTON_TYPE.BUTTON} onClick={() => navigate(DASHBOARD)}>
           Go to homepage
         </Button>
       </div>

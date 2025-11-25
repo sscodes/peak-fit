@@ -5,7 +5,7 @@ import {
   selectIsAuthenticated,
   selectIsInitialized,
 } from '../../store/authSlice';
-import { HOME } from '../../helpers/getters';
+import { DASHBOARD } from '../../helpers/getters';
 
 const PublicRoute = (): React.ReactElement => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -15,7 +15,7 @@ const PublicRoute = (): React.ReactElement => {
     return <div>loading...</div>;
   }
 
-  return !isAuthenticated ? <Outlet /> : <Navigate to={HOME} />;
+  return !isAuthenticated ? <Outlet /> : <Navigate to={DASHBOARD} />;
 };
 
 export default PublicRoute;
