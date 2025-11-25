@@ -1,11 +1,11 @@
 // import SVG from 'react-inlinesvg';
 // import { ASSETS } from '../../../helpers/assets';
-import classes from './styles.module.css';
 import clsx from 'clsx';
 import { useNavigate } from 'react-router';
-import { HOME } from '../../../helpers/getters';
 import Button from '../../../components/button/Button';
+import { DASHBOARD } from '../../../helpers/getters';
 import { BUTTON_TYPE } from '../../../helpers/types';
+import classes from './Error404Page.module.css';
 
 const Error404Page = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const Error404Page = () => {
         Looks like this page took a coffee break ☕
       </div>
       <div className={clsx(classes.errorCode, 'tm-h5')}>Error Code: 404</div>
-      <Button type={BUTTON_TYPE.BUTTON} onClick={() => navigate(HOME)}>
+      <Button type={BUTTON_TYPE.BUTTON} onClick={() => navigate(DASHBOARD)}>
         Go to homepage
       </Button>
     </div>

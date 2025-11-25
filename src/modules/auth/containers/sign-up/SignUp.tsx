@@ -2,18 +2,18 @@ import clsx from 'clsx';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router';
 import Button from '../../../../components/button/Button';
-import { Step, Stepper1 } from '../../../../components/stepper-1/Stepper1';
+import { Step, Stepper } from '../../../../components/stepper/Stepper';
 import { ASSETS } from '../../../../helpers/assets';
 import { SIGN_IN } from '../../../../helpers/getters';
 import { notifyError } from '../../../../helpers/helper';
+import { BUTTON_VARIANT } from '../../../../helpers/types';
 import { supabaseAuth } from '../../../../lib/supabaseAuth';
 import {
   useCreateUser,
   useOAuthSignIn,
 } from '../../../../services/auth/auth.data';
 import { signUpValidation } from '../../utils/validation';
-import classes from './styles.module.css';
-import { BUTTON_VARIANT } from '../../../../helpers/types';
+import classes from './SignUp.module.css';
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -81,7 +81,7 @@ const SignUp = () => {
   };
 
   return (
-    <Stepper1
+    <Stepper
       initialStep={1}
       onFinalStepCompleted={() => formik.handleSubmit()}
       backButtonText='Previous'
@@ -239,7 +239,7 @@ const SignUp = () => {
           </div>
         </div>
       </Step>
-    </Stepper1>
+    </Stepper>
   );
 };
 

@@ -5,7 +5,7 @@ import { notifyError } from '../../../../helpers/helper';
 import { supabaseAuth } from '../../../../lib/supabaseAuth';
 import { useUpdateUserPassword } from '../../../../services/auth/auth.data';
 import { passwordResetValidation } from '../../utils/validation';
-import classes from './styles.module.css';
+import classes from './ResetPassword.module.css';
 
 const ResetPassword = () => {
   const { mutateAsync: resetPassword, isPending } = useUpdateUserPassword();
@@ -35,8 +35,7 @@ const ResetPassword = () => {
     formik.setFieldTouched('password', true);
     formik.setFieldTouched('confirmPassword', true);
     const errors = await formik.validateForm();
-    if (!errors.password && !errors.confirmPassword)
-      formik.handleSubmit();
+    if (!errors.password && !errors.confirmPassword) formik.handleSubmit();
   };
 
   return (
@@ -64,9 +63,7 @@ const ResetPassword = () => {
             autoFocus
           />
           {formik.touched.password && formik.errors.password ? (
-            <span className={classes.errors}>
-              {formik.errors.password}
-            </span>
+            <span className={classes.errors}>{formik.errors.password}</span>
           ) : (
             <div className={classes.errorsFiller}>error filler</div>
           )}
@@ -89,14 +86,12 @@ const ResetPassword = () => {
             className={clsx(
               classes.input,
               'input-text',
-              formik.touched.confirmPassword &&
-                formik.errors.confirmPassword
+              formik.touched.confirmPassword && formik.errors.confirmPassword
                 ? classes.error
                 : ''
             )}
           />
-          {formik.touched.confirmPassword &&
-          formik.errors.confirmPassword ? (
+          {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
             <span className={classes.errors}>
               {formik.errors.confirmPassword}
             </span>

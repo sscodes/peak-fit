@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import * as React from 'react';
 import { BUTTON_SIZE, BUTTON_TYPE, BUTTON_VARIANT } from '../../helpers/types';
-import classes from './styles.module.css';
+import classes from './Button.module.css';
 
 interface ButtonProps {
   variant?: BUTTON_VARIANT;

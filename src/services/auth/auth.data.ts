@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
-import { AUTH_HOME, HOME, VERIFY_EMAIL } from '../../helpers/getters';
+import { AUTH_HOME, DASHBOARD, VERIFY_EMAIL } from '../../helpers/getters';
 import { useAppDispatch } from '../../hooks/redux';
 import { supabaseAuth } from '../../lib/supabaseAuth';
 import { supabaseProfile, type ProfileData } from '../../lib/supabaseProfile';
@@ -92,9 +92,9 @@ export const useCreateUser = () => {
 
         // Navigate to onboarding or home
         if (!data.profile?.onboarding_completed) {
-          navigate('/dashboard');
+          navigate('/explore');
         } else {
-          navigate(HOME);
+          navigate(DASHBOARD);
         }
       }
     },
@@ -157,7 +157,7 @@ export const useLoginUser = () => {
       if (!data.profile?.onboarding_completed) {
         navigate('/onboarding');
       } else {
-        navigate(HOME);
+        navigate(DASHBOARD);
       }
     },
     onError: (error: any) => {
@@ -196,7 +196,7 @@ export const useUpdateUserPassword = () => {
         queryKey: authKeys.updateUserPassword(),
       });
 
-      navigate(HOME);
+      navigate(DASHBOARD);
     },
     onError: (error: any) => {
       const apiError = handleSupabaseError(error);
@@ -420,7 +420,7 @@ export const useCompleteOnboarding = () => {
       });
 
       // Navigate to home
-      navigate(HOME);
+      navigate(DASHBOARD);
     },
     onError: (error: any) => {
       const apiError = handleSupabaseError(error);

@@ -1,12 +1,12 @@
 import clsx from 'clsx';
 import { useFormik } from 'formik';
-import { Step, Stepper1 } from '../../../../components/stepper-1/Stepper1';
+import { Step, Stepper } from '../../../../components/stepper/Stepper';
 import { ASSETS } from '../../../../helpers/assets';
 import { notifyError, notifySuccess } from '../../../../helpers/helper';
 import { supabaseAuth } from '../../../../lib/supabaseAuth';
 import { useSendPasswordResetEmail } from '../../../../services/auth/auth.data';
 import { emailValidation } from '../../utils/validation';
-import classes from './styles.module.css';
+import classes from './ForgotPassword.module.css';
 
 const Footer = () => {
   return (
@@ -54,7 +54,7 @@ const ForgotPassword = () => {
 
   return (
     <>
-      <Stepper1 initialStep={1} footer={<Footer />} hideFooterSteps={[0]}>
+      <Stepper initialStep={1} footer={<Footer />} hideFooterSteps={[0]}>
         <Step
           onNext={validateEmail}
           nextButtonText={isPending ? 'Sending email...' : 'Send email'}
@@ -105,7 +105,7 @@ const ForgotPassword = () => {
             </div>
           </div>
         </Step>
-      </Stepper1>
+      </Stepper>
     </>
   );
 };
