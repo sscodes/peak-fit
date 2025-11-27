@@ -16,6 +16,7 @@ const AuthLayout = () => {
         <Outlet />
       </div>
       {/* <a href="https://www.flaticon.com/free-stickers/workout" title="workout stickers">Workout stickers created by Stickers - Flaticon</a> */}
+      {/* <a href="https://www.flaticon.com/free-stickers/gym" title="gym stickers">Gym stickers created by Stickers - Flaticon</a> */}
     </div>
   );
 };

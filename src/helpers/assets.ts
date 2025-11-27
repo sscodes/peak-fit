@@ -1,7 +1,9 @@
 export const ASSETS = {
   illustrations: {
-    SignUp: '/assets/illustrations/SignUp.png',
-    SignIn: '/assets/illustrations/SignIn.png',
+    LetsGo: '/assets/illustrations/lets-go.png',
+    TimeToWorkOut: '/assets/illustrations/time-to-work-out.png',
+    StayStrong1: '/assets/illustrations/stay-strong-1.png',
+    StayStrong2: '/assets/illustrations/stay-strong-2.png',
   },
   logo: {
     twitter: '/assets/logo/twitter.png',
