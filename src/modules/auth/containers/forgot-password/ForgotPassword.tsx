@@ -89,7 +89,7 @@ const ForgotPassword = () => {
         <Step hideNextButton hideBackButton>
           <div className={classes.step}>
             <div className={classes.welcomeIcon}>
-              <img src={ASSETS.illustrations.SignUp} width={200} alt='' />
+              <img src={ASSETS.illustrations.LetsGo} width={200} alt='' />
             </div>
             <div className={clsx(classes.title, 'heading-1')}>
               Reset link sent!
