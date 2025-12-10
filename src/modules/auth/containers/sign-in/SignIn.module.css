@@ -24,7 +24,6 @@
   background-color: var(--bg-tertiary);
   display: flex;
   flex-direction: column;
-  row-gap: 16px;
 }
 
 .input {
@@ -115,10 +114,8 @@
 
 .errors {
   color: var(--error-500);
-  margin-top: 2px;
 }
 
 .errorsFiller {
   opacity: 0;
-  margin-top: 2px;
 }
