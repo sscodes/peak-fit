@@ -17,7 +17,7 @@ const WorkoutDetails: React.FC<WorkoutDetailsProps> = ({ workout }) => {
           <div className={styles.colorIndicator}></div>
           <h3>Primary Muscles:</h3>
           <ul>
-            {workout.primaryMuscles.map((muscleId) => {
+            {workout.primary_muscles.map((muscleId) => {
               const muscle = muscleGroups.find((m) => m.id === muscleId);
               return muscle && <li key={muscleId}>{muscle.name}</li>;
             })}
@@ -28,7 +28,7 @@ const WorkoutDetails: React.FC<WorkoutDetailsProps> = ({ workout }) => {
           <div className={styles.colorIndicator}></div>
           <h3>Secondary Muscles:</h3>
           <ul>
-            {workout.secondaryMuscles.map((muscleId) => {
+            {workout.secondary_muscles.map((muscleId) => {
               const muscle = muscleGroups.find((m) => m.id === muscleId);
               return muscle && <li key={muscleId}>{muscle.name}</li>;
             })}

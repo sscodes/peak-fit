@@ -1,19 +1,19 @@
 // src/pages/Explore/Explore.tsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Scene,
   Sidebar,
   WorkoutDetails,
   NoSelectionMessage,
   ZoomControls,
-} from '../components';
-import workouts from '../../../data/workouts';
-import type { Workout } from '../../../data/types';
-import useFilteredWorkouts from '../../../hooks/useFilteredWorkouts';
-import SegmentedMuscleModel from '../components/Model/segmented-muscle-model/SegmentedMuscleModel';
+} from "../components";
+import workouts from "../../../data/workouts";
+import type { Workout } from "../../../data/types";
+import useFilteredWorkouts from "../../../hooks/useFilteredWorkouts";
+import SegmentedMuscleModel from "../components/Model/segmented-muscle-model/SegmentedMuscleModel";
 
 // Import CSS modules
-import styles from './Explore.module.css';
+import styles from "./Explore.module.css";
 
 const Explore: React.FC = () => {
   const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
@@ -21,7 +21,7 @@ const Explore: React.FC = () => {
     useFilteredWorkouts(workouts);
 
   // Path to your segmented model file
-  const MODEL_PATH = '/models/human_anatomy_segmented.glb';
+  const MODEL_PATH = "/models/human_anatomy_segmented.glb";
 
   // Force re-render when workout changes
   const [modelKey, setModelKey] = useState(0);
@@ -52,10 +52,10 @@ const Explore: React.FC = () => {
             scale={0.75}
             position={[0, 0, 0]}
             primaryMuscles={
-              selectedWorkout ? selectedWorkout.primaryMuscles : []
+              selectedWorkout ? selectedWorkout.primary_muscles : []
             }
             secondaryMuscles={
-              selectedWorkout ? selectedWorkout.secondaryMuscles : []
+              selectedWorkout ? selectedWorkout.secondary_muscles : []
             }
             autoRotate={!selectedWorkout}
           />
