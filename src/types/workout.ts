@@ -1,5 +1,3 @@
-// src/data/types.ts
-
 export interface MuscleGroup {
   id: string;
   name: string;

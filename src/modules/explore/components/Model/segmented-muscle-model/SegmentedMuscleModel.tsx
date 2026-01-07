@@ -3,8 +3,7 @@ import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import React, { useMemo, useRef } from "react";
 import * as THREE from "three";
-
-import muscleGroups from "../../../../../data/muscleGroups";
+import type { MuscleGroup } from "../../../../../types/workout";
 
 interface SegmentedMuscleModelProps {
   path: string;
@@ -13,6 +12,7 @@ interface SegmentedMuscleModelProps {
   primaryMuscles: string[];
   secondaryMuscles: string[];
   autoRotate?: boolean;
+  muscleGroups: MuscleGroup[];
 }
 
 const SegmentedMuscleModel: React.FC<SegmentedMuscleModelProps> = ({
@@ -22,11 +22,11 @@ const SegmentedMuscleModel: React.FC<SegmentedMuscleModelProps> = ({
   primaryMuscles = [],
   secondaryMuscles = [],
   autoRotate = true,
+  muscleGroups,
 }) => {
   const group = useRef<THREE.Group>(null);
   const { scene } = useGLTF(path);
 
-  // Create materials for highlighting - made more matte
   // Create materials for highlighting - memoized to prevent recreation
   const primaryMaterial = useMemo(
     () =>
@@ -78,14 +78,6 @@ const SegmentedMuscleModel: React.FC<SegmentedMuscleModelProps> = ({
     const centerY = (boundingBox.max.y + boundingBox.min.y) / 2;
     clonedScene.position.y = -centerY;
 
-    // Log all mesh names for debugging
-    console.log("Available meshes in segmented model:");
-    clonedScene.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        console.log(`- ${child.name}`);
-      }
-    });
-
     // Collect all mesh names for primary muscles
     const primaryMeshNames = new Set<string>();
     primaryMuscles.forEach((muscleId) => {
@@ -97,18 +89,14 @@ const SegmentedMuscleModel: React.FC<SegmentedMuscleModelProps> = ({
       }
     });
 
-    // Collect all mesh names for secondary muscles (excluding primary)
+    // Collect all mesh names for secondary muscles
     const secondaryMeshNames = new Set<string>();
     secondaryMuscles.forEach((muscleId) => {
       const muscle = muscleGroups.find((m) => m.id === muscleId);
       if (muscle) {
-        muscle.mesh_names.forEach((meshName) => {
-          const lowerName = meshName.toLowerCase();
-          // Only add if NOT in primary
-          if (!primaryMeshNames.has(lowerName)) {
-            secondaryMeshNames.add(lowerName);
-          }
-        });
+        muscle.mesh_names.forEach((meshName) =>
+          secondaryMeshNames.add(meshName.toLowerCase())
+        );
       }
     });
 
@@ -148,6 +136,7 @@ const SegmentedMuscleModel: React.FC<SegmentedMuscleModelProps> = ({
     scene,
     primaryMuscles,
     secondaryMuscles,
+    muscleGroups,
     primaryMaterial,
     secondaryMaterial,
     defaultMaterial,

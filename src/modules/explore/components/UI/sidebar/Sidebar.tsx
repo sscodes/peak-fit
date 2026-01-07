@@ -1,6 +1,6 @@
 // src/components/UI/Sidebar.tsx
 import React from 'react';
-import type { Workout } from '../../../../../data/types';
+import type { Workout } from '../../../../../types/workout';
 import styles from './Sidebar.module.css';
 
 interface SidebarProps {

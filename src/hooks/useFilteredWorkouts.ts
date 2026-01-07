@@ -1,6 +1,6 @@
 // src/hooks/useFilteredWorkouts.ts
 import { useState, useEffect } from 'react';
-import { type Workout } from '../data/types';
+import { type Workout } from '../types/workout';
 
 const useFilteredWorkouts = (workouts: Workout[]) => {
   const [searchTerm, setSearchTerm] = useState('');

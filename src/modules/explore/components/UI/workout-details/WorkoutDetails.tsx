@@ -1,14 +1,14 @@
 // src/components/UI/WorkoutDetails.tsx
 import React from 'react';
-import type { Workout } from '../../../../../data/types';
-import muscleGroups from '../../../../../data/muscleGroups';
+import type { MuscleGroup, Workout } from '../../../../../types/workout';
 import styles from './WorkoutDetails.module.css';
 
 interface WorkoutDetailsProps {
   workout: Workout;
+  muscleGroups: MuscleGroup[];
 }
 
-const WorkoutDetails: React.FC<WorkoutDetailsProps> = ({ workout }) => {
+const WorkoutDetails: React.FC<WorkoutDetailsProps> = ({ workout, muscleGroups }) => {
   return (
     <div className={styles.workoutDetails}>
       <h2>{workout.name}</h2>
