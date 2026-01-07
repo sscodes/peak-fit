@@ -1,9 +1,8 @@
-/* src/pages/Home/Home.module.css */
 .workoutVisualizer {
   display: flex;
   width: 100vw;
   height: 100vh;
-  background-color: #f5f5f5;
+  background-color: var(--bg-primary);
   margin: 0;
   padding: 0;
   position: fixed;
@@ -16,7 +15,6 @@
 .mainView {
   flex: 1;
   position: relative;
-  background-color: #1a1a2e;
   margin: 0;
   padding: 0;
 }

@@ -1,47 +1,45 @@
 /* src/components/UI/WorkoutDetails.module.css */
 .workoutDetails {
   position: absolute;
-  bottom: 20px;
+  top: 20px;
   left: 20px;
   right: 80px;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: var(--surface-hover);
   color: white;
   padding: 15px 20px;
   border-radius: 8px;
-  max-height: 40%;
-  overflow-y: auto;
-  backdrop-filter: blur(5px);
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.workoutDetails h2 {
+.workoutName {
   margin-bottom: 10px;
-  color: #fff;
-  font-size: 1.4rem;
+  text-transform: capitalize;
 }
 
 .muscleGroups {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .muscleGroup {
-  width: 48%;
+  display: flex;
+  flex-direction: column;
 }
 
-.muscleGroup h3 {
-  font-size: 1rem;
-  margin-bottom: 5px;
-  display: flex;
-  align-items: center;
+.muscleGroup ul {
+  margin-left: 24px;
 }
 
 .colorIndicator {
   width: 15px;
   height: 15px;
   border-radius: 50%;
-  margin-right: 8px;
   display: inline-block;
+  margin-bottom: 2px;
 }
 
 .primary .colorIndicator {
@@ -50,10 +48,6 @@
 
 .secondary .colorIndicator {
   background-color: #ff9933;
-}
-
-.muscleGroup ul {
-  list-style-type: none;
 }
 
 .muscleGroup li {
@@ -71,4 +65,14 @@
   font-size: 0.9rem;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.9);
+}
+
+.headerMusclesLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.instructions ul {
+  margin-left: 20px;
 }

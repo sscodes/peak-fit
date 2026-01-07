@@ -1,44 +1,74 @@
-// src/components/UI/WorkoutDetails.tsx
-import React from 'react';
-import type { MuscleGroup, Workout } from '../../../../../types/workout';
-import styles from './WorkoutDetails.module.css';
+import React from "react";
+import type { MuscleGroup, Workout } from "../../../../../types/workout";
+import classes from "./WorkoutDetails.module.css";
+import clsx from "clsx";
 
 interface WorkoutDetailsProps {
   workout: Workout;
   muscleGroups: MuscleGroup[];
 }
 
-const WorkoutDetails: React.FC<WorkoutDetailsProps> = ({ workout, muscleGroups }) => {
+const WorkoutDetails: React.FC<WorkoutDetailsProps> = ({
+  workout,
+  muscleGroups,
+}) => {
   return (
-    <div className={styles.workoutDetails}>
-      <h2>{workout.name}</h2>
-      <div className={styles.muscleGroups}>
-        <div className={`${styles.muscleGroup} ${styles.primary}`}>
-          <div className={styles.colorIndicator}></div>
-          <h3>Primary Muscles:</h3>
+    <div className={classes.workoutDetails}>
+      <div className={clsx(classes.workoutName, "heading-2")}>
+        {workout.name}
+      </div>
+      <div className="body-regular">{workout.description}</div>
+      <div className={classes.muscleGroups}>
+        <div className={`${classes.muscleGroup} ${classes.primary}`}>
+          <div className={classes.headerMusclesLabel}>
+            <div className={classes.colorIndicator}></div>
+            <div className="heading-6">Primary Muscles:</div>
+          </div>
           <ul>
             {workout.primary_muscles.map((muscleId) => {
               const muscle = muscleGroups.find((m) => m.id === muscleId);
-              return muscle && <li key={muscleId}>{muscle.name}</li>;
+              return (
+                muscle && (
+                  <li key={muscleId} className="body-regular">
+                    {muscle.name}
+                  </li>
+                )
+              );
             })}
           </ul>
         </div>
 
-        <div className={`${styles.muscleGroup} ${styles.secondary}`}>
-          <div className={styles.colorIndicator}></div>
-          <h3>Secondary Muscles:</h3>
-          <ul>
-            {workout.secondary_muscles.map((muscleId) => {
-              const muscle = muscleGroups.find((m) => m.id === muscleId);
-              return muscle && <li key={muscleId}>{muscle.name}</li>;
-            })}
-          </ul>
-        </div>
+        {workout.secondary_muscles.length > 0 && (
+          <div className={`${classes.muscleGroup} ${classes.secondary}`}>
+            <div className={classes.headerMusclesLabel}>
+              <div className={classes.colorIndicator}></div>
+              <div className="heading-6">Secondary Muscles:</div>
+            </div>
+            <ul>
+              {workout.secondary_muscles.map((muscleId) => {
+                const muscle = muscleGroups.find((m) => m.id === muscleId);
+                return (
+                  muscle && (
+                    <li key={muscleId} className="body-regular">
+                      {muscle.name}
+                    </li>
+                  )
+                );
+              })}
+            </ul>
+          </div>
+        )}
       </div>
 
-      <div className={styles.instructions}>
+      <div className={classes.instructions}>
         <h3>Instructions:</h3>
-        <p>{workout.instructions}</p>
+        <ul>
+          {workout.instructions.map((instruction, index) => (
+            <li key={index} className="body-regular">
+              {instruction}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

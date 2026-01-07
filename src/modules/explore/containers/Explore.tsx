@@ -11,7 +11,6 @@ import {
   Scene,
   Sidebar,
   WorkoutDetails,
-  ZoomControls,
 } from "../components";
 import SegmentedMuscleModel from "../components/Model/segmented-muscle-model/SegmentedMuscleModel";
 import styles from "./Explore.module.css";
@@ -80,9 +79,6 @@ const Explore: React.FC = () => {
 
           {/* Message when no workout is selected */}
           {!selectedWorkout && <NoSelectionMessage />}
-
-          {/* Zoom controls */}
-          <ZoomControls />
         </div>
       </div>
     )
