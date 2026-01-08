@@ -1,15 +1,17 @@
-import type { Theme, ToastPosition } from 'react-toastify';
+import type { Theme, ToastPosition } from "react-toastify";
 
 export const notificationProperties = {
-  position: 'top-right' as ToastPosition,
+  position: "top-right" as ToastPosition,
   autoClose: 2000,
   hideProgressBar: true,
   closeOnClick: false,
   pauseOnHover: false,
   draggable: false,
   progress: undefined,
-  theme: 'colored' as Theme,
+  theme: "colored" as Theme,
 };
+
+export const MODEL_PATH = "/models/human_anatomy_segmented.glb";
 
 // export const LOADING_COPIES = [
 //   {

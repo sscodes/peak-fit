@@ -1,10 +1,9 @@
 // src/components/Model/SegmentedMuscleModel.tsx
-import { useGLTF } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
-import React, { useMemo, useRef } from 'react';
-import * as THREE from 'three';
-
-import muscleGroups from '../../../../../data/muscleGroups';
+import { useGLTF } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import React, { useMemo, useRef } from "react";
+import * as THREE from "three";
+import type { MuscleGroup } from "../../../../../types/workout";
 
 interface SegmentedMuscleModelProps {
   path: string;
@@ -13,6 +12,7 @@ interface SegmentedMuscleModelProps {
   primaryMuscles: string[];
   secondaryMuscles: string[];
   autoRotate?: boolean;
+  muscleGroups: MuscleGroup[];
 }
 
 const SegmentedMuscleModel: React.FC<SegmentedMuscleModelProps> = ({
@@ -22,90 +22,93 @@ const SegmentedMuscleModel: React.FC<SegmentedMuscleModelProps> = ({
   primaryMuscles = [],
   secondaryMuscles = [],
   autoRotate = true,
+  muscleGroups,
 }) => {
   const group = useRef<THREE.Group>(null);
   const { scene } = useGLTF(path);
 
-  // Create materials for highlighting - made more matte
-  const primaryMaterial = new THREE.MeshStandardMaterial({
-    color: new THREE.Color('#ff0000'), // Bright red
-    roughness: 0.8, // Increased roughness for matte finish
-    metalness: 0.0, // Removed metalness for non-reflective surface
-    emissive: new THREE.Color('#ff0000'),
-    emissiveIntensity: 0.2, // Reduced emissive intensity
-    transparent: false,
-    opacity: 1.0,
-  });
+  // Create materials for highlighting - memoized to prevent recreation
+  const primaryMaterial = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: new THREE.Color("#ff0000"),
+        roughness: 0.8,
+        metalness: 0.0,
+        emissive: new THREE.Color("#ff0000"),
+        emissiveIntensity: 0.2,
+        transparent: false,
+        opacity: 1.0,
+      }),
+    []
+  );
 
-  const secondaryMaterial = new THREE.MeshStandardMaterial({
-    color: new THREE.Color('#ff9900'), // Orange
-    roughness: 0.8, // Increased roughness for matte finish
-    metalness: 0.0, // Removed metalness for non-reflective surface
-    emissive: new THREE.Color('#ff6600'),
-    emissiveIntensity: 0.15, // Reduced emissive intensity
-    transparent: false,
-    opacity: 1.0,
-  });
+  const secondaryMaterial = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: new THREE.Color("#ff9900"),
+        roughness: 0.8,
+        metalness: 0.0,
+        emissive: new THREE.Color("#ff6600"),
+        emissiveIntensity: 0.15,
+        transparent: false,
+        opacity: 1.0,
+      }),
+    []
+  );
 
-  const defaultMaterial = new THREE.MeshStandardMaterial({
-    color: new THREE.Color('#8c5c3e'),
-    roughness: 0.95, // Very high roughness to eliminate shine
-    metalness: 0.0, // No metalness
-    transparent: false,
-    opacity: 1.0,
-    flatShading: false, // Keep smooth shading but reduce reflectivity
-  });
+  const defaultMaterial = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: new THREE.Color("#8c5c3e"),
+        roughness: 0.95,
+        metalness: 0.0,
+        transparent: false,
+        opacity: 1.0,
+        flatShading: false,
+      }),
+    []
+  );
 
   // Process the model and apply highlighting
   const model = useMemo(() => {
     const clonedScene = scene.clone();
 
     // Center the model vertically
-    let boundingBox = new THREE.Box3().setFromObject(clonedScene);
-    let centerY = (boundingBox.max.y + boundingBox.min.y) / 2;
+    const boundingBox = new THREE.Box3().setFromObject(clonedScene);
+    const centerY = (boundingBox.max.y + boundingBox.min.y) / 2;
     clonedScene.position.y = -centerY;
 
-    // Log all mesh names for debugging
-    console.log('Available meshes in segmented model:');
-    clonedScene.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        console.log(`- ${child.name}`);
+    // Collect all mesh names for primary muscles
+    const primaryMeshNames = new Set<string>();
+    primaryMuscles.forEach((muscleId) => {
+      const muscle = muscleGroups.find((m) => m.id === muscleId);
+      if (muscle) {
+        muscle.mesh_names.forEach((meshName) =>
+          primaryMeshNames.add(meshName.toLowerCase())
+        );
       }
     });
 
-    // Function to check if a mesh name matches any muscle pattern
-    const checkMeshName = (
-      meshName: string,
-      muscleNames: string[]
-    ): boolean => {
-      const lowerName = meshName.toLowerCase();
-      return muscleNames.some((name) => lowerName.includes(name.toLowerCase()));
-    };
+    // Collect all mesh names for secondary muscles
+    const secondaryMeshNames = new Set<string>();
+    secondaryMuscles.forEach((muscleId) => {
+      const muscle = muscleGroups.find((m) => m.id === muscleId);
+      if (muscle) {
+        muscle.mesh_names.forEach((meshName) =>
+          secondaryMeshNames.add(meshName.toLowerCase())
+        );
+      }
+    });
 
     // Apply materials to meshes
     clonedScene.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         const childName = child.name.toLowerCase();
 
-        // Check if this mesh corresponds to a primary muscle
-        const isPrimaryMuscle = primaryMuscles.some((muscleId) => {
-          const muscle = muscleGroups.find((m) => m.id === muscleId);
-          return muscle ? checkMeshName(childName, muscle.meshNames) : false;
-        });
-
-        // Check if this mesh corresponds to a secondary muscle
-        const isSecondaryMuscle = secondaryMuscles.some((muscleId) => {
-          const muscle = muscleGroups.find((m) => m.id === muscleId);
-          return muscle ? checkMeshName(childName, muscle.meshNames) : false;
-        });
-
-        // Apply appropriate material
-        if (isPrimaryMuscle) {
+        if (primaryMeshNames.has(childName)) {
           child.material = primaryMaterial.clone();
-          console.log(`Applied PRIMARY highlight to: ${child.name}`);
-        } else if (isSecondaryMuscle && !isPrimaryMuscle) {
+        } else if (secondaryMeshNames.has(childName)) {
           child.material = secondaryMaterial.clone();
-          console.log(`Applied SECONDARY highlight to: ${child.name}`);
         } else {
           child.material = defaultMaterial.clone();
         }
@@ -129,7 +132,15 @@ const SegmentedMuscleModel: React.FC<SegmentedMuscleModelProps> = ({
     });
 
     return clonedScene;
-  }, [scene, primaryMuscles, secondaryMuscles]);
+  }, [
+    scene,
+    primaryMuscles,
+    secondaryMuscles,
+    muscleGroups,
+    primaryMaterial,
+    secondaryMaterial,
+    defaultMaterial,
+  ]);
 
   // Auto-rotate the model
   useFrame((state) => {

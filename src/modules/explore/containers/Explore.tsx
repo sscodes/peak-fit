@@ -1,30 +1,46 @@
-// src/pages/Explore/Explore.tsx
-import React, { useState } from 'react';
+import React from "react";
+import { MODEL_PATH } from "../../../helpers/constants";
+import { useDebounce } from "../../../hooks/useDebounce";
 import {
+  useInfiniteWorkouts,
+  useMuscleGroups,
+  useSearchWorkouts,
+} from "../../../services/workouts/workouts.data";
+import type { Workout } from "../../../types/workout";
+import {
+  NoSelectionMessage,
   Scene,
   Sidebar,
   WorkoutDetails,
-  NoSelectionMessage,
-  ZoomControls,
-} from '../components';
-import workouts from '../../../data/workouts';
-import type { Workout } from '../../../data/types';
-import useFilteredWorkouts from '../../../hooks/useFilteredWorkouts';
-import SegmentedMuscleModel from '../components/Model/segmented-muscle-model/SegmentedMuscleModel';
-
-// Import CSS modules
-import styles from './Explore.module.css';
+} from "../components";
+import SegmentedMuscleModel from "../components/Model/segmented-muscle-model/SegmentedMuscleModel";
+import WorkoutInstructions from "../components/UI/workout-instructions/WorkoutInstructions";
+import styles from "./Explore.module.css";
 
 const Explore: React.FC = () => {
-  const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
-  const { searchTerm, setSearchTerm, filteredWorkouts } =
-    useFilteredWorkouts(workouts);
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const [selectedWorkout, setSelectedWorkout] = React.useState<Workout | null>(
+    null
+  );
 
-  // Path to your segmented model file
-  const MODEL_PATH = '/models/human_anatomy_segmented.glb';
+  const debouncedSearch = useDebounce(searchTerm);
+
+  const { data: filteredWorkouts, isFetching: isFilterWOrkoutsFetching } =
+    useSearchWorkouts(debouncedSearch);
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isSuccess: isSuccessWorkouts,
+  } = useInfiniteWorkouts(10);
+
+  const workouts = data?.pages.flat() ?? [];
+  const { data: muscleGroups, isSuccess: isSuccessMuscleGroups } =
+    useMuscleGroups();
 
   // Force re-render when workout changes
-  const [modelKey, setModelKey] = useState(0);
+  const [modelKey, setModelKey] = React.useState(0);
 
   const handleWorkoutChange = (workout: Workout) => {
     setSelectedWorkout(workout);
@@ -32,45 +48,57 @@ const Explore: React.FC = () => {
   };
 
   return (
-    <div className={styles.workoutVisualizer}>
-      {/* Left sidebar for workout selection */}
-      <Sidebar
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        filteredWorkouts={filteredWorkouts}
-        selectedWorkout={selectedWorkout}
-        setSelectedWorkout={handleWorkoutChange}
-      />
+    isSuccessWorkouts &&
+    isSuccessMuscleGroups && (
+      <div className={styles.workoutVisualizer}>
+        {/* Left sidebar for workout selection */}
+        <Sidebar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          filteredWorkouts={searchTerm.length > 0 ? filteredWorkouts : workouts}
+          selectedWorkout={selectedWorkout}
+          setSelectedWorkout={handleWorkoutChange}
+          isFilterWOrkoutsFetching={isFilterWOrkoutsFetching}
+          fetchNextPage={fetchNextPage} // Pass the function
+          hasMore={hasNextPage ?? false} // Use hasNextPage from query
+          isFetchingNextPage={isFetchingNextPage} // Pass loading state
+        />
 
-      {/* Main 3D view */}
-      <div className={styles.mainView}>
-        <Scene>
-          {/* Segmented model that works with separate meshes */}
-          <SegmentedMuscleModel
-            key={modelKey}
-            path={MODEL_PATH}
-            scale={0.75}
-            position={[0, 0, 0]}
-            primaryMuscles={
-              selectedWorkout ? selectedWorkout.primaryMuscles : []
-            }
-            secondaryMuscles={
-              selectedWorkout ? selectedWorkout.secondaryMuscles : []
-            }
-            autoRotate={!selectedWorkout}
-          />
-        </Scene>
+        {/* Main 3D view */}
+        <div className={styles.mainView}>
+          {/* Workout details overlay */}
+          {selectedWorkout && (
+            <WorkoutDetails
+              workout={selectedWorkout}
+              muscleGroups={muscleGroups}
+            />
+          )}
+          <Scene>
+            {/* Segmented model that works with separate meshes */}
+            <SegmentedMuscleModel
+              key={modelKey}
+              path={MODEL_PATH}
+              scale={0.75}
+              position={[0, 0, 0]}
+              primaryMuscles={
+                selectedWorkout ? selectedWorkout.primary_muscles : []
+              }
+              secondaryMuscles={
+                selectedWorkout ? selectedWorkout.secondary_muscles : []
+              }
+              autoRotate={!selectedWorkout}
+              muscleGroups={muscleGroups}
+            />
+          </Scene>
 
-        {/* Workout details overlay */}
-        {selectedWorkout && <WorkoutDetails workout={selectedWorkout} />}
+          {/* Workout instructions overlay */}
+          {selectedWorkout && <WorkoutInstructions workout={selectedWorkout} />}
 
-        {/* Message when no workout is selected */}
-        {!selectedWorkout && <NoSelectionMessage />}
-
-        {/* Zoom controls */}
-        <ZoomControls />
+          {/* Message when no workout is selected */}
+          {!selectedWorkout && <NoSelectionMessage />}
+        </div>
       </div>
-    </div>
+    )
   );
 };
 
