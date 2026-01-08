@@ -1,21 +1,20 @@
-/* src/components/UI/WorkoutDetails.module.css */
 .workoutDetails {
   position: absolute;
   top: 20px;
   left: 20px;
-  right: 80px;
-  background-color: var(--surface-hover);
-  color: white;
+  background-color: var(--bg-overlay);
+  color: var(--text-primary);
   padding: 15px 20px;
   border-radius: 8px;
   width: 30%;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  box-shadow: var(--shadow-xl);
+  z-index: 1000;
 }
 
 .workoutName {
-  margin-bottom: 10px;
   text-transform: capitalize;
 }
 
@@ -53,18 +52,7 @@
 .muscleGroup li {
   padding: 3px 0;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.instructions h3 {
-  font-size: 1rem;
-  margin-bottom: 5px;
-}
-
-.instructions p {
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-primary);
 }
 
 .headerMusclesLabel {
@@ -73,6 +61,18 @@
   gap: 8px;
 }
 
-.instructions ul {
-  margin-left: 20px;
+.workoutMeta {
+  display: grid;
+  grid-template-columns: 6fr 6fr;
+  gap: 8px;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.metaItemValue {
+  text-transform: capitalize;
 }

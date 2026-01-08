@@ -44,7 +44,7 @@ const Scene: React.FC<SceneProps> = ({
       }}
     >
       {/* Environment and lighting */}
-      <color attach="background" args={["#0a0e15"]} />
+      <color attach="background" args={["#0f131b"]} />
       <EnhancedLighting showHelpers={debug} />
       <Environment preset="studio" background={false} />
 

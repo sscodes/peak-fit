@@ -17,6 +17,32 @@ const WorkoutDetails: React.FC<WorkoutDetailsProps> = ({
       <div className={clsx(classes.workoutName, "heading-2")}>
         {workout.name}
       </div>
+      <div className={classes.workoutMeta}>
+        <div className={classes.metaItem}>
+          <div className="heading-7">Difficulty:</div>
+          <div className={clsx(classes.metaItemValue, "heading-7")}>
+            {workout.difficulty}
+          </div>
+        </div>
+        <div className={classes.metaItem}>
+          <div className="heading-7">Body Part:</div>
+          <div className={clsx(classes.metaItemValue, "heading-7")}>
+            {workout.body_part}
+          </div>
+        </div>
+        <div className={classes.metaItem}>
+          <div className="heading-7">Equipment:</div>
+          <div className={clsx(classes.metaItemValue, "heading-7")}>
+            {workout.equipment}
+          </div>
+        </div>
+        <div className={classes.metaItem}>
+          <div className="heading-7">Category:</div>
+          <div className={clsx(classes.metaItemValue, "heading-7")}>
+            {workout.category}
+          </div>
+        </div>
+      </div>
       <div className="body-regular">{workout.description}</div>
       <div className={classes.muscleGroups}>
         <div className={`${classes.muscleGroup} ${classes.primary}`}>
@@ -58,17 +84,6 @@ const WorkoutDetails: React.FC<WorkoutDetailsProps> = ({
             </ul>
           </div>
         )}
-      </div>
-
-      <div className={classes.instructions}>
-        <h3>Instructions:</h3>
-        <ul>
-          {workout.instructions.map((instruction, index) => (
-            <li key={index} className="body-regular">
-              {instruction}
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );

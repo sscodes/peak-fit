@@ -1,39 +1,18 @@
 // src/data/workouts.data.ts
 import {
+  useInfiniteQuery,
   useQuery,
   type UseQueryOptions,
   type UseQueryResult,
 } from "@tanstack/react-query";
-import { WorkoutService } from "./workouts.service";
 import type { MuscleGroup, Workout } from "../../types/workout";
+import { workoutKeys } from "../query-key-factory";
+import { WorkoutService } from "./workouts.service";
 
 /**
  * Singleton instance of WorkoutsService
  */
 const ws = new WorkoutService();
-
-/**
- * Query Keys for React Query caching
- */
-export const workoutKeys = {
-  all: ["workouts"] as const,
-  lists: () => [...workoutKeys.all, "list"] as const,
-  list: (filters: string) => [...workoutKeys.lists(), { filters }] as const,
-  details: () => [...workoutKeys.all, "detail"] as const,
-  detail: (id: string) => [...workoutKeys.details(), id] as const,
-  body_part: (body_part: string) =>
-    [...workoutKeys.all, "body_part", body_part] as const,
-  equipment: (equipment: string) =>
-    [...workoutKeys.all, "equipment", equipment] as const,
-  target: (target: string) => [...workoutKeys.all, "target", target] as const,
-  search: (name: string) => [...workoutKeys.all, "search", name] as const,
-  metadata: {
-    bodyParts: ["workouts", "metadata", "body-parts"] as const,
-    equipment: ["workouts", "metadata", "equipment"] as const,
-    targets: ["workouts", "metadata", "targets"] as const,
-  },
-  muscleGroupLists: () => [...workoutKeys.all, "muscle-groups"] as const,
-};
 
 /**
  * Hook: Get all workouts (1300+)
@@ -55,16 +34,19 @@ export const useGetAllWorkouts = (
  * Hook: Get paginated workouts
  * Recommended for initial loading
  */
-export const usePaginatedWorkouts = (
-  limit: number = 20,
-  offset: number = 0,
-  options?: Omit<UseQueryOptions<Workout[], Error>, "queryKey" | "queryFn">
-): UseQueryResult<Workout[], Error> => {
-  return useQuery<Workout[], Error>({
-    queryKey: [...workoutKeys.lists(), "paginated", limit, offset],
-    queryFn: () => ws.getWorkoutsPaginated(limit, offset),
-    staleTime: 1000 * 60 * 30, // 30 minutes
-    ...options,
+export const useInfiniteWorkouts = (limit: number = 10) => {
+  return useInfiniteQuery({
+    queryKey: [...workoutKeys.lists(), "infinite", limit],
+    queryFn: ({ pageParam = 0 }) => ws.getWorkoutsPaginated(limit, pageParam),
+    initialPageParam: 0, // Add this - required in React Query v5+
+    getNextPageParam: (lastPage, allPages) => {
+      // If last page has full limit, there might be more
+      if (lastPage.length === limit) {
+        return allPages.length * limit;
+      }
+      return undefined; // No more pages
+    },
+    staleTime: 1000 * 60 * 30,
   });
 };
 
@@ -110,7 +92,7 @@ export const useSearchWorkouts = (
   return useQuery<Workout[], Error>({
     queryKey: workoutKeys.search(name),
     queryFn: () => ws.searchWorkoutsByName(name),
-    enabled: !!name && name.length >= 2, // Only search with 2+ characters
+    enabled: !!name.length,
     staleTime: 1000 * 60 * 10, // 10 minutes
     ...options,
   });

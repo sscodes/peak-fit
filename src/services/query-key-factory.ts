@@ -1,6 +1,6 @@
 // src/services/query-key-factory.ts
 
-import type { QueryClient } from '@tanstack/react-query';
+import type { QueryClient } from "@tanstack/react-query";
 
 /**
  * Query Key Factory
@@ -9,50 +9,61 @@ import type { QueryClient } from '@tanstack/react-query';
  */
 
 export const authKeys = {
-  all: ['auth'] as const,
-  createUser: () => [...authKeys.all, 'createUser'] as const,
-  loginUser: () => [...authKeys.all, 'loginUser'] as const,
-  currentUser: () => [...authKeys.all, 'currentUser'] as const,
-  updateUserPassword: () => [...authKeys.all, 'updatePassword'] as const,
-  sendOTPMail: () => [...authKeys.all, 'sendOTP'] as const,
-  checkOTP: () => [...authKeys.all, 'checkOTP'] as const,
-  deleteUser: () => [...authKeys.all, 'deleteUser'] as const,
-  session: () => [...authKeys.all, 'session'] as const,
-  refreshSession: () => [...authKeys.all, 'refreshSession'] as const,
+  all: ["auth"] as const,
+  createUser: () => [...authKeys.all, "createUser"] as const,
+  loginUser: () => [...authKeys.all, "loginUser"] as const,
+  currentUser: () => [...authKeys.all, "currentUser"] as const,
+  updateUserPassword: () => [...authKeys.all, "updatePassword"] as const,
+  sendOTPMail: () => [...authKeys.all, "sendOTP"] as const,
+  checkOTP: () => [...authKeys.all, "checkOTP"] as const,
+  deleteUser: () => [...authKeys.all, "deleteUser"] as const,
+  session: () => [...authKeys.all, "session"] as const,
+  refreshSession: () => [...authKeys.all, "refreshSession"] as const,
 };
 
 export const profileKeys = {
-  all: ['profile'] as const,
-  byId: (userId: string) => [...profileKeys.all, 'user', userId] as const,
-  current: () => [...profileKeys.all, 'current'] as const,
+  all: ["profile"] as const,
+  byId: (userId: string) => [...profileKeys.all, "user", userId] as const,
+  current: () => [...profileKeys.all, "current"] as const,
   completion: (userId: string) =>
-    [...profileKeys.all, 'user', userId, 'completion'] as const,
+    [...profileKeys.all, "user", userId, "completion"] as const,
   aiContext: (userId: string) =>
-    [...profileKeys.all, 'user', userId, 'aiContext'] as const,
+    [...profileKeys.all, "user", userId, "aiContext"] as const,
   avatar: (userId: string) =>
-    [...profileKeys.all, 'user', userId, 'avatar'] as const,
+    [...profileKeys.all, "user", userId, "avatar"] as const,
 };
 
+/**
+ * Query Keys for React Query caching
+ */
 export const workoutKeys = {
-  all: ['workout'] as const,
-  sessions: () => [...workoutKeys.all, 'sessions'] as const,
-  sessionById: (sessionId: string) =>
-    [...workoutKeys.all, 'sessions', sessionId] as const,
+  all: ["workouts"] as const,
+  lists: () => [...workoutKeys.all, "list"] as const,
+  list: (filters: string) => [...workoutKeys.lists(), { filters }] as const,
+  details: () => [...workoutKeys.all, "detail"] as const,
+  detail: (id: string) => [...workoutKeys.details(), id] as const,
+  body_part: (body_part: string) =>
+    [...workoutKeys.all, "body_part", body_part] as const,
+  equipment: (equipment: string) =>
+    [...workoutKeys.all, "equipment", equipment] as const,
+  target: (target: string) => [...workoutKeys.all, "target", target] as const,
+  search: (name: string) => [...workoutKeys.all, "search", name] as const,
+  metadata: {
+    bodyParts: ["workouts", "metadata", "body-parts"] as const,
+    equipment: ["workouts", "metadata", "equipment"] as const,
+    targets: ["workouts", "metadata", "targets"] as const,
+  },
+  muscleGroupLists: () => [...workoutKeys.all, "muscle-groups"] as const,
   userSessions: (userId: string) =>
-    [...workoutKeys.all, 'sessions', 'user', userId] as const,
-  userSessionsByDate: (userId: string, date: string) =>
-    [...workoutKeys.all, 'sessions', 'user', userId, date] as const,
-  generated: () => [...workoutKeys.all, 'generated'] as const,
-  generatedById: (workoutId: string) =>
-    [...workoutKeys.all, 'generated', workoutId] as const,
+    [...workoutKeys.all, "sessions", "user", userId] as const,
 };
 
 export const onboardingKeys = {
-  all: ['onboarding'] as const,
+  all: ["onboarding"] as const,
   progress: (userId: string) =>
-    [...onboardingKeys.all, 'progress', userId] as const,
+    [...onboardingKeys.all, "progress", userId] as const,
   section: (userId: string, section: string) =>
-    [...onboardingKeys.all, 'section', userId, section] as const,
+    [...onboardingKeys.all, "section", userId, section] as const,
 };
 
 // Helper function to invalidate all queries for a specific domain

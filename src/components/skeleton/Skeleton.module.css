@@ -1,0 +1,30 @@
+/* Base skeleton style */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--neutral-800);
+  border-radius: 8px;
+  display: inline-block;
+  width: 100%;
+}
+
+/* Shimmer effect */
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--neutral-600),
+    transparent
+  );
+  animation: skeleton-loading 1.4s infinite;
+}
+
+@keyframes skeleton-loading {
+  100% {
+    transform: translateX(100%);
+  }
+}

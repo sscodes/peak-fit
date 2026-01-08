@@ -1,9 +1,10 @@
-// src/pages/Explore/Explore.tsx
-import React, { useState } from "react";
-import useFilteredWorkouts from "../../../hooks/useFilteredWorkouts";
+import React from "react";
+import { MODEL_PATH } from "../../../helpers/constants";
+import { useDebounce } from "../../../hooks/useDebounce";
 import {
+  useInfiniteWorkouts,
   useMuscleGroups,
-  usePaginatedWorkouts,
+  useSearchWorkouts,
 } from "../../../services/workouts/workouts.data";
 import type { Workout } from "../../../types/workout";
 import {
@@ -13,23 +14,33 @@ import {
   WorkoutDetails,
 } from "../components";
 import SegmentedMuscleModel from "../components/Model/segmented-muscle-model/SegmentedMuscleModel";
+import WorkoutInstructions from "../components/UI/workout-instructions/WorkoutInstructions";
 import styles from "./Explore.module.css";
 
 const Explore: React.FC = () => {
-  const { data: workouts, isSuccess: isSuccessWorkouts } =
-    usePaginatedWorkouts();
-  const { data: muscleGroups, isSuccess: isSuccessMuscleGroups } =
-    useMuscleGroups();
-  const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
-  const { searchTerm, setSearchTerm, filteredWorkouts } = useFilteredWorkouts(
-    workouts ?? []
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const [selectedWorkout, setSelectedWorkout] = React.useState<Workout | null>(
+    null
   );
 
-  // Path to your segmented model file
-  const MODEL_PATH = "/models/human_anatomy_segmented.glb";
+  const debouncedSearch = useDebounce(searchTerm);
+
+  const { data: filteredWorkouts, isFetching: isFilterWOrkoutsFetching } =
+    useSearchWorkouts(debouncedSearch);
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isSuccess: isSuccessWorkouts,
+  } = useInfiniteWorkouts(10);
+
+  const workouts = data?.pages.flat() ?? [];
+  const { data: muscleGroups, isSuccess: isSuccessMuscleGroups } =
+    useMuscleGroups();
 
   // Force re-render when workout changes
-  const [modelKey, setModelKey] = useState(0);
+  const [modelKey, setModelKey] = React.useState(0);
 
   const handleWorkoutChange = (workout: Workout) => {
     setSelectedWorkout(workout);
@@ -47,10 +58,21 @@ const Explore: React.FC = () => {
           filteredWorkouts={searchTerm.length > 0 ? filteredWorkouts : workouts}
           selectedWorkout={selectedWorkout}
           setSelectedWorkout={handleWorkoutChange}
+          isFilterWOrkoutsFetching={isFilterWOrkoutsFetching}
+          fetchNextPage={fetchNextPage} // Pass the function
+          hasMore={hasNextPage ?? false} // Use hasNextPage from query
+          isFetchingNextPage={isFetchingNextPage} // Pass loading state
         />
 
         {/* Main 3D view */}
         <div className={styles.mainView}>
+          {/* Workout details overlay */}
+          {selectedWorkout && (
+            <WorkoutDetails
+              workout={selectedWorkout}
+              muscleGroups={muscleGroups}
+            />
+          )}
           <Scene>
             {/* Segmented model that works with separate meshes */}
             <SegmentedMuscleModel
@@ -69,13 +91,8 @@ const Explore: React.FC = () => {
             />
           </Scene>
 
-          {/* Workout details overlay */}
-          {selectedWorkout && (
-            <WorkoutDetails
-              workout={selectedWorkout}
-              muscleGroups={muscleGroups}
-            />
-          )}
+          {/* Workout instructions overlay */}
+          {selectedWorkout && <WorkoutInstructions workout={selectedWorkout} />}
 
           {/* Message when no workout is selected */}
           {!selectedWorkout && <NoSelectionMessage />}
