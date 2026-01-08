@@ -110,7 +110,7 @@
 .endMessage {
   text-align: center;
   padding: 1rem;
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
 }
 
 @keyframes fadeIn {
