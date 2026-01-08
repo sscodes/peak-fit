@@ -1,4 +1,3 @@
-// src/data/workouts.data.ts
 import {
   useInfiniteQuery,
   useQuery,

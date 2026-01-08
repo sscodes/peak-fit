@@ -25,7 +25,7 @@ const Explore: React.FC = () => {
 
   const debouncedSearch = useDebounce(searchTerm);
 
-  const { data: filteredWorkouts, isFetching: isFilterWOrkoutsFetching } =
+  const { data: filteredWorkouts, isFetching: isFilterWorkoutsFetching } =
     useSearchWorkouts(debouncedSearch);
   const {
     data,
@@ -58,7 +58,7 @@ const Explore: React.FC = () => {
           filteredWorkouts={searchTerm.length > 0 ? filteredWorkouts : workouts}
           selectedWorkout={selectedWorkout}
           setSelectedWorkout={handleWorkoutChange}
-          isFilterWOrkoutsFetching={isFilterWOrkoutsFetching}
+          isFilterWorkoutsFetching={isFilterWorkoutsFetching}
           fetchNextPage={fetchNextPage} // Pass the function
           hasMore={hasNextPage ?? false} // Use hasNextPage from query
           isFetchingNextPage={isFetchingNextPage} // Pass loading state

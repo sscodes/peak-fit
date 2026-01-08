@@ -10,7 +10,7 @@ interface SidebarProps {
   filteredWorkouts: Workout[] | undefined;
   selectedWorkout: Workout | null;
   setSelectedWorkout: (workout: Workout) => void;
-  isFilterWOrkoutsFetching: boolean;
+  isFilterWorkoutsFetching: boolean;
   fetchNextPage: () => void; // Changed from setOffset
   hasMore: boolean;
   isFetchingNextPage: boolean; // Add this for loading state
@@ -22,7 +22,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   filteredWorkouts,
   selectedWorkout,
   setSelectedWorkout,
-  isFilterWOrkoutsFetching,
+  isFilterWorkoutsFetching,
   fetchNextPage, // Changed from setOffset
   hasMore,
   isFetchingNextPage,
@@ -71,7 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Initial loading state */}
-      {isFilterWOrkoutsFetching && !filteredWorkouts?.length && (
+      {isFilterWorkoutsFetching && !filteredWorkouts?.length && (
         <div className={classes.skeletonContainer}>
           {[...Array(4)].map((_, index) => (
             <Skeleton key={index} height="12rem"></Skeleton>
@@ -115,7 +115,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       {/* No results state */}
-      {filteredWorkouts?.length === 0 && !isFilterWOrkoutsFetching && (
+      {filteredWorkouts?.length === 0 && !isFilterWorkoutsFetching && (
         <div className={clsx(classes.noResults, "heading-6")}>
           No workouts found. Try a different search term.
         </div>

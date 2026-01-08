@@ -1,4 +1,3 @@
-// src/services/workouts.service.ts
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { MuscleGroup, Workout } from "../../types/workout";
 
@@ -140,10 +139,17 @@ export class WorkoutService {
    * Search workouts by name (case-insensitive)
    */
   async searchWorkoutsByName(name: string): Promise<Workout[]> {
+    // Escape special SQL LIKE pattern characters
+    // Order matters: escape backslash first, then % and _
+    const escapedName = name
+      .replace(/\\/g, "\\\\") // Backslash -> double backslash
+      .replace(/%/g, "\\%") // % -> \%
+      .replace(/_/g, "\\_"); // _ -> \_
+
     const { data, error } = await this.supabase
       .from("workouts")
       .select("*")
-      .ilike("name", `%${name}%`)
+      .ilike("name", `%${escapedName}%`)
       .order("name");
 
     if (error) {
