@@ -1,21 +1,23 @@
 import React from "react";
 import { MODEL_PATH } from "../../../helpers/constants";
 import { useDebounce } from "../../../hooks/useDebounce";
+import useMediaQuery from "../../../hooks/useMediaQuery";
 import {
   useInfiniteWorkouts,
   useMuscleGroups,
   useSearchWorkouts,
 } from "../../../services/workouts/workouts.data";
 import type { Workout } from "../../../types/workout";
+import { Scene } from "../components";
+import SegmentedMuscleModel from "../components/Model/segmented-muscle-model/SegmentedMuscleModel";
 import {
   NoSelectionMessage,
-  Scene,
   Sidebar,
   WorkoutDetails,
-} from "../components";
-import SegmentedMuscleModel from "../components/Model/segmented-muscle-model/SegmentedMuscleModel";
-import WorkoutInstructions from "../components/UI/workout-instructions/WorkoutInstructions";
-import styles from "./Explore.module.css";
+  WorkOutDetailsSmall,
+  WorkoutInstructions,
+} from "../components/UI";
+import classes from "./Explore.module.css";
 
 const Explore: React.FC = () => {
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -47,10 +49,12 @@ const Explore: React.FC = () => {
     setModelKey((prev) => prev + 1);
   };
 
+  const isMedium = useMediaQuery("825px");
+
   return (
     isSuccessWorkouts &&
     isSuccessMuscleGroups && (
-      <div className={styles.workoutVisualizer}>
+      <div className={classes.workoutVisualizer}>
         {/* Left sidebar for workout selection */}
         <Sidebar
           searchTerm={searchTerm}
@@ -65,9 +69,9 @@ const Explore: React.FC = () => {
         />
 
         {/* Main 3D view */}
-        <div className={styles.mainView}>
+        <div className={classes.mainView}>
           {/* Workout details overlay */}
-          {selectedWorkout && (
+          {!isMedium && selectedWorkout && (
             <WorkoutDetails
               workout={selectedWorkout}
               muscleGroups={muscleGroups}
@@ -92,11 +96,21 @@ const Explore: React.FC = () => {
           </Scene>
 
           {/* Workout instructions overlay */}
-          {selectedWorkout && <WorkoutInstructions workout={selectedWorkout} />}
+          {!isMedium && selectedWorkout && (
+            <WorkoutInstructions workout={selectedWorkout} />
+          )}
 
           {/* Message when no workout is selected */}
           {!selectedWorkout && <NoSelectionMessage />}
         </div>
+
+        {/* Slide up panel for mobile - example content */}
+        {isMedium && selectedWorkout && (
+          <WorkOutDetailsSmall
+            selectedWorkout={selectedWorkout}
+            muscleGroups={muscleGroups}
+          />
+        )}
       </div>
     )
   );

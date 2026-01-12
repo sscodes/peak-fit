@@ -8,6 +8,7 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
+  transition: transform 0.3s ease;
 }
 
 .sidebar h2 {
@@ -111,6 +112,75 @@
   text-align: center;
   padding: 1rem;
   color: var(--text-secondary);
+}
+
+/* Toggle button - hidden on desktop */
+.toggleButton {
+  display: none;
+}
+
+/* Overlay - hidden on desktop */
+.overlay {
+  display: none;
+}
+
+/* Mobile styles */
+@media (max-width: 825px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    transform: translateX(-100%);
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+
+  .toggleButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 999;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .toggleButton:hover {
+    background-color: var(--surface-hover);
+    transform: scale(1.05);
+  }
+
+  .toggleButton:active {
+    transform: scale(0.95);
+  }
+
+  .overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    animation: fadeIn 0.2s ease-in;
+  }
+}
+
+.hamburgerIcon{
+  width: 24px;
+  height: 24px;
 }
 
 @keyframes fadeIn {

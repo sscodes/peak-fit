@@ -40,7 +40,8 @@ const Scene: React.FC<SceneProps> = ({
         outputColorSpace: THREE.SRGBColorSpace,
         depth: true,
         logarithmicDepthBuffer: true,
-        physicallyCorrectLights: true,
+        // physicallyCorrectLights is not recognized in the current version
+        // physicallyCorrectLights: true,
       }}
     >
       {/* Environment and lighting */}
