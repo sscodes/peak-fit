@@ -1,5 +1,6 @@
 import clsx from "clsx";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { GiHamburgerMenu } from "react-icons/gi";
 import Skeleton from "../../../../../components/skeleton/Skeleton";
 import type { Workout } from "../../../../../types/workout";
 import classes from "./Sidebar.module.css";
@@ -11,9 +12,9 @@ interface SidebarProps {
   selectedWorkout: Workout | null;
   setSelectedWorkout: (workout: Workout) => void;
   isFilterWorkoutsFetching: boolean;
-  fetchNextPage: () => void; // Changed from setOffset
+  fetchNextPage: () => void;
   hasMore: boolean;
-  isFetchingNextPage: boolean; // Add this for loading state
+  isFetchingNextPage: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -23,12 +24,13 @@ const Sidebar: React.FC<SidebarProps> = ({
   selectedWorkout,
   setSelectedWorkout,
   isFilterWorkoutsFetching,
-  fetchNextPage, // Changed from setOffset
+  fetchNextPage,
   hasMore,
   isFetchingNextPage,
 }) => {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const workoutListRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
@@ -38,9 +40,8 @@ const Sidebar: React.FC<SidebarProps> = ({
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // Call fetchNextPage instead of setOffset
         if (entries[0].isIntersecting && hasMore && !isFetchingNextPage) {
-          fetchNextPage(); // This is the key change
+          fetchNextPage();
         }
       },
       {
@@ -55,72 +56,92 @@ const Sidebar: React.FC<SidebarProps> = ({
     return () => {
       observer.disconnect();
     };
-  }, [fetchNextPage, hasMore, isFetchingNextPage]); // Updated dependencies
+  }, [fetchNextPage, hasMore, isFetchingNextPage]);
 
   return (
-    <div className={classes.sidebar}>
-      <h2 className="heading-2">Explore</h2>
-      <div className={classes.searchContainer}>
-        <input
-          type="text"
-          placeholder="Search workouts..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className={clsx(classes.searchInput, "input-text")}
-        />
-      </div>
+    <>
+      {/* Toggle button for mobile */}
+      <button
+        className={classes.toggleButton}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
+      >
+        <GiHamburgerMenu className={classes.hamburgerIcon} />
+      </button>
 
-      {/* Initial loading state */}
-      {isFilterWorkoutsFetching && !filteredWorkouts?.length && (
-        <div className={classes.skeletonContainer}>
-          {[...Array(4)].map((_, index) => (
-            <Skeleton key={index} height="12rem"></Skeleton>
-          ))}
-        </div>
+      {/* Overlay for mobile */}
+      {isOpen && (
+        <div className={classes.overlay} onClick={() => setIsOpen(false)} />
       )}
 
-      {/* Workout list with ref for scrolling */}
-      {filteredWorkouts && filteredWorkouts.length > 0 && (
-        <div className={classes.workoutList} ref={workoutListRef}>
-          {filteredWorkouts.map((workout) => (
-            <div
-              key={workout.id}
-              className={`${classes.workoutItem} ${
-                selectedWorkout?.id === workout.id ? classes.selected : ""
-              }`}
-              onClick={() => setSelectedWorkout(workout)}
-            >
-              <h3 className={clsx(classes.workoutName, "heading-4")}>
-                {workout.name}
-              </h3>
-              <p className="body-regular">{workout.description}</p>
-            </div>
-          ))}
+      {/* Sidebar */}
+      <div className={clsx(classes.sidebar, isOpen && classes.sidebarOpen)}>
+        <h2 className="heading-2">Explore</h2>
+        <div className={classes.searchContainer}>
+          <input
+            type="text"
+            placeholder="Search workouts..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={clsx(classes.searchInput, "input-text")}
+          />
+        </div>
 
-          {/* Sentinel element for IntersectionObserver */}
-          <div ref={sentinelRef} className={classes.sentinel}>
-            {isFetchingNextPage && ( // Use isFetchingNextPage instead
-              <div className={classes.loadingMore}>
-                <Skeleton height="12rem" />
-                <Skeleton height="6rem" />
-              </div>
-            )}
-            {!hasMore && filteredWorkouts && filteredWorkouts.length > 0 && (
-              <div className={clsx(classes.endMessage, "body-small")}>
-                No more workouts
-              </div>
-            )}
+        {/* Initial loading state */}
+        {isFilterWorkoutsFetching && !filteredWorkouts?.length && (
+          <div className={classes.skeletonContainer}>
+            {[...Array(4)].map((_, index) => (
+              <Skeleton key={index} height="12rem"></Skeleton>
+            ))}
           </div>
-        </div>
-      )}
+        )}
 
-      {/* No results state */}
-      {filteredWorkouts?.length === 0 && !isFilterWorkoutsFetching && (
-        <div className={clsx(classes.noResults, "heading-6")}>
-          No workouts found. Try a different search term.
-        </div>
-      )}
-    </div>
+        {/* Workout list with ref for scrolling */}
+        {filteredWorkouts && filteredWorkouts.length > 0 && (
+          <div className={classes.workoutList} ref={workoutListRef}>
+            {filteredWorkouts.map((workout) => (
+              <div
+                key={workout.id}
+                className={`${classes.workoutItem} ${
+                  selectedWorkout?.id === workout.id ? classes.selected : ""
+                }`}
+                onClick={() => {
+                  setSelectedWorkout(workout);
+                  setIsOpen(false); // Close sidebar on mobile after selection
+                }}
+              >
+                <h3 className={clsx(classes.workoutName, "heading-4")}>
+                  {workout.name}
+                </h3>
+                <p className="body-regular">{workout.description}</p>
+              </div>
+            ))}
+
+            {/* Sentinel element for IntersectionObserver */}
+            <div ref={sentinelRef} className={classes.sentinel}>
+              {isFetchingNextPage && (
+                <div className={classes.loadingMore}>
+                  <Skeleton height="12rem" />
+                  <Skeleton height="6rem" />
+                </div>
+              )}
+              {!hasMore && filteredWorkouts && filteredWorkouts.length > 0 && (
+                <div className={clsx(classes.endMessage, "body-small")}>
+                  No more workouts
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* No results state */}
+        {filteredWorkouts?.length === 0 && !isFilterWorkoutsFetching && (
+          <div className={clsx(classes.noResults, "heading-6")}>
+            No workouts found. Try a different search term.
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
