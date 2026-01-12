@@ -8,15 +8,15 @@ import {
   useSearchWorkouts,
 } from "../../../services/workouts/workouts.data";
 import type { Workout } from "../../../types/workout";
+import { Scene } from "../components";
+import SegmentedMuscleModel from "../components/Model/segmented-muscle-model/SegmentedMuscleModel";
 import {
   NoSelectionMessage,
-  Scene,
   Sidebar,
   WorkoutDetails,
-} from "../components";
-import SegmentedMuscleModel from "../components/Model/segmented-muscle-model/SegmentedMuscleModel";
-import WorkoutInstructions from "../components/UI/workout-instructions/WorkoutInstructions";
-import WorkOutDetailsSmall from "../components/work-out-details-small/WorkOutDetailsSmall";
+  WorkOutDetailsSmall,
+  WorkoutInstructions,
+} from "../components/UI";
 import classes from "./Explore.module.css";
 
 const Explore: React.FC = () => {

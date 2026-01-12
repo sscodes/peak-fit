@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import React, { useRef, useState } from "react";
 import { SlInfo, SlClose } from "react-icons/sl";
-import type { MuscleGroup, Workout } from "../../../../types/workout";
+import type { MuscleGroup, Workout } from "../../../../../types/workout";
 import classes from "./WorkOutDetailsSmall.module.css";
 
 interface WorkOutDetailsSmallProps {
