@@ -7,6 +7,7 @@ import { ASSETS } from "../../../../helpers/assets";
 import { SIGN_IN } from "../../../../helpers/getters";
 import { notifyError } from "../../../../helpers/helper";
 import { BUTTON_VARIANT } from "../../../../helpers/types";
+import useMediaQuery from "../../../../hooks/useMediaQuery";
 import { supabaseAuth } from "../../../../lib/supabaseAuth";
 import {
   useCreateUser,
@@ -28,6 +29,7 @@ const Footer = () => {
 const SignUp = () => {
   const { mutateAsync: createUser } = useCreateUser();
   const { mutate: signInWithOAuth } = useOAuthSignIn();
+  const isExtraSmall = useMediaQuery("576px");
 
   const formik = useFormik({
     initialValues: {
@@ -88,6 +90,16 @@ const SignUp = () => {
       nextButtonText="Next"
       footer={<Footer />}
       hideFooterSteps={[0, 2]}
+      header={
+        isExtraSmall ? (
+          <div
+            className={clsx(classes.logo, "hero-large")}
+            onClick={() => navigate("/")}
+          >
+            PeakFit
+          </div>
+        ) : null
+      }
     >
       <Step hideBackButton>
         <div className={classes.step}>

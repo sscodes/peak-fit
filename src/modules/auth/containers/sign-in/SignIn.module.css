@@ -119,3 +119,9 @@
 .errorsFiller {
   opacity: 0;
 }
+
+.logo {
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: center;
+}

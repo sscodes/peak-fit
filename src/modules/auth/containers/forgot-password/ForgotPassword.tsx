@@ -3,10 +3,12 @@ import { useFormik } from "formik";
 import { Step, Stepper } from "../../../../components/stepper/Stepper";
 import { ASSETS } from "../../../../helpers/assets";
 import { notifyError, notifySuccess } from "../../../../helpers/helper";
+import useMediaQuery from "../../../../hooks/useMediaQuery";
 import { supabaseAuth } from "../../../../lib/supabaseAuth";
 import { useSendPasswordResetEmail } from "../../../../services/auth/auth.data";
 import { emailValidation } from "../../utils/validation";
 import classes from "./ForgotPassword.module.css";
+import { useNavigate } from "react-router";
 
 const Footer = () => {
   return (
@@ -17,6 +19,8 @@ const Footer = () => {
 };
 
 const ForgotPassword = () => {
+  const navigate = useNavigate();
+  const isExtraSmall = useMediaQuery("576px");
   const { mutateAsync: sendPasswordResetEmail, isPending } =
     useSendPasswordResetEmail();
 
@@ -54,7 +58,21 @@ const ForgotPassword = () => {
 
   return (
     <>
-      <Stepper initialStep={1} footer={<Footer />} hideFooterSteps={[0]}>
+      <Stepper
+        initialStep={1}
+        footer={<Footer />}
+        hideFooterSteps={[0]}
+        header={
+          isExtraSmall ? (
+            <div
+              className={clsx(classes.logo, "hero-large")}
+              onClick={() => navigate("/")}
+            >
+              PeakFit
+            </div>
+          ) : null
+        }
+      >
         <Step
           onNext={validateEmail}
           nextButtonText={isPending ? "Sending email..." : "Send email"}

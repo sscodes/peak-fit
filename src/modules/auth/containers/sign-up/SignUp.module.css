@@ -111,3 +111,9 @@
 .confirmPwdSection {
   margin-top: 8px;
 }
+
+.logo {
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: center;
+}

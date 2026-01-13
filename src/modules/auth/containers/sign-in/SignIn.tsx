@@ -7,6 +7,7 @@ import { ASSETS } from "../../../../helpers/assets";
 import { FORGOT_PASSWORD, SIGN_UP } from "../../../../helpers/getters";
 import { notifyError } from "../../../../helpers/helper";
 import { BUTTON_VARIANT } from "../../../../helpers/types";
+import useMediaQuery from "../../../../hooks/useMediaQuery";
 import { supabaseAuth } from "../../../../lib/supabaseAuth";
 import {
   useLoginUser,
@@ -29,6 +30,7 @@ const SignIn = () => {
   const { mutateAsync: loginUser } = useLoginUser();
   const { mutate: signInWithOAuth } = useOAuthSignIn();
   const navigate = useNavigate();
+  const isExtraSmall = useMediaQuery("576px");
 
   const signIn = async () => {
     const user = {
@@ -74,6 +76,16 @@ const SignIn = () => {
         nextButtonText="Next"
         footer={<Footer />}
         hideFooterSteps={[0, 2]}
+        header={
+          isExtraSmall ? (
+            <div
+              className={clsx(classes.logo, "hero-large")}
+              onClick={() => navigate("/")}
+            >
+              PeakFit
+            </div>
+          ) : null
+        }
       >
         <Step hideBackButton>
           <div className={classes.step}>
