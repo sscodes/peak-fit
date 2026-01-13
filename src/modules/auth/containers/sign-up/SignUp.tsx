@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useFormik } from "formik";
-import { useNavigate } from "react-router";
+import { useNavigate, type NavigateFunction } from "react-router";
 import Button from "../../../../components/button/Button";
 import { Step, Stepper } from "../../../../components/stepper/Stepper";
 import { ASSETS } from "../../../../helpers/assets";
@@ -16,8 +16,7 @@ import {
 import { signUpValidation } from "../../utils/validation";
 import classes from "./SignUp.module.css";
 
-const Footer = () => {
-  const navigate = useNavigate();
+const Footer = ({ navigate }: { navigate: NavigateFunction }) => {
   return (
     <div className={clsx(classes.footer, "label")}>
       Already on board?
@@ -30,6 +29,7 @@ const SignUp = () => {
   const { mutateAsync: createUser } = useCreateUser();
   const { mutate: signInWithOAuth } = useOAuthSignIn();
   const isExtraSmall = useMediaQuery("576px");
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -88,7 +88,7 @@ const SignUp = () => {
       onFinalStepCompleted={() => formik.handleSubmit()}
       backButtonText="Previous"
       nextButtonText="Next"
-      footer={<Footer />}
+      footer={<Footer navigate={navigate} />}
       hideFooterSteps={[0, 2]}
       header={
         isExtraSmall ? (

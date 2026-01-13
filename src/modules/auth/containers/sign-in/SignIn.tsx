@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useFormik } from "formik";
-import { useNavigate } from "react-router";
+import { useNavigate, type NavigateFunction } from "react-router";
 import Button from "../../../../components/button/Button";
 import { Step, Stepper } from "../../../../components/stepper/Stepper";
 import { ASSETS } from "../../../../helpers/assets";
@@ -16,8 +16,7 @@ import {
 import { signInValidation } from "../../utils/validation";
 import classes from "./SignIn.module.css";
 
-const Footer = () => {
-  const navigate = useNavigate();
+const Footer = ({ navigate }: { navigate: NavigateFunction }) => {
   return (
     <div className={clsx(classes.footer, "label")}>
       First rep? Join us today!
@@ -74,7 +73,7 @@ const SignIn = () => {
         onFinalStepCompleted={() => formik.handleSubmit()}
         backButtonText="Previous"
         nextButtonText="Next"
-        footer={<Footer />}
+        footer={<Footer navigate={navigate} />}
         hideFooterSteps={[0, 2]}
         header={
           isExtraSmall ? (
