@@ -1,9 +1,14 @@
-import React, { useState, type ReactNode } from 'react';
-import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
-import { BUTTON_VARIANT, STEPPER_1_PROGRESS } from '../../helpers/types';
-import Button from '../button/Button';
-import Icon from '../icon/Icon';
-import classes from './Stepper.module.css';
+import React, { useState, type ReactNode } from "react";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
+import {
+  BUTTON_VARIANT,
+  STEPPER_PROGRESS,
+  STEPPER_SIZE,
+} from "../../helpers/types";
+import Button from "../button/Button";
+import Icon from "../icon/Icon";
+import classes from "./Stepper.module.css";
+import useMediaQuery from "../../hooks/useMediaQuery";
 
 interface StepperProps {
   children: ReactNode;
@@ -18,9 +23,11 @@ interface StepperProps {
   nextButtonText?: string;
   disableStepIndicators?: boolean;
   renderStepIndicator?: () => ReactNode;
-  progressIndicator?: STEPPER_1_PROGRESS;
+  progressIndicator?: STEPPER_PROGRESS;
   footer?: ReactNode;
   hideFooterSteps?: number[];
+  size?: STEPPER_SIZE;
+  header?: ReactNode;
 }
 
 interface StepProps {
@@ -45,21 +52,27 @@ export const Stepper: React.FC<StepperProps> = ({
   initialStep = 1,
   onStepChange,
   onFinalStepCompleted,
-  stepCircleContainerClassName = '',
-  stepContainerClassName = '',
-  contentClassName = '',
-  footerClassName = '',
-  backButtonText = 'Back',
-  nextButtonText = 'Continue',
+  stepCircleContainerClassName = "",
+  stepContainerClassName = "",
+  contentClassName = "",
+  footerClassName = "",
+  backButtonText = "Back",
+  nextButtonText = "Continue",
   disableStepIndicators = false,
   renderStepIndicator,
-  progressIndicator = STEPPER_1_PROGRESS.DOTS,
+  progressIndicator = STEPPER_PROGRESS.DOTS,
   footer,
   hideFooterSteps = [],
+  size = STEPPER_SIZE.SMALL,
+  header,
 }) => {
   const [currentStep, setCurrentStep] = useState<number>(initialStep);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-
+  const isExtraLarge = useMediaQuery("1400px");
+  const isLarge = useMediaQuery("1150px");
+  const isMedium = useMediaQuery("992px");
+  const isSmall = useMediaQuery("768px");
+  const isExtraSmall = useMediaQuery("576px");
   // Convert children to array and filter out invalid elements
   const steps = React.Children.toArray(children).filter(
     (child) => React.isValidElement(child) && child.type === Step
@@ -83,7 +96,7 @@ export const Stepper: React.FC<StepperProps> = ({
           proceedToNext();
         }
       } catch (error) {
-        console.error('Error in onNext handler:', error);
+        console.error("Error in onNext handler:", error);
       } finally {
         setIsProcessing(false);
       }
@@ -120,7 +133,7 @@ export const Stepper: React.FC<StepperProps> = ({
       return renderStepIndicator();
     }
 
-    return progressIndicator === STEPPER_1_PROGRESS.LINE ? (
+    return progressIndicator === STEPPER_PROGRESS.LINE ? (
       <div className={classes.progressBar}>
         <div
           className={classes.progressFill}
@@ -135,8 +148,8 @@ export const Stepper: React.FC<StepperProps> = ({
           <div
             key={index}
             className={`${classes.stepDot} 
-                ${currentStep > index + 1 ? classes.active : ''} 
-                ${currentStep === index + 1 ? classes.current : ''}`}
+                ${currentStep > index + 1 ? classes.active : ""} 
+                ${currentStep === index + 1 ? classes.current : ""}`}
           />
         ))}
       </div>
@@ -148,7 +161,7 @@ export const Stepper: React.FC<StepperProps> = ({
 
     const backText = stepProps?.backButtonText || backButtonText;
     const nextText = isLastStep
-      ? stepProps?.nextButtonText || 'Submit'
+      ? stepProps?.nextButtonText || "Submit"
       : stepProps?.nextButtonText || nextButtonText;
 
     return { backText, nextText };
@@ -159,9 +172,70 @@ export const Stepper: React.FC<StepperProps> = ({
   const showBackButton = !isFirstStep && !stepProps?.hideBackButton;
   const showNextButton = !stepProps?.hideNextButton;
 
+  const getStepperSizeStyle = React.useCallback(() => {
+    // check for fullscreen size
+    if (isExtraSmall || size === STEPPER_SIZE.FULLSCREEN) {
+      return {
+        width: "100vw",
+        height: "100vh",
+        margin: 0,
+        border: 0,
+        borderRadius: 0,
+        boxShadow: "none",
+        padding: "96px 48px",
+      };
+    }
+    // check for small size
+    else if (size === STEPPER_SIZE.SMALL) {
+      if (isSmall) {
+        return { width: "60vw" };
+      } else if (isMedium) {
+        return { width: "50vw" };
+      } else if (isLarge) {
+        return { width: "40vw" };
+      } else if (isExtraLarge) {
+        return { width: "35vw" };
+      } else {
+        return { width: "25vw" };
+      }
+    }
+    // check for medium size
+    else if (size === STEPPER_SIZE.MEDIUM) {
+      if (isSmall) {
+        return { width: "80vw" };
+      } else if (isMedium) {
+        return { width: "75vw" };
+      } else if (isLarge) {
+        return { width: "65vw" };
+      } else if (isExtraLarge) {
+        return { width: "60vw" };
+      } else {
+        return { width: "50vw" };
+      }
+    }
+    // check for large size
+    else if (size === STEPPER_SIZE.LARGE) {
+      if (isSmall) {
+        return { width: "85vw" };
+      } else if (isMedium) {
+        return { width: "82vw" };
+      } else if (isLarge) {
+        return { width: "80vw" };
+      } else if (isExtraLarge) {
+        return { width: "77vw" };
+      } else {
+        return { width: "75vw" };
+      }
+    }
+  }, [isExtraLarge, isExtraSmall, isLarge, isMedium, isSmall, size]);
+
   return (
-    <div className={`${classes.stepperContainer} ${stepContainerClassName}`}>
-      <div className={classes.stepperWrapper}>
+    <div className={classes.stepperContainer}>
+      <div
+        className={`${classes.stepperWrapper} ${stepContainerClassName}`}
+        style={getStepperSizeStyle()}
+      >
+        {header}
         {renderProgressIndicators()}
 
         <div className={`${classes.stepContent} ${contentClassName}`}>

@@ -1,12 +1,13 @@
 import clsx from "clsx";
 import { useFormik } from "formik";
-import { useNavigate } from "react-router";
+import { useNavigate, type NavigateFunction } from "react-router";
 import Button from "../../../../components/button/Button";
 import { Step, Stepper } from "../../../../components/stepper/Stepper";
 import { ASSETS } from "../../../../helpers/assets";
 import { FORGOT_PASSWORD, SIGN_UP } from "../../../../helpers/getters";
 import { notifyError } from "../../../../helpers/helper";
 import { BUTTON_VARIANT } from "../../../../helpers/types";
+import useMediaQuery from "../../../../hooks/useMediaQuery";
 import { supabaseAuth } from "../../../../lib/supabaseAuth";
 import {
   useLoginUser,
@@ -15,8 +16,7 @@ import {
 import { signInValidation } from "../../utils/validation";
 import classes from "./SignIn.module.css";
 
-const Footer = () => {
-  const navigate = useNavigate();
+const Footer = ({ navigate }: { navigate: NavigateFunction }) => {
   return (
     <div className={clsx(classes.footer, "label")}>
       First rep? Join us today!
@@ -29,6 +29,7 @@ const SignIn = () => {
   const { mutateAsync: loginUser } = useLoginUser();
   const { mutate: signInWithOAuth } = useOAuthSignIn();
   const navigate = useNavigate();
+  const isExtraSmall = useMediaQuery("576px");
 
   const signIn = async () => {
     const user = {
@@ -72,8 +73,18 @@ const SignIn = () => {
         onFinalStepCompleted={() => formik.handleSubmit()}
         backButtonText="Previous"
         nextButtonText="Next"
-        footer={<Footer />}
+        footer={<Footer navigate={navigate} />}
         hideFooterSteps={[0, 2]}
+        header={
+          isExtraSmall ? (
+            <div
+              className={clsx(classes.logo, "hero-large")}
+              onClick={() => navigate("/")}
+            >
+              PeakFit
+            </div>
+          ) : null
+        }
       >
         <Step hideBackButton>
           <div className={classes.step}>

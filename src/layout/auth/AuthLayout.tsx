@@ -1,17 +1,21 @@
-import clsx from 'clsx';
-import { Outlet, useNavigate } from 'react-router';
-import classes from './AuthLayout.module.css';
+import clsx from "clsx";
+import { Outlet, useNavigate } from "react-router";
+import useMediaQuery from "../../hooks/useMediaQuery";
+import classes from "./AuthLayout.module.css";
 
 const AuthLayout = () => {
   const navigate = useNavigate();
+  const isExtraSmall = useMediaQuery("576px");
   return (
     <div className={classes.authLayoutContainer}>
-      <div
-        className={clsx(classes.logo, 'hero-large')}
-        onClick={() => navigate('/')}
-      >
-        PeakFit
-      </div>
+      {!isExtraSmall && (
+        <div
+          className={clsx(classes.logo, "hero-large")}
+          onClick={() => navigate("/")}
+        >
+          PeakFit
+        </div>
+      )}
       <div className={classes.authLayout}>
         <Outlet />
       </div>

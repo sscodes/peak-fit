@@ -461,9 +461,6 @@ export const useUploadAvatar = () => {
   });
 };
 
-// src/services/auth/auth.data.ts
-// Add this new hook:
-
 export const useOAuthSignIn = () => {
   const dispatch = useAppDispatch();
 

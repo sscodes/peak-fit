@@ -1,13 +1,17 @@
 import clsx from "clsx";
 import { useFormik } from "formik";
+import { useNavigate } from "react-router";
 import Button from "../../../../components/button/Button";
 import { notifyError } from "../../../../helpers/helper";
+import useMediaQuery from "../../../../hooks/useMediaQuery";
 import { supabaseAuth } from "../../../../lib/supabaseAuth";
 import { useUpdateUserPassword } from "../../../../services/auth/auth.data";
 import { passwordResetValidation } from "../../utils/validation";
 import classes from "./ResetPassword.module.css";
 
 const ResetPassword = () => {
+  const navigate = useNavigate();
+  const isExtraSmall = useMediaQuery("576px");
   const { mutateAsync: resetPassword, isPending } = useUpdateUserPassword();
   const submitPasswordReset = async () => {
     const payload = {
@@ -41,6 +45,14 @@ const ResetPassword = () => {
   return (
     <div className={classes.container}>
       <div className={classes.card}>
+        {isExtraSmall && (
+          <div
+            className={clsx(classes.logo, "hero-large")}
+            onClick={() => navigate("/")}
+          >
+            PeakFit
+          </div>
+        )}
         <div>
           <label htmlFor="password" className={clsx(classes.title, "label")}>
             Enter Password
@@ -99,7 +111,7 @@ const ResetPassword = () => {
             <div className={classes.errorsFiller}>error filler</div>
           )}
         </div>
-        <div>
+        <div className={classes.buttonGroup}>
           <Button onClick={handlePasswordReset} disabled={isPending}>
             {isPending ? "Resetting..." : "Reset Password"}
           </Button>
