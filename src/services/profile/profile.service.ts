@@ -30,15 +30,7 @@ export class ProfileService {
 
       if (error) throw error;
 
-      // Ensure onboarding_completed has a default value
-      const profile = data
-        ? {
-            ...data,
-            onboarding_completed: data.onboarding_completed ?? false,
-          }
-        : null;
-
-      return { data: profile, error: null };
+      return { data, error: null };
     } catch (error: unknown) {
       return { data: null, error: error as PostgrestError };
     }
@@ -100,6 +92,8 @@ export class ProfileService {
     userId: string,
     file: File,
   ): Promise<{ url: string | null; error: Error | null }> {
+    let uploadedFileName: string | null = null;
+
     try {
       // Extract file extension safely
       const lastDotIndex = file.name.lastIndexOf(".");
@@ -124,6 +118,7 @@ export class ProfileService {
       }
 
       const fileName = `${userId}/avatar.${fileExt}`;
+      uploadedFileName = fileName; // Track for cleanup
 
       // Upload to Supabase Storage with content type
       const { error: uploadError } = await supabase.storage
@@ -134,17 +129,71 @@ export class ProfileService {
           cacheControl: "3600", // 1 hour cache
         });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        throw new Error(`Failed to upload avatar: ${uploadError.message}`);
+      }
 
       // Get public URL
       const { data } = supabase.storage.from("avatars").getPublicUrl(fileName);
 
-      // Update profile with avatar URL
-      await this.updateProfile(userId, { avatar: data.publicUrl });
+      if (!data.publicUrl) {
+        throw new Error("Failed to get public URL for uploaded avatar");
+      }
+
+      // Update profile with avatar URL - MUST succeed or rollback
+      const { error: updateError } = await this.updateProfile(userId, {
+        avatar: data.publicUrl,
+      });
+
+      if (updateError) {
+        // Profile update failed - clean up the uploaded file
+        console.error(
+          "Profile update failed, removing uploaded file:",
+          updateError,
+        );
+
+        const { error: removeError } = await supabase.storage
+          .from("avatars")
+          .remove([fileName]);
+
+        if (removeError) {
+          console.error("Failed to remove orphaned avatar file:", removeError);
+        }
+
+        throw new Error(
+          `Failed to update profile with avatar: ${updateError.message}`,
+        );
+      }
 
       return { url: data.publicUrl, error: null };
     } catch (error: unknown) {
-      return { url: null, error: error as Error };
+      // If we uploaded a file but something failed, try to clean it up
+      if (uploadedFileName) {
+        try {
+          const { error: removeError } = await supabase.storage
+            .from("avatars")
+            .remove([uploadedFileName]);
+
+          if (removeError) {
+            console.error(
+              "Failed to clean up avatar after error:",
+              removeError,
+            );
+          }
+        } catch (cleanupError) {
+          console.error("Error during avatar cleanup:", cleanupError);
+        }
+      }
+
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred while uploading avatar";
+
+      return {
+        url: null,
+        error: new Error(errorMessage),
+      };
     }
   }
 
