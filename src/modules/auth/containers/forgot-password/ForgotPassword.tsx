@@ -1,14 +1,16 @@
 import clsx from "clsx";
 import { useFormik } from "formik";
+import { useNavigate } from "react-router";
 import { Step, Stepper } from "../../../../components/stepper/Stepper";
 import { ASSETS } from "../../../../helpers/assets";
 import { notifyError, notifySuccess } from "../../../../helpers/helper";
 import useMediaQuery from "../../../../hooks/useMediaQuery";
-import { supabaseAuth } from "../../../../lib/supabaseAuth";
 import { useSendPasswordResetEmail } from "../../../../services/auth/auth.data";
+import { AuthService } from "../../../../services/auth/auth.service";
 import { emailValidation } from "../../utils/validation";
 import classes from "./ForgotPassword.module.css";
-import { useNavigate } from "react-router";
+
+const authService = new AuthService();
 
 const Footer = () => {
   return (
@@ -32,8 +34,8 @@ const ForgotPassword = () => {
       const res = await sendPasswordResetEmail(payload);
       notifySuccess(res.message);
       return true;
-    } catch (error: any) {
-      const message = supabaseAuth.getErrorMessage(error);
+    } catch (error: unknown) {
+      const message = authService.getErrorMessage(error);
       notifyError(message);
       return false;
     }
@@ -96,7 +98,7 @@ const ForgotPassword = () => {
                   "input-text",
                   formik.touched.email && formik.errors.email
                     ? classes.error
-                    : ""
+                    : "",
                 )}
               />
               {formik.touched.email && formik.errors.email ? (

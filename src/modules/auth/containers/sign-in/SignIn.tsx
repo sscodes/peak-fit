@@ -8,13 +8,15 @@ import { FORGOT_PASSWORD, SIGN_UP } from "../../../../helpers/getters";
 import { notifyError } from "../../../../helpers/helper";
 import { BUTTON_VARIANT } from "../../../../helpers/types";
 import useMediaQuery from "../../../../hooks/useMediaQuery";
-import { supabaseAuth } from "../../../../lib/supabaseAuth";
+import { AuthService } from "../../../../services/auth/auth.service";
 import {
   useLoginUser,
   useOAuthSignIn,
 } from "../../../../services/auth/auth.data";
 import { signInValidation } from "../../utils/validation";
 import classes from "./SignIn.module.css";
+
+const authService = new AuthService();
 
 const Footer = ({ navigate }: { navigate: NavigateFunction }) => {
   return (
@@ -39,8 +41,8 @@ const SignIn = () => {
     try {
       await loginUser({ user });
       formik.resetForm();
-    } catch (error: any) {
-      const message = supabaseAuth.getErrorMessage(error);
+    } catch (error: unknown) {
+      const message = authService.getErrorMessage(error);
       notifyError(message);
     }
   };

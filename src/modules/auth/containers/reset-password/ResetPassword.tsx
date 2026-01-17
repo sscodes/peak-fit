@@ -4,10 +4,12 @@ import { useNavigate } from "react-router";
 import Button from "../../../../components/button/Button";
 import { notifyError } from "../../../../helpers/helper";
 import useMediaQuery from "../../../../hooks/useMediaQuery";
-import { supabaseAuth } from "../../../../lib/supabaseAuth";
+import { AuthService } from "../../../../services/auth/auth.service";
 import { useUpdateUserPassword } from "../../../../services/auth/auth.data";
 import { passwordResetValidation } from "../../utils/validation";
 import classes from "./ResetPassword.module.css";
+
+const authService = new AuthService();
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -20,8 +22,8 @@ const ResetPassword = () => {
     try {
       await resetPassword(payload);
       formik.resetForm();
-    } catch (error: any) {
-      const message = supabaseAuth.getErrorMessage(error);
+    } catch (error: unknown) {
+      const message = authService.getErrorMessage(error);
       notifyError(message);
     }
   };

@@ -1,23 +1,8 @@
-export interface User {
-  id: string;
-  fullName: string;
-  email: string;
-  username?: string;
-  // createdAt?: string;
-  // updatedAt?: string;
-  // // TaskMate specific fields
-  // onboardingStatus?:
-  //   | 'pending'
-  //   | 'personality_assessment'
-  //   | 'goals_setup'
-  //   | 'completed';
-  // preferences?: UserPreferences;
-  // lastActive?: string;
-  // loginStreak?: number;
-}
+import type { AuthError, Session, User } from "@supabase/supabase-js";
+import type { Profile } from "./profile";
 
 export interface UserPreferences {
-  theme?: 'light' | 'dark' | 'system';
+  theme?: "light" | "dark" | "system";
   notifications?: {
     email: boolean;
     push: boolean;
@@ -28,14 +13,15 @@ export interface UserPreferences {
 
 export interface AuthState {
   isAuthenticated: boolean;
-  user: User | null;
+  user: Profile | null;
   accessToken: string | null;
   isInitialized: boolean;
 }
 
 export interface AuthResponse {
-  user: User;
-  access_token: string;
+  user?: User | null;
+  session?: Session | null;
+  error?: AuthError | null;
 }
 
 export interface SignUpPayload {
@@ -54,3 +40,6 @@ export interface ApiError {
   code?: string;
   status?: number;
 }
+
+// Generic error type for auth operations
+export type AuthErrorType = AuthError | Error | unknown;
