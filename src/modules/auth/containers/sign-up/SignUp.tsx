@@ -8,13 +8,15 @@ import { SIGN_IN } from "../../../../helpers/getters";
 import { notifyError } from "../../../../helpers/helper";
 import { BUTTON_VARIANT } from "../../../../helpers/types";
 import useMediaQuery from "../../../../hooks/useMediaQuery";
-import { supabaseAuth } from "../../../../lib/supabaseAuth";
 import {
   useCreateUser,
   useOAuthSignIn,
 } from "../../../../services/auth/auth.data";
+import { AuthService } from "../../../../services/auth/auth.service";
 import { signUpValidation } from "../../utils/validation";
 import classes from "./SignUp.module.css";
+
+const authService = new AuthService();
 
 const Footer = ({ navigate }: { navigate: NavigateFunction }) => {
   return (
@@ -51,7 +53,7 @@ const SignUp = () => {
         await createUser(payload);
         formik.resetForm();
       } catch (error) {
-        const message = supabaseAuth.getErrorMessage(error);
+        const message = authService.getErrorMessage(error);
         notifyError(message);
       }
     },
@@ -135,7 +137,7 @@ const SignUp = () => {
                 "input-text",
                 formik.touched.fullName && formik.errors.fullName
                   ? classes.error
-                  : ""
+                  : "",
               )}
             />
             {formik.touched.fullName && formik.errors.fullName ? (
@@ -159,7 +161,9 @@ const SignUp = () => {
               className={clsx(
                 classes.input,
                 "input-text",
-                formik.touched.email && formik.errors.email ? classes.error : ""
+                formik.touched.email && formik.errors.email
+                  ? classes.error
+                  : "",
               )}
             />
             {formik.touched.email && formik.errors.email ? (
@@ -208,7 +212,7 @@ const SignUp = () => {
                 "input-text",
                 formik.touched.password && formik.errors.password
                   ? classes.error
-                  : ""
+                  : "",
               )}
               autoFocus
             />
@@ -238,7 +242,7 @@ const SignUp = () => {
                 "input-text",
                 formik.touched.confirmPassword && formik.errors.confirmPassword
                   ? classes.error
-                  : ""
+                  : "",
               )}
             />
             {formik.touched.confirmPassword && formik.errors.confirmPassword ? (

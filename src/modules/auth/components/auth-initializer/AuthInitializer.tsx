@@ -1,27 +1,31 @@
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
-import * as React from 'react';
-import { useNavigate } from 'react-router';
-import { FORGOT_PASSWORD } from '../../../../helpers/getters';
-import { notifyError } from '../../../../helpers/helper';
-import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
-import { supabaseAuth } from '../../../../lib/supabaseAuth';
-import {
-  supabaseProfile,
-  type ProfileData,
-} from '../../../../lib/supabaseProfile';
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
+import * as React from "react";
+import { useNavigate } from "react-router";
+import { FORGOT_PASSWORD } from "../../../../helpers/getters";
+import { notifyError } from "../../../../helpers/helper";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import {
   clearAuth,
   initializeAuth,
   selectIsInitialized,
   setAuthData,
   setInitialized,
-} from '../../../../store/authSlice';
-import classes from './AuthInitializer.module.css';
+} from "../../../../store/authSlice";
+import classes from "./AuthInitializer.module.css";
+import type { Profile } from "../../../../types/profile";
+import { ProfileService } from "../../../../services/profile/profile.service";
+import { AuthService } from "../../../../services/auth/auth.service";
 
 interface AuthInitializerProps {
   children: React.ReactNode;
 }
+
+/**
+ * Service instances
+ */
+const profileService = new ProfileService();
+const authService = new AuthService();
 
 const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
   const dispatch = useAppDispatch();
@@ -43,14 +47,14 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
       try {
         // First check if this is a recovery/magic link flow
         const hashParams = new URLSearchParams(
-          window.location.hash.substring(1)
+          window.location.hash.substring(1),
         );
-        const type = hashParams.get('type');
-        const accessToken = hashParams.get('access_token');
+        const type = hashParams.get("type");
+        const accessToken = hashParams.get("access_token");
 
         // If it's a recovery link, let the reset-password page handle it
-        if (type === 'recovery' && accessToken) {
-          console.log('Password recovery link detected, skipping auto-auth');
+        if (type === "recovery" && accessToken) {
+          console.log("Password recovery link detected, skipping auto-auth");
           // Don't initialize auth, let the reset-password page handle it
           dispatch(setInitialized(true));
           setIsLoading(false);
@@ -58,10 +62,10 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
         }
 
         // Check for existing session (normal flow)
-        const { session, error } = await supabaseAuth.getSession();
+        const { session, error } = await authService.getSession();
 
         if (error) {
-          console.error('Auth initialization error:', error);
+          console.error("Auth initialization error:", error);
           dispatch(setInitialized(true));
           return;
         }
@@ -69,14 +73,14 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
         if (session) {
           // We have a valid session, get the user profile
           const { data: profile } =
-            await supabaseProfile.getCurrentUserProfile();
+            await profileService.getCurrentUserProfile();
 
           if (isMountedRef.current) {
             dispatch(
               initializeAuth({
                 session,
-                profile: (profile as ProfileData) || null,
-              })
+                profile: (profile as Profile) || null,
+              }),
             );
           }
         } else {
@@ -87,53 +91,53 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
         }
 
         // Set up auth state change listener
-        authListener = supabaseAuth.onAuthStateChange(
+        authListener = authService.onAuthStateChange(
           async (event: AuthChangeEvent, session: Session | null) => {
             if (!isMountedRef.current) return;
 
             switch (event) {
-              case 'SIGNED_IN':
+              case "SIGNED_IN":
                 if (session) {
                   // Get user profile when signed in
                   const { data: profile } =
-                    await supabaseProfile.getCurrentUserProfile();
+                    await profileService.getCurrentUserProfile();
                   dispatch(
                     setAuthData({
                       session,
-                      profile: (profile as ProfileData) || undefined,
-                    })
+                      profile: (profile as Profile) || undefined,
+                    }),
                   );
                 }
                 break;
 
-              case 'SIGNED_OUT':
+              case "SIGNED_OUT":
                 dispatch(clearAuth());
                 break;
 
-              case 'TOKEN_REFRESHED':
+              case "TOKEN_REFRESHED":
                 if (session) {
                   // Update session with new tokens
                   const { data: profile } =
-                    await supabaseProfile.getCurrentUserProfile();
+                    await profileService.getCurrentUserProfile();
                   dispatch(
                     setAuthData({
                       session,
-                      profile: (profile as ProfileData) || undefined,
-                    })
+                      profile: (profile as Profile) || undefined,
+                    }),
                   );
                 }
                 break;
 
-              case 'USER_UPDATED':
+              case "USER_UPDATED":
                 if (session) {
                   // User data was updated (e.g., email change)
                   const { data: profile } =
-                    await supabaseProfile.getCurrentUserProfile();
+                    await profileService.getCurrentUserProfile();
                   dispatch(
                     setAuthData({
                       session,
-                      profile: (profile as ProfileData) || undefined,
-                    })
+                      profile: (profile as Profile) || undefined,
+                    }),
                   );
                 }
                 break;
@@ -141,10 +145,10 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
               default:
                 break;
             }
-          }
+          },
         );
-      } catch (error) {
-        console.error('Failed to initialize auth:', error);
+      } catch (error: unknown) {
+        console.error("Failed to initialize auth:", error);
         if (isMountedRef.current) {
           dispatch(setInitialized(true));
         }
@@ -168,7 +172,7 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
         authListener.unsubscribe();
       }
     };
-  }, [dispatch, isInitialized]);
+  }, [dispatch, isInitialized, navigate]);
 
   // Handle OAuth callback (for OAuth flows)
   React.useEffect(() => {
@@ -177,13 +181,13 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
       const searchParams = new URLSearchParams(window.location.search);
 
-      const error = hashParams.get('error') || searchParams.get('error');
+      const error = hashParams.get("error") || searchParams.get("error");
       const errorDescription =
-        hashParams.get('error_description') ||
-        searchParams.get('error_description');
+        hashParams.get("error_description") ||
+        searchParams.get("error_description");
 
       if (error && errorDescription) {
-        console.error('OAuth error:', error, errorDescription);
+        console.error("OAuth error:", error, errorDescription);
         notifyError(errorDescription);
         navigate(FORGOT_PASSWORD);
         return;
@@ -194,13 +198,13 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
     };
 
     handleOAuthCallback();
-  }, []);
+  }, [navigate]);
 
   if (!isInitialized && isLoading) {
     return (
       <div className={classes.authInitializerContainer}>
         <DotLottieReact
-          src='https://lottie.host/2ecc5382-8ea7-4709-b6fb-41b9a3f527ad/O63lCPhknw.lottie'
+          src="https://lottie.host/2ecc5382-8ea7-4709-b6fb-41b9a3f527ad/O63lCPhknw.lottie"
           loop
           autoplay
         />

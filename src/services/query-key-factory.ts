@@ -23,7 +23,7 @@ export const authKeys = {
 
 export const profileKeys = {
   all: ["profile"] as const,
-  byId: (userId: string) => [...profileKeys.all, "user", userId] as const,
+  detail: (userId: string) => [...profileKeys.all, "user", userId] as const,
   current: () => [...profileKeys.all, "current"] as const,
   completion: (userId: string) =>
     [...profileKeys.all, "user", userId, "completion"] as const,
@@ -76,7 +76,7 @@ export const invalidateProfileQueries = (
   userId?: string
 ) => {
   if (userId) {
-    queryClient.invalidateQueries({ queryKey: profileKeys.byId(userId) });
+    queryClient.invalidateQueries({ queryKey: profileKeys.detail(userId) });
   } else {
     queryClient.invalidateQueries({ queryKey: profileKeys.all });
   }

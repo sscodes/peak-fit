@@ -1,378 +1,321 @@
-// src/services/auth/auth.service.ts
-import type { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
-import { supabaseAuth } from '../../lib/supabaseAuth';
-import { supabaseProfile } from '../../lib/supabaseProfile';
+import type {
+  AuthChangeEvent,
+  AuthError,
+  Session,
+  User,
+} from "@supabase/supabase-js";
+import { supabase } from "../../lib/supabase";
+import type {
+  AuthResponse,
+  LoginPayload,
+  SignUpPayload,
+} from "../../types/auth";
 
 /**
- * Auth Service Class - Wrapper around Supabase auth functions
- * This maintains compatibility with your existing service pattern
- * while using Supabase under the hood
+ * AuthService - Handles all Supabase auth-related operations
+ * Mirrors WorkoutService pattern for consistency
  */
 export class AuthService {
   /**
-   * Create a new user account
+   * Sign up a new user with email and password
    */
-  async createUser(payload: {
-    email: string;
-    password: string;
-    fullName?: string;
-  }) {
-    const { user, session, error } = await supabaseAuth.signUp({
-      email: payload.email,
-      password: payload.password,
-      fullName: payload.fullName,
-    });
+  async signUp(data: SignUpPayload): Promise<AuthResponse> {
+    try {
+      const { data: authData, error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            full_name: data.fullName,
+          },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
 
-    if (error) {
-      throw error;
+      if (error) throw error;
+
+      return {
+        user: authData.user,
+        session: authData.session, // Will be null until email confirmed
+        error: null,
+      };
+    } catch (error) {
+      return {
+        user: null,
+        session: null,
+        error: error as AuthError,
+      };
     }
-
-    return { user, session };
   }
 
   /**
-   * Sign in a user
+   * Sign in with email and password
    */
-  async loginUser(credentials: { email: string; password: string }) {
-    const { user, session, error } = await supabaseAuth.signIn({
-      email: credentials.email,
-      password: credentials.password,
-    });
+  async signIn(data: LoginPayload): Promise<AuthResponse> {
+    try {
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
 
-    if (error) {
-      throw error;
+      if (error) throw error;
+
+      return {
+        user: authData.user,
+        session: authData.session,
+        error: null,
+      };
+    } catch (error) {
+      return {
+        user: null,
+        session: null,
+        error: error as AuthError,
+      };
     }
+  }
 
-    return { user, session };
+  /**
+   * Sign in with Google OAuth
+   */
+  async signInWithGoogle() {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
+      });
+
+      if (error) throw error;
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error: error as AuthError };
+    }
   }
 
   /**
    * Sign out the current user
    */
-  async logout() {
-    const { error } = await supabaseAuth.signOut();
-
-    if (error) {
-      throw error;
+  async signOut(): Promise<{ error: AuthError | null }> {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      return { error: null };
+    } catch (error) {
+      return { error: error as AuthError };
     }
-
-    return { success: true };
   }
 
   /**
-   * Update user password
+   * Get the current session
    */
-  async updateUserPassword(newPassword: string) {
-    const { user, error } = await supabaseAuth.updatePassword(newPassword);
-
-    if (error) {
-      throw error;
+  async getSession(): Promise<{
+    session: Session | null;
+    error: AuthError | null;
+  }> {
+    try {
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
+      if (error) throw error;
+      return { session, error: null };
+    } catch (error) {
+      return { session: null, error: error as AuthError };
     }
+  }
 
-    return { user };
+  /**
+   * Get current user (fetches fresh user data)
+   */
+  async getCurrentUser(): Promise<{
+    user: User | null;
+    error: AuthError | null;
+  }> {
+    try {
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
+      if (error) throw error;
+      return { user, error: null };
+    } catch (error) {
+      return { user: null, error: error as AuthError };
+    }
   }
 
   /**
    * Send password reset email
    */
-  async sendPasswordResetEmail(email: string) {
-    const { error } = await supabaseAuth.sendPasswordResetEmail(email);
-
-    if (error) {
-      throw error;
+  async sendPasswordResetEmail(
+    email: string,
+  ): Promise<{ error: AuthError | null }> {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
+      if (error) throw error;
+      return { error: null };
+    } catch (error) {
+      return { error: error as AuthError };
     }
+  }
 
-    return { success: true };
+  /**
+   * Update user password (requires current session)
+   */
+  async updatePassword(newPassword: string): Promise<{
+    user: User | null;
+    error: AuthError | null;
+  }> {
+    try {
+      const { data, error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+      if (error) throw error;
+      return { user: data.user, error: null };
+    } catch (error) {
+      return { user: null, error: error as AuthError };
+    }
+  }
+
+  /**
+   * Update user email (will send confirmation to new email)
+   */
+  async updateEmail(newEmail: string): Promise<{
+    user: User | null;
+    error: AuthError | null;
+  }> {
+    try {
+      const { data, error } = await supabase.auth.updateUser({
+        email: newEmail,
+      });
+      if (error) throw error;
+      return { user: data.user, error: null };
+    } catch (error) {
+      return { user: null, error: error as AuthError };
+    }
   }
 
   /**
    * Resend confirmation email
    */
-  async resendConfirmationEmail(email: string) {
-    const { error } = await supabaseAuth.resendConfirmation(email);
-
-    if (error) {
-      throw error;
+  async resendConfirmation(
+    email: string,
+  ): Promise<{ error: AuthError | null }> {
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email,
+      });
+      if (error) throw error;
+      return { error: null };
+    } catch (error) {
+      return { error: error as AuthError };
     }
-
-    return { success: true };
   }
 
   /**
-   * Get current session
+   * Exchange auth code for session (OAuth/magic link flows)
    */
-  async getCurrentSession() {
-    const { session, error } = await supabaseAuth.getSession();
-
-    if (error) {
-      throw error;
+  async exchangeCodeForSession(code: string): Promise<AuthResponse> {
+    try {
+      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+      if (error) throw error;
+      return {
+        user: data.user,
+        session: data.session,
+        error: null,
+      };
+    } catch (error) {
+      return {
+        user: null,
+        session: null,
+        error: error as AuthError,
+      };
     }
-
-    return session;
-  }
-
-  /**
-   * Get current user
-   */
-  async getCurrentUser() {
-    const { user, error } = await supabaseAuth.getCurrentUser();
-
-    if (error) {
-      throw error;
-    }
-
-    return user;
   }
 
   /**
    * Refresh the current session
    */
-  async refreshSession() {
-    const { session, error } = await supabaseAuth.refreshSession();
-
-    if (error) {
-      throw error;
+  async refreshSession(): Promise<{
+    session: Session | null;
+    error: AuthError | null;
+  }> {
+    try {
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.refreshSession();
+      if (error) throw error;
+      return { session, error: null };
+    } catch (error) {
+      return { session: null, error: error as AuthError };
     }
-
-    return session;
-  }
-
-  /**
-   * Update user email
-   */
-  async updateUserEmail(newEmail: string) {
-    const { user, error } = await supabaseAuth.updateEmail(newEmail);
-
-    if (error) {
-      throw error;
-    }
-
-    return { user };
-  }
-
-  /**
-   * Exchange auth code for session (OAuth flow)
-   */
-  async exchangeCodeForSession(code: string) {
-    const { user, session, error } = await supabaseAuth.exchangeCodeForSession(
-      code
-    );
-
-    if (error) {
-      throw error;
-    }
-
-    return { user, session };
-  }
-
-  /**
-   * Check if user needs email confirmation
-   */
-  isWaitingForEmailConfirmation(user: User | null): boolean {
-    return supabaseAuth.isWaitingForEmailConfirmation(user);
-  }
-
-  /**
-   * Get user-friendly error message
-   */
-  getErrorMessage(error: any): string {
-    return supabaseAuth.getErrorMessage(error);
   }
 
   /**
    * Set up auth state change listener
+   * Returns unsubscribe function
    */
   onAuthStateChange(
-    callback: (event: AuthChangeEvent, session: Session | null) => void
-  ) {
-    return supabaseAuth.onAuthStateChange(callback);
+    callback: (event: AuthChangeEvent, session: Session | null) => void,
+  ): { unsubscribe: () => void } {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(callback);
+    return { unsubscribe: () => subscription.unsubscribe() };
+  }
+
+  /**
+   * Helper: Check if user needs to confirm email
+   */
+  isWaitingForEmailConfirmation(user: User | null): boolean {
+    return user !== null && user.email_confirmed_at === null;
+  }
+
+  /**
+   * Helper: Check if response requires email confirmation
+   */
+  requiresEmailConfirmation(response: AuthResponse): boolean {
+    return response.session === null && response.user !== null;
+  }
+
+  /**
+   * Helper: Get user-friendly error message
+   */
+  /**
+   * Helper: Get user-friendly error message
+   */
+  getErrorMessage(error: unknown): string {
+    if (!error) return "";
+
+    // Type guard to check if it's an AuthError
+    if (typeof error === "object" && error !== null && "message" in error) {
+      const authError = error as AuthError;
+
+      // Custom error messages for common cases
+      const errorMessages: Record<string, string> = {
+        "Invalid login credentials": "Invalid email or password",
+        "Email not confirmed": "Please confirm your email address",
+        "User already registered": "An account with this email already exists",
+        "User not found": "No account found with this email",
+        "Invalid password": "Invalid email or password",
+      };
+
+      return errorMessages[authError.message] || authError.message;
+    }
+
+    // Fallback for non-AuthError types
+    if (error instanceof Error) {
+      return error.message;
+    }
+
+    return "An unexpected error occurred";
   }
 }
-
-/**
- * Profile Service Class - Wrapper around Supabase profile functions
- */
-export class ProfileService {
-  /**
-   * Get user profile by ID
-   */
-  async getProfile(userId: string) {
-    const { data, error } = await supabaseProfile.getProfile(userId);
-
-    if (error) {
-      throw error;
-    }
-
-    return data;
-  }
-
-  /**
-   * Get current user's profile
-   */
-  async getCurrentUserProfile() {
-    const { data, error } = await supabaseProfile.getCurrentUserProfile();
-
-    if (error) {
-      throw error;
-    }
-
-    return data;
-  }
-
-  /**
-   * Update user profile
-   */
-  async updateProfile(userId: string, updates: any) {
-    const { data, error } = await supabaseProfile.updateProfile(
-      userId,
-      updates
-    );
-
-    if (error) {
-      throw error;
-    }
-
-    return data;
-  }
-
-  /**
-   * Update basic info
-   */
-  async updateBasicInfo(userId: string, info: any) {
-    const { data, error } = await supabaseProfile.updateBasicInfo(userId, info);
-
-    if (error) {
-      throw error;
-    }
-
-    return data;
-  }
-
-  /**
-   * Update health & medical info
-   */
-  async updateHealthMedical(userId: string, healthData: any) {
-    const { data, error } = await supabaseProfile.updateHealthMedical(
-      userId,
-      healthData
-    );
-
-    if (error) {
-      throw error;
-    }
-
-    return data;
-  }
-
-  /**
-   * Update fitness assessment
-   */
-  async updateFitnessAssessment(userId: string, assessment: any) {
-    const { data, error } = await supabaseProfile.updateFitnessAssessment(
-      userId,
-      assessment
-    );
-
-    if (error) {
-      throw error;
-    }
-
-    return data;
-  }
-
-  /**
-   * Update goals
-   */
-  async updateGoals(userId: string, goals: any) {
-    const { data, error } = await supabaseProfile.updateGoals(userId, goals);
-
-    if (error) {
-      throw error;
-    }
-
-    return data;
-  }
-
-  /**
-   * Update training preferences
-   */
-  async updateTrainingPreferences(userId: string, preferences: any) {
-    const { data, error } = await supabaseProfile.updateTrainingPreferences(
-      userId,
-      preferences
-    );
-
-    if (error) {
-      throw error;
-    }
-
-    return data;
-  }
-
-  /**
-   * Update nutrition profile
-   */
-  async updateNutritionProfile(userId: string, nutritionData: any) {
-    const { data, error } = await supabaseProfile.updateNutritionProfile(
-      userId,
-      nutritionData
-    );
-
-    if (error) {
-      throw error;
-    }
-
-    return data;
-  }
-
-  /**
-   * Complete onboarding
-   */
-  async completeOnboarding(userId: string) {
-    const { data, error } = await supabaseProfile.completeOnboarding(userId);
-
-    if (error) {
-      throw error;
-    }
-
-    return data;
-  }
-
-  /**
-   * Upload avatar
-   */
-  async uploadAvatar(userId: string, file: File) {
-    const { url, error } = await supabaseProfile.uploadAvatar(userId, file);
-
-    if (error) {
-      throw error;
-    }
-
-    return url;
-  }
-
-  /**
-   * Get profile completion percentage
-   */
-  async getProfileCompletion(userId: string) {
-    return await supabaseProfile.getProfileCompletion(userId);
-  }
-
-  /**
-   * Check if user needs medical clearance
-   */
-  async needsMedicalClearance(userId: string) {
-    return await supabaseProfile.needsMedicalClearance(userId);
-  }
-
-  /**
-   * Get user's AI context for workout generation
-   */
-  async getUserAIContext(userId: string) {
-    return await supabaseProfile.getUserAIContext(userId);
-  }
-}
-
-// Export singleton instances
-export const authService = new AuthService();
-export const profileService = new ProfileService();

@@ -1,35 +1,47 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router';
-import { AUTH_HOME, DASHBOARD, VERIFY_EMAIL } from '../../helpers/getters';
-import { useAppDispatch } from '../../hooks/redux';
-import { supabaseAuth } from '../../lib/supabaseAuth';
-import { supabaseProfile, type ProfileData } from '../../lib/supabaseProfile';
+import type { AuthError } from "@supabase/supabase-js";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
+import { AUTH_HOME, DASHBOARD, VERIFY_EMAIL } from "../../helpers/getters";
+import { useAppDispatch } from "../../hooks/redux";
 import {
   clearAuth,
   setAuthData,
   setAuthError,
   setLoading,
-  updateProfile as updateProfileState,
-} from '../../store/authSlice';
-import type { ApiError, LoginPayload, SignUpPayload } from '../../types/auth';
-import { authKeys } from '../query-key-factory';
+  updateProfile,
+} from "../../store/authSlice";
+import type { ApiError, LoginPayload, SignUpPayload } from "../../types/auth";
+import { ProfileService } from "../profile/profile.service";
+import { authKeys } from "../query-key-factory";
+import { AuthService } from "./auth.service";
 
-// Helper function to handle Supabase errors
-const handleSupabaseError = (error: any): ApiError => {
-  if (error?.message) {
+/**
+ * Singleton instance of AuthService
+ */
+const profileService = new ProfileService();
+const authService = new AuthService();
+
+/**
+ * Helper function to handle Supabase errors
+ */
+export const handleSupabaseError = (error: unknown): ApiError => {
+  if (error && typeof error === "object" && "message" in error) {
+    const err = error as AuthError;
     return {
-      message: supabaseAuth.getErrorMessage(error),
-      code: error.code,
-      status: error.status,
+      message: authService.getErrorMessage(err),
+      code: err.code,
+      status: err.status,
     };
   }
   return {
-    message: 'An unexpected error occurred',
-    code: 'UNKNOWN_ERROR',
+    message: "An unexpected error occurred",
+    code: "UNKNOWN_ERROR",
   };
 };
 
-// Sign Up Hook
+/**
+ * Hook: Sign up a new user
+ */
 export const useCreateUser = () => {
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
@@ -37,81 +49,74 @@ export const useCreateUser = () => {
 
   return useMutation({
     mutationFn: async ({ user }: { user: SignUpPayload }) => {
-      dispatch(setLoading(true));
-
-      const { session, error } = await supabaseAuth.signUp({
+      const authResponse = await authService.signUp({
         email: user.email,
         password: user.password,
         fullName: user.fullName,
       });
 
-      if (error) throw error;
+      if (authResponse.error) throw authResponse.error;
 
-      // If email confirmation is required, session will be null
-      if (!session) {
+      // Check if email confirmation is required
+      if (authService.requiresEmailConfirmation(authResponse)) {
         return {
           requiresEmailConfirmation: true,
-          user: null,
+          user: authResponse.user,
           session: null,
+          profile: null,
         };
       }
 
-      // Get or create profile
+      // Fetch user profile
       const { data: profile, error: profileError } =
-        await supabaseProfile.getCurrentUserProfile();
+        await profileService.getCurrentUserProfile();
 
       if (profileError) {
-        console.warn('Profile fetch after sign-up failed:', profileError);
-        // Profile might not exist yet due to trigger delay, this is not critical
+        console.warn("Profile fetch after sign-up failed:", profileError);
       }
 
       return {
-        session,
-        profile: profile || null, // Changed to ensure null instead of undefined
+        session: authResponse.session,
+        user: authResponse.user,
+        profile: profile || null,
         requiresEmailConfirmation: false,
       };
     },
     onSuccess: (data, variables) => {
       if (data.requiresEmailConfirmation) {
-        // Navigate to email confirmation page
         navigate(VERIFY_EMAIL, {
           state: { email: variables.user.email },
         });
-      } else if (data.session) {
-        // Set auth data in Redux
+        return;
+      }
+
+      if (data.session) {
         dispatch(
           setAuthData({
             session: data.session,
             profile: data.profile || undefined,
-          })
+          }),
         );
 
         queryClient.invalidateQueries({
           queryKey: authKeys.createUser(),
         });
 
-        // Navigate to onboarding or home
-        if (!data.profile?.onboarding_completed) {
-          navigate('/explore');
-        } else {
-          navigate(DASHBOARD);
-        }
+        navigate(data.profile?.is_onboarded ? DASHBOARD : "/explore");
       }
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       dispatch(setAuthError());
       const apiError = handleSupabaseError(error);
-      console.error('Sign up error:', apiError);
+      console.error("Sign up error:", apiError);
       throw apiError;
-    },
-    onSettled: () => {
-      // Always clear loading state regardless of outcome
-      dispatch(setLoading(false));
     },
   });
 };
 
-// Login Hook
+/**
+ * Hook: Login user
+ */
 export const useLoginUser = () => {
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
@@ -119,61 +124,54 @@ export const useLoginUser = () => {
 
   return useMutation({
     mutationFn: async ({ user }: { user: LoginPayload }) => {
-      dispatch(setLoading(true));
-
-      const { session, error } = await supabaseAuth.signIn({
+      const authResponse = await authService.signIn({
         email: user.email,
         password: user.password,
       });
 
-      if (error) throw error;
-      if (!session) throw new Error('No session returned');
+      if (authResponse.error) throw authResponse.error;
+      if (!authResponse.session) throw new Error("No session returned");
 
-      // Get user profile
+      // Fetch user profile
       const { data: profile, error: profileError } =
-        await supabaseProfile.getCurrentUserProfile();
+        await profileService.getCurrentUserProfile();
 
       if (profileError) {
-        console.warn('Profile fetch after login failed:', profileError);
-        // Continue with login even if profile fetch fails
+        console.warn("Profile fetch after login failed:", profileError);
       }
 
-      return { session, profile: profile || null };
+      return {
+        session: authResponse.session,
+        user: authResponse.user,
+        profile: profile || null,
+      };
     },
     onSuccess: (data) => {
-      // Set auth data in Redux
       dispatch(
         setAuthData({
           session: data.session,
           profile: data.profile || undefined,
-        })
+        }),
       );
 
       queryClient.invalidateQueries({
         queryKey: authKeys.loginUser(),
       });
 
-      // Navigate based on onboarding status
-      if (!data.profile?.onboarding_completed) {
-        navigate('/onboarding');
-      } else {
-        navigate(DASHBOARD);
-      }
+      navigate(data.profile?.is_onboarded ? DASHBOARD : "/onboarding");
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       dispatch(setAuthError());
       const apiError = handleSupabaseError(error);
-      console.error('Login error:', apiError);
+      console.error("Login error:", apiError);
       throw apiError;
-    },
-    onSettled: () => {
-      // Always clear loading state regardless of outcome
-      dispatch(setLoading(false));
     },
   });
 };
 
-// Update Password Hook
+/**
+ * Hook: Update user password
+ */
 export const useUpdateUserPassword = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -181,16 +179,15 @@ export const useUpdateUserPassword = () => {
 
   return useMutation({
     mutationFn: async ({ newPassword }: { newPassword: string }) => {
-      const { user, error } = await supabaseAuth.updatePassword(newPassword);
+      const { user, error } = await authService.updatePassword(newPassword);
 
       if (error) throw error;
-      if (!user) throw new Error('Failed to update password');
+      if (!user) throw new Error("Failed to update password");
 
       return { user };
     },
     onSuccess: (data) => {
-      // Update user in Redux
-      dispatch(updateProfileState(data.user));
+      dispatch(updateProfile(data.user));
 
       queryClient.invalidateQueries({
         queryKey: authKeys.updateUserPassword(),
@@ -198,78 +195,84 @@ export const useUpdateUserPassword = () => {
 
       navigate(DASHBOARD);
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       const apiError = handleSupabaseError(error);
-      console.error('Password update error:', apiError);
+      console.error("Password update error:", apiError);
       throw apiError;
     },
   });
 };
 
-// Reset Password Hook (Send Reset Email)
+/**
+ * Hook: Send password reset email
+ */
 export const useSendPasswordResetEmail = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ email }: { email: string }) => {
-      const { error } = await supabaseAuth.sendPasswordResetEmail(email);
+      const { error } = await authService.sendPasswordResetEmail(email);
 
       if (error) throw error;
 
-      return { success: true, message: 'Password reset email sent' };
+      return { success: true, message: "Password reset email sent" };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: authKeys.sendOTPMail(),
       });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       const apiError = handleSupabaseError(error);
-      console.error('Password reset error:', apiError);
+      console.error("Password reset error:", apiError);
       throw apiError;
     },
   });
 };
 
-// Resend Confirmation Email Hook
+/**
+ * Hook: Resend confirmation email
+ */
 export const useResendConfirmationEmail = () => {
   return useMutation({
     mutationFn: async ({ email }: { email: string }) => {
-      const { error } = await supabaseAuth.resendConfirmation(email);
+      const { error } = await authService.resendConfirmation(email);
 
       if (error) throw error;
 
-      return { success: true, message: 'Confirmation email resent' };
+      return { success: true, message: "Confirmation email resent" };
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       const apiError = handleSupabaseError(error);
-      console.error('Resend confirmation error:', apiError);
+      console.error("Resend confirmation error:", apiError);
       throw apiError;
     },
   });
 };
 
-// Get Current Session Hook
+/**
+ * Hook: Get current session
+ */
 export const useCurrentSession = (options?: { enabled?: boolean }) => {
   const dispatch = useAppDispatch();
 
   return useQuery({
     queryKey: authKeys.currentUser(),
     queryFn: async () => {
-      const { session, error } = await supabaseAuth.getSession();
+      const { session, error } = await authService.getSession();
 
       if (error) throw error;
-      if (!session) throw new Error('No active session');
+      if (!session) throw new Error("No active session");
 
       // Get user profile
-      const { data: profile } = await supabaseProfile.getCurrentUserProfile();
+      const { data: profile } = await profileService.getCurrentUserProfile();
 
       // Update Redux store
       dispatch(
         setAuthData({
           session,
           profile: profile || undefined,
-        })
+        }),
       );
 
       return { session, profile };
@@ -280,48 +283,49 @@ export const useCurrentSession = (options?: { enabled?: boolean }) => {
   });
 };
 
-// Refresh Session Hook
+/**
+ * Hook: Refresh session
+ */
 export const useRefreshSession = () => {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async () => {
-      const { session, error } = await supabaseAuth.refreshSession();
+      const { session, error } = await authService.refreshSession();
 
       if (error) throw error;
-      if (!session) throw new Error('Failed to refresh session');
+      if (!session) throw new Error("Failed to refresh session");
 
       // Get updated profile
-      const { data: profile } = await supabaseProfile.getCurrentUserProfile();
+      const { data: profile } = await profileService.getCurrentUserProfile();
 
       return { session, profile };
     },
     onSuccess: (data) => {
-      // Update Redux store
       dispatch(
         setAuthData({
           session: data.session,
-          profile: (data.profile as ProfileData) || undefined,
-        })
+          profile: data.profile || undefined,
+        }),
       );
 
-      // Invalidate all auth queries
       queryClient.invalidateQueries({
         queryKey: authKeys.all,
       });
     },
-    onError: (error: any) => {
-      // If refresh fails, clear auth
+    onError: (error: unknown) => {
       dispatch(clearAuth());
       const apiError = handleSupabaseError(error);
-      console.error('Session refresh error:', apiError);
+      console.error("Session refresh error:", apiError);
       throw apiError;
     },
   });
 };
 
-// Logout Hook
+/**
+ * Hook: Logout user
+ */
 export const useLogout = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -329,138 +333,30 @@ export const useLogout = () => {
 
   return useMutation({
     mutationFn: async () => {
-      const { error } = await supabaseAuth.signOut();
+      const { error } = await authService.signOut();
       if (error) throw error;
       return { success: true };
     },
     onSuccess: () => {
-      // Clear Redux store
       dispatch(clearAuth());
-
-      // Clear React Query cache
       queryClient.clear();
-
-      // Navigate to auth home
       navigate(AUTH_HOME);
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       // Even on error, clear local state
       dispatch(clearAuth());
       queryClient.clear();
       navigate(AUTH_HOME);
 
       const apiError = handleSupabaseError(error);
-      console.error('Logout error:', apiError);
+      console.error("Logout error:", apiError);
     },
   });
 };
 
-// Update Profile Hook
-export const useUpdateProfile = () => {
-  const queryClient = useQueryClient();
-  const dispatch = useAppDispatch();
-
-  return useMutation({
-    mutationFn: async ({
-      userId,
-      updates,
-    }: {
-      userId: string;
-      updates: Partial<ProfileData>;
-    }) => {
-      const { data, error } = await supabaseProfile.updateProfile(
-        userId,
-        updates
-      );
-
-      if (error) throw error;
-      if (!data) throw new Error('Failed to update profile');
-
-      return data;
-    },
-    onSuccess: (data) => {
-      // Update profile in Redux
-      dispatch(updateProfileState(data));
-
-      // Invalidate profile queries
-      queryClient.invalidateQueries({
-        queryKey: ['profile', data.id],
-      });
-    },
-    onError: (error: any) => {
-      const apiError = handleSupabaseError(error);
-      console.error('Profile update error:', apiError);
-      throw apiError;
-    },
-  });
-};
-
-// Complete Onboarding Hook
-export const useCompleteOnboarding = () => {
-  const queryClient = useQueryClient();
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-
-  return useMutation({
-    mutationFn: async ({ userId }: { userId: string }) => {
-      const { data, error } = await supabaseProfile.completeOnboarding(userId);
-
-      if (error) throw error;
-      if (!data) throw new Error('Failed to complete onboarding');
-
-      return data;
-    },
-    onSuccess: (data) => {
-      // Update profile in Redux
-      dispatch(updateProfileState({ onboarding_completed: true }));
-
-      // Invalidate profile queries
-      queryClient.invalidateQueries({
-        queryKey: ['profile', data.id],
-      });
-
-      // Navigate to home
-      navigate(DASHBOARD);
-    },
-    onError: (error: any) => {
-      const apiError = handleSupabaseError(error);
-      console.error('Onboarding completion error:', apiError);
-      throw apiError;
-    },
-  });
-};
-
-// Upload Avatar Hook
-export const useUploadAvatar = () => {
-  const queryClient = useQueryClient();
-  const dispatch = useAppDispatch();
-
-  return useMutation({
-    mutationFn: async ({ userId, file }: { userId: string; file: File }) => {
-      const { url, error } = await supabaseProfile.uploadAvatar(userId, file);
-
-      if (error) throw error;
-      if (!url) throw new Error('Failed to upload avatar');
-
-      return { avatar_url: url };
-    },
-    onSuccess: (data, variables) => {
-      // Update profile in Redux
-      dispatch(updateProfileState({ avatar_url: data.avatar_url }));
-
-      // Invalidate profile queries
-      queryClient.invalidateQueries({
-        queryKey: ['profile', variables.userId],
-      });
-    },
-    onError: (error: any) => {
-      const apiError = handleSupabaseError(error);
-      console.error('Avatar upload error:', apiError);
-      throw apiError;
-    },
-  });
-};
-
+/**
+ * Hook: OAuth sign in with Google
+ */
 export const useOAuthSignIn = () => {
   const dispatch = useAppDispatch();
 
@@ -468,17 +364,16 @@ export const useOAuthSignIn = () => {
     mutationFn: async () => {
       dispatch(setLoading(true));
 
-      let result = await supabaseAuth.signInWithGoogle();
+      const result = await authService.signInWithGoogle();
 
       if (result.error) throw result.error;
 
       // OAuth redirects to provider, no immediate session
       return result.data;
     },
-    onError: (error: any) => {
-      dispatch(setLoading(false));
+    onError: (error: unknown) => {
       const apiError = handleSupabaseError(error);
-      console.error('OAuth error:', apiError);
+      console.error("OAuth error:", apiError);
       throw apiError;
     },
     onSettled: () => {
