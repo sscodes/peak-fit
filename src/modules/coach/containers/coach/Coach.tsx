@@ -13,7 +13,7 @@ const Coach = () => {
       navigate(ONBOARDING_QUESTIONNAIRE);
     }
   }, [user, navigate]);
-  return <div />;
+  return <div></div>;
 };
 
 export default Coach;

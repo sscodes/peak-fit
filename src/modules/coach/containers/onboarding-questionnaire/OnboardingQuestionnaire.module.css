@@ -131,7 +131,7 @@
   }
 }
 
-@media (max-height: 649) {
+@media (max-height: 649px) {
   .step {
     height: 300px;
     margin-bottom: 0;
