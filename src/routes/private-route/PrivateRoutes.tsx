@@ -1,10 +1,12 @@
-import * as React from 'react';
-import { Navigate, Route, Routes } from 'react-router';
-import TopBarProgress from 'react-topbar-progress-indicator';
-import Explore from '../../modules/explore/containers/Explore';
-import Dashboard from '../../modules/dashboard/containers/Dashboard';
-import MasterLayout from '../../layout/master-layout/MasterLayout';
-import { DASHBOARD } from '../../helpers/getters';
+import * as React from "react";
+import { Navigate, Route, Routes } from "react-router";
+import TopBarProgress from "react-topbar-progress-indicator";
+import { DASHBOARD } from "../../helpers/getters";
+import MasterLayout from "../../layout/master-layout/MasterLayout";
+import Coach from "../../modules/coach/containers/coach/Coach";
+import OnboardingQuestionnaire from "../../modules/coach/containers/onboarding-questionnaire/OnboardingQuestionnaire";
+import Dashboard from "../../modules/dashboard/containers/Dashboard";
+import Explore from "../../modules/explore/containers/Explore";
 
 const SuspendedView = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -18,7 +20,7 @@ const PrivateRoutes = () => {
       <Route element={<MasterLayout />}>
         <Route index element={<Navigate to={DASHBOARD} replace />} />
         <Route
-          path='dashboard'
+          path="dashboard"
           element={
             <SuspendedView>
               <Dashboard />
@@ -26,14 +28,30 @@ const PrivateRoutes = () => {
           }
         />
         <Route
-          path='explore'
+          path="explore"
           element={
             <SuspendedView>
               <Explore />
             </SuspendedView>
           }
         />
-        <Route path='*' element={<Navigate to='/error/404' replace />} />
+        <Route
+          path="coach"
+          element={
+            <SuspendedView>
+              <Coach />
+            </SuspendedView>
+          }
+        />
+        <Route
+          path="onboarding-questionnaire"
+          element={
+            <SuspendedView>
+              <OnboardingQuestionnaire />
+            </SuspendedView>
+          }
+        />
+        <Route path="*" element={<Navigate to="/error/404" replace />} />
       </Route>
     </Routes>
   );

@@ -2,6 +2,7 @@ export const DASHBOARD = '/dashboard';
 export const EXPLORE = '/explore';
 export const COACH = '/coach';
 export const SETTINGS = '/settings';
+export const ONBOARDING_QUESTIONNAIRE = '/onboarding-questionnaire';
 
 export const AUTH_HOME = '/auth';
 export const SIGN_IN = `${AUTH_HOME}/sign-in`;
