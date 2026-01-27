@@ -9,14 +9,18 @@
   padding-bottom: 20px;
 }
 
+.title {
+  text-align: center;
+  color: var(--text-primary);
+}
 .subTitle {
   text-align: center;
   color: var(--text-secondary);
 }
 
 .step {
-  margin-bottom: 25px;
-  min-height: 300px;
+  margin-bottom: 16px;
+  min-height: 280px;
   background-color: var(--bg-tertiary);
   display: flex;
   flex-direction: column;
