@@ -15,6 +15,7 @@ import {
 } from "../../../../services/auth/auth.data";
 import { signInValidation } from "../../utils/validation";
 import classes from "./SignIn.module.css";
+import Input from "../../../../components/input/Input";
 
 const authService = new AuthService();
 
@@ -67,6 +68,7 @@ const SignIn = () => {
     const errors = await formik.validateForm();
     return !errors.password;
   };
+  console.log(formik.touched.email && formik.errors.email);
 
   return (
     <>
@@ -108,32 +110,18 @@ const SignIn = () => {
 
         <Step onNext={validateStep2} hideBackButton>
           <div className={classes.step}>
-            <div>
-              <label htmlFor="email" className={clsx(classes.title, "label")}>
-                Enter Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                placeholder="your@email.com"
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                className={clsx(
-                  classes.input,
-                  "input-text",
-                  formik.touched.email && formik.errors.email
-                    ? classes.error
-                    : ""
-                )}
-              />
-              {formik.touched.email && formik.errors.email ? (
-                <div className={classes.errors}>{formik.errors.email}</div>
-              ) : (
-                <div className={classes.errorsFiller}>error filler</div>
-              )}
-            </div>
+            <Input
+              label="Enter Email"
+              id="email"
+              isError={formik.touched.email && formik.errors.email}
+              error={formik.errors.email}
+              type="email"
+              placeholder="your@email.com"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              inputGroupClasses={classes.emailSection}
+            />
             <div className={classes.orSection}>
               <div className={classes.divider}></div>
               <div className={clsx("heading-6", classes.or)}>or</div>
@@ -157,36 +145,17 @@ const SignIn = () => {
 
         <Step onNext={validateStep3} nextButtonText="Submit">
           <div className={classes.step}>
-            <div>
-              <label
-                htmlFor="password"
-                className={clsx(classes.title, "label")}
-              >
-                Enter Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                name="password"
-                placeholder="••••••••"
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                className={clsx(
-                  classes.input,
-                  "input-text",
-                  formik.touched.password && formik.errors.password
-                    ? classes.error
-                    : ""
-                )}
-                autoFocus
-              />
-              {formik.touched.password && formik.errors.password ? (
-                <span className={classes.errors}>{formik.errors.password}</span>
-              ) : (
-                <div className={classes.errorsFiller}>error filler</div>
-              )}
-            </div>
+            <Input
+              label="Enter Password"
+              id="password"
+              isError={formik.touched.password && formik.errors.password}
+              error={formik.errors.password}
+              type="password"
+              placeholder="••••••••"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
           </div>
           <div className={classes.forgotPasswordSection}>
             <a

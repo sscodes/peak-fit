@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { useFormik } from "formik";
 import { useNavigate, type NavigateFunction } from "react-router";
 import Button from "../../../../components/button/Button";
+import Input from "../../../../components/input/Input";
 import { Step, Stepper } from "../../../../components/stepper/Stepper";
 import { ASSETS } from "../../../../helpers/assets";
 import { SIGN_IN } from "../../../../helpers/getters";
@@ -119,59 +120,29 @@ const SignUp = () => {
 
       <Step onNext={validateStep2} hideBackButton>
         <div className={classes.step}>
-          <div>
-            <label htmlFor="fullName" className={clsx(classes.title, "label")}>
-              Enter Name
-            </label>
-            <input
-              id="fullName"
-              name="fullName"
-              type="text"
-              placeholder="John Doe"
-              value={formik.values.fullName}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              autoFocus
-              className={clsx(
-                classes.input,
-                "input-text",
-                formik.touched.fullName && formik.errors.fullName
-                  ? classes.error
-                  : "",
-              )}
-            />
-            {formik.touched.fullName && formik.errors.fullName ? (
-              <div className={classes.errors}>{formik.errors.fullName}</div>
-            ) : (
-              <div className={classes.errorsFiller}>error filler</div>
-            )}
-          </div>
-          <div className={classes.emailSection}>
-            <label htmlFor="email" className={clsx(classes.title, "label")}>
-              Enter Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="your@email.com"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              className={clsx(
-                classes.input,
-                "input-text",
-                formik.touched.email && formik.errors.email
-                  ? classes.error
-                  : "",
-              )}
-            />
-            {formik.touched.email && formik.errors.email ? (
-              <div className={classes.errors}>{formik.errors.email}</div>
-            ) : (
-              <div className={classes.errorsFiller}>error filler</div>
-            )}
-          </div>
+          <Input
+            label="Enter Name"
+            id="fullName"
+            isError={formik.touched.fullName && formik.errors.fullName}
+            error={formik.errors.fullName}
+            type="text"
+            placeholder="John Doe"
+            value={formik.values.fullName}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          <Input
+            label="Enter Email"
+            id="email"
+            isError={formik.touched.email && formik.errors.email}
+            error={formik.errors.email}
+            type="email"
+            placeholder="your@email.com"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            inputGroupClasses={classes.emailSection}
+          />
           <div className={classes.orSection}>
             <div className={classes.divider}></div>
             <div className={clsx("heading-6", classes.or)}>or</div>
@@ -195,64 +166,31 @@ const SignUp = () => {
 
       <Step onNext={validateStep3} nextButtonText="Submit">
         <div className={classes.step}>
-          <div>
-            <label htmlFor="password" className={clsx(classes.title, "label")}>
-              Enter Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="••••••••"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              className={clsx(
-                classes.input,
-                "input-text",
-                formik.touched.password && formik.errors.password
-                  ? classes.error
-                  : "",
-              )}
-              autoFocus
-            />
-            {formik.touched.password && formik.errors.password ? (
-              <span className={classes.errors}>{formik.errors.password}</span>
-            ) : (
-              <div className={classes.errorsFiller}>error filler</div>
-            )}
-          </div>
-          <div className={classes.confirmPwdSection}>
-            <label
-              htmlFor="confirmPassword"
-              className={clsx(classes.title, classes.confirmPwd, "label")}
-            >
-              Confirm Password
-            </label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              placeholder="••••••••"
-              value={formik.values.confirmPassword}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              className={clsx(
-                classes.input,
-                "input-text",
-                formik.touched.confirmPassword && formik.errors.confirmPassword
-                  ? classes.error
-                  : "",
-              )}
-            />
-            {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
-              <span className={classes.errors}>
-                {formik.errors.confirmPassword}
-              </span>
-            ) : (
-              <div className={classes.errorsFiller}>error filler</div>
-            )}
-          </div>
+          <Input
+            label="Enter Password"
+            id="password"
+            isError={formik.touched.password && formik.errors.password}
+            error={formik.errors.password}
+            type="password"
+            placeholder="••••••••"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          <Input
+            label="Confirm Password"
+            id="confirmPassword"
+            isError={
+              formik.touched.confirmPassword && formik.errors.confirmPassword
+            }
+            error={formik.errors.confirmPassword}
+            type="password"
+            placeholder="••••••••"
+            value={formik.values.confirmPassword}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            inputGroupClasses={classes.confirmPwdSection}
+          />
         </div>
       </Step>
     </Stepper>
