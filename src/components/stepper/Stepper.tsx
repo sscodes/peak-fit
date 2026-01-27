@@ -75,7 +75,7 @@ export const Stepper: React.FC<StepperProps> = ({
   const isExtraSmall = useMediaQuery("576px");
   // Convert children to array and filter out invalid elements
   const steps = React.Children.toArray(children).filter(
-    (child) => React.isValidElement(child) && child.type === Step
+    (child) => React.isValidElement(child) && child.type === Step,
   ) as React.ReactElement<StepProps>[];
 
   const totalSteps = steps.length;
@@ -133,12 +133,28 @@ export const Stepper: React.FC<StepperProps> = ({
       return renderStepIndicator();
     }
 
+    const getStepperWidth = () => {
+      if (STEPPER_SIZE.FULLSCREEN) {
+        if (isExtraSmall) return "90%";
+        else if (isSmall) return "85%";
+        else if (isMedium) return "75%";
+        else if (isLarge) return "65%";
+        else if (isExtraLarge) return "55%";
+        else return "45%";
+      } else return "90%";
+    };
+
     return progressIndicator === STEPPER_PROGRESS.LINE ? (
-      <div className={classes.progressBar}>
+      <div className={classes.progressSection}>
         <div
-          className={classes.progressFill}
-          style={{ width: `${(currentStep / totalSteps) * 100}%` }}
-        />
+          className={classes.progressBar}
+          style={{ width: getStepperWidth() }}
+        >
+          <div
+            className={classes.progressFill}
+            style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+          />
+        </div>
       </div>
     ) : (
       <div
