@@ -134,7 +134,7 @@ export const Stepper: React.FC<StepperProps> = ({
     }
 
     const getStepperWidth = () => {
-      if (STEPPER_SIZE.FULLSCREEN) {
+      if (size === STEPPER_SIZE.FULLSCREEN) {
         if (isExtraSmall) return "90%";
         else if (isSmall) return "85%";
         else if (isMedium) return "75%";
