@@ -23,7 +23,7 @@ const Input = ({
   ...rest
 }: InputProps) => {
   return (
-    <div className={clsx(classes.container, inputGroupClasses)}>
+    <div className={inputGroupClasses}>
       <label
         htmlFor={id}
         className={clsx(classes.title, "label", labelClasses)}
