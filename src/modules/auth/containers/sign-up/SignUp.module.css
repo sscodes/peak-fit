@@ -26,29 +26,6 @@
   flex-direction: column;
 }
 
-.input {
-  border: 0;
-  box-sizing: border-box;
-  background-color: var(--primary-200);
-  box-shadow: var(--shadow-inset);
-  padding: 8px;
-  width: 100%;
-  border-radius: 8px;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  color: var(--text-inverse);
-}
-
-.input::placeholder {
-  color: var(--text-inverse);
-  opacity: 0.7;
-}
-
-.input:focus-visible {
-  outline: 2px solid var(--focus, var(--primary-500));
-  outline-offset: 2px;
-}
-
 .footer {
   margin-top: 17px;
   display: flex;
@@ -93,18 +70,6 @@
 .forgotPassword {
   color: var(--text-tertiary);
   cursor: pointer;
-}
-
-.confirmPwd {
-  margin-top: 50px;
-}
-
-.errors {
-  color: var(--error-500);
-}
-
-.errorsFiller {
-  opacity: 0;
 }
 
 .emailSection,

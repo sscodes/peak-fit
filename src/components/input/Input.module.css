@@ -1,0 +1,35 @@
+.title {
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.input {
+  border: 0;
+  box-sizing: border-box;
+  background-color: var(--primary-200) !important;
+  box-shadow: var(--shadow-inset);
+  padding: 8px;
+  width: 100%;
+  border-radius: 8px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  color: var(--text-inverse);
+}
+
+.input::placeholder {
+  color: var(--text-inverse);
+  opacity: 0.7;
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+
+.errors {
+  color: var(--error-500);
+}
+
+.errorsFiller {
+  opacity: 0;
+}

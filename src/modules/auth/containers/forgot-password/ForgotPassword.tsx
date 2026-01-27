@@ -9,6 +9,7 @@ import { useSendPasswordResetEmail } from "../../../../services/auth/auth.data";
 import { AuthService } from "../../../../services/auth/auth.service";
 import { emailValidation } from "../../utils/validation";
 import classes from "./ForgotPassword.module.css";
+import Input from "../../../../components/input/Input";
 
 const authService = new AuthService();
 
@@ -81,32 +82,17 @@ const ForgotPassword = () => {
           hideBackButton
         >
           <div className={classes.step}>
-            <div>
-              <label htmlFor="email" className={clsx(classes.title, "label")}>
-                Enter Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                placeholder="your@email.com"
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                className={clsx(
-                  classes.input,
-                  "input-text",
-                  formik.touched.email && formik.errors.email
-                    ? classes.error
-                    : "",
-                )}
-              />
-              {formik.touched.email && formik.errors.email ? (
-                <div className={classes.errors}>{formik.errors.email}</div>
-              ) : (
-                <div className={classes.errorsFiller}>error filler</div>
-              )}
-            </div>
+            <Input
+              label="Enter Email"
+              id="email"
+              isError={formik.touched.email && formik.errors.email}
+              error={formik.errors.email}
+              type="email"
+              placeholder="your@email.com"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
           </div>
         </Step>
 

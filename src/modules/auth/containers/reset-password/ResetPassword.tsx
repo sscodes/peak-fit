@@ -8,6 +8,7 @@ import { AuthService } from "../../../../services/auth/auth.service";
 import { useUpdateUserPassword } from "../../../../services/auth/auth.data";
 import { passwordResetValidation } from "../../utils/validation";
 import classes from "./ResetPassword.module.css";
+import Input from "../../../../components/input/Input";
 
 const authService = new AuthService();
 
@@ -55,64 +56,30 @@ const ResetPassword = () => {
             PeakFit
           </div>
         )}
-        <div>
-          <label htmlFor="password" className={clsx(classes.title, "label")}>
-            Enter Password
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            placeholder="••••••••"
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className={clsx(
-              classes.input,
-              "input-text",
-              formik.touched.password && formik.errors.password
-                ? classes.error
-                : ""
-            )}
-            autoFocus
-          />
-          {formik.touched.password && formik.errors.password ? (
-            <span className={classes.errors}>{formik.errors.password}</span>
-          ) : (
-            <div className={classes.errorsFiller}>error filler</div>
-          )}
-        </div>
-        <div>
-          <label
-            htmlFor="confirmPassword"
-            className={clsx(classes.title, classes.confirmPwd, "label")}
-          >
-            Confirm Password
-          </label>
-          <input
-            id="confirmPassword"
-            name="confirmPassword"
-            type="password"
-            placeholder="••••••••"
-            value={formik.values.confirmPassword}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className={clsx(
-              classes.input,
-              "input-text",
-              formik.touched.confirmPassword && formik.errors.confirmPassword
-                ? classes.error
-                : ""
-            )}
-          />
-          {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
-            <span className={classes.errors}>
-              {formik.errors.confirmPassword}
-            </span>
-          ) : (
-            <div className={classes.errorsFiller}>error filler</div>
-          )}
-        </div>
+        <Input
+          label="Enter Password"
+          id="password"
+          isError={formik.touched.password && formik.errors.password}
+          error={formik.errors.password}
+          type="password"
+          placeholder="••••••••"
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+        <Input
+          label="Confirm Password"
+          id="confirmPassword"
+          isError={
+            formik.touched.confirmPassword && formik.errors.confirmPassword
+          }
+          error={formik.errors.confirmPassword}
+          type="password"
+          placeholder="••••••••"
+          value={formik.values.confirmPassword}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
         <div className={classes.buttonGroup}>
           <Button onClick={handlePasswordReset} disabled={isPending}>
             {isPending ? "Resetting..." : "Reset Password"}
