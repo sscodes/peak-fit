@@ -1,6 +1,7 @@
 import React, { useState, type ReactNode } from "react";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import {
+  BUTTON_SIZE,
   BUTTON_VARIANT,
   STEPPER_PROGRESS,
   STEPPER_SIZE,
@@ -28,6 +29,8 @@ interface StepperProps {
   hideFooterSteps?: number[];
   size?: STEPPER_SIZE;
   header?: ReactNode;
+  showCancelButton?: boolean;
+  handleCancel?: () => void;
 }
 
 interface StepProps {
@@ -65,6 +68,8 @@ export const Stepper: React.FC<StepperProps> = ({
   hideFooterSteps = [],
   size = STEPPER_SIZE.SMALL,
   header,
+  showCancelButton = false,
+  handleCancel = () => {},
 }) => {
   const [currentStep, setCurrentStep] = useState<number>(initialStep);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -73,6 +78,7 @@ export const Stepper: React.FC<StepperProps> = ({
   const isMedium = useMediaQuery("992px");
   const isSmall = useMediaQuery("768px");
   const isExtraSmall = useMediaQuery("576px");
+  const isMobile = useMediaQuery("425px");
   // Convert children to array and filter out invalid elements
   const steps = React.Children.toArray(children).filter(
     (child) => React.isValidElement(child) && child.type === Step,
@@ -258,13 +264,26 @@ export const Stepper: React.FC<StepperProps> = ({
           {currentStepElement?.props.children}
         </div>
 
-        {(showBackButton || showNextButton) && (
-          <div className={`${classes.navigationButtons} ${footerClassName}`}>
-            {showBackButton ? (
+        <div className={`${classes.navigationButtons} ${footerClassName}`}>
+          {showCancelButton ? (
+            <Button
+              variant={BUTTON_VARIANT.MINIMAL}
+              onClick={handleCancel}
+              size={isMobile ? BUTTON_SIZE.SMALL : BUTTON_SIZE.REGULAR}
+            >
+              Cancel
+            </Button>
+          ) : (
+            <div />
+          )}
+
+          <div className={classes.leftBtns}>
+            {showBackButton && (
               <Button
                 variant={BUTTON_VARIANT.SECONDARY}
                 onClick={handlePrev}
                 disabled={isProcessing}
+                size={isMobile ? BUTTON_SIZE.SMALL : BUTTON_SIZE.REGULAR}
               >
                 {!isProcessing && (
                   <div className={classes.btnIcon}>
@@ -273,12 +292,13 @@ export const Stepper: React.FC<StepperProps> = ({
                 )}
                 {backText}
               </Button>
-            ) : (
-              <div />
             )}
-
             {showNextButton && (
-              <Button onClick={handleNext} disabled={isProcessing}>
+              <Button
+                onClick={handleNext}
+                disabled={isProcessing}
+                size={isMobile ? BUTTON_SIZE.SMALL : BUTTON_SIZE.REGULAR}
+              >
                 {nextText}
                 {!isProcessing && (
                   <div className={classes.btnIcon}>
@@ -288,7 +308,7 @@ export const Stepper: React.FC<StepperProps> = ({
               </Button>
             )}
           </div>
-        )}
+        </div>
 
         {hideFooterSteps.includes(currentStep - 1) ? null : footer}
       </div>
