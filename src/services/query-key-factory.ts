@@ -1,4 +1,4 @@
-// src/services/query-key-factory.ts
+// query-key-factory.ts
 
 import type { QueryClient } from "@tanstack/react-query";
 
@@ -10,15 +10,15 @@ import type { QueryClient } from "@tanstack/react-query";
 
 export const authKeys = {
   all: ["auth"] as const,
-  createUser: () => [...authKeys.all, "createUser"] as const,
-  loginUser: () => [...authKeys.all, "loginUser"] as const,
-  currentUser: () => [...authKeys.all, "currentUser"] as const,
-  updateUserPassword: () => [...authKeys.all, "updatePassword"] as const,
-  sendOTPMail: () => [...authKeys.all, "sendOTP"] as const,
-  checkOTP: () => [...authKeys.all, "checkOTP"] as const,
-  deleteUser: () => [...authKeys.all, "deleteUser"] as const,
+  createUser: () => [...authKeys.all, "create-user"] as const,
+  loginUser: () => [...authKeys.all, "login-user"] as const,
+  currentUser: () => [...authKeys.all, "current-user"] as const,
+  updateUserPassword: () => [...authKeys.all, "update-password"] as const,
+  sendOTPMail: () => [...authKeys.all, "send-OTP"] as const,
+  checkOTP: () => [...authKeys.all, "check-OTP"] as const,
+  deleteUser: () => [...authKeys.all, "delete-user"] as const,
   session: () => [...authKeys.all, "session"] as const,
-  refreshSession: () => [...authKeys.all, "refreshSession"] as const,
+  refreshSession: () => [...authKeys.all, "refresh-session"] as const,
 };
 
 export const profileKeys = {
@@ -28,7 +28,7 @@ export const profileKeys = {
   completion: (userId: string) =>
     [...profileKeys.all, "user", userId, "completion"] as const,
   aiContext: (userId: string) =>
-    [...profileKeys.all, "user", userId, "aiContext"] as const,
+    [...profileKeys.all, "user", userId, "ai-context"] as const,
   avatar: (userId: string) =>
     [...profileKeys.all, "user", userId, "avatar"] as const,
 };
@@ -60,10 +60,14 @@ export const workoutKeys = {
 
 export const onboardingKeys = {
   all: ["onboarding"] as const,
+  questionnaire: () => [...onboardingKeys.all, "questionnaire"] as const,
+  crucialQuestionnaire: () => [...onboardingKeys.all, 'questionnaire', 'crucial'] as const,
+  sections: () => [...onboardingKeys.all, "section"] as const,
+  section: (id: string) => [...onboardingKeys.sections(), id] as const,
   progress: (userId: string) =>
     [...onboardingKeys.all, "progress", userId] as const,
-  section: (userId: string, section: string) =>
-    [...onboardingKeys.all, "section", userId, section] as const,
+  isComplete: (userId: string) =>
+    [...onboardingKeys.all, "is-complete", userId] as const,
 };
 
 // Helper function to invalidate all queries for a specific domain
@@ -73,7 +77,7 @@ export const invalidateAuthQueries = (queryClient: QueryClient) => {
 
 export const invalidateProfileQueries = (
   queryClient: QueryClient,
-  userId?: string
+  userId?: string,
 ) => {
   if (userId) {
     queryClient.invalidateQueries({ queryKey: profileKeys.detail(userId) });
@@ -84,7 +88,7 @@ export const invalidateProfileQueries = (
 
 export const invalidateWorkoutQueries = (
   queryClient: QueryClient,
-  userId?: string
+  userId?: string,
 ) => {
   if (userId) {
     queryClient.invalidateQueries({
