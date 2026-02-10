@@ -6,7 +6,7 @@ import type { QuestionnaireData } from "../../types/profile";
 
 export interface OnboardingResponse<T = QuestionSection[]> {
   data: T | null;
-  error: PostgrestError | null;
+  error: PostgrestError | Error | null;
 }
 
 export interface SaveAnswersPayload {
@@ -26,6 +26,18 @@ export interface OnboardingProgress {
  * OnboardingService - Handles all Supabase onboarding-related operations
  */
 export class OnboardingService {
+  private toError(error: unknown): PostgrestError | Error {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      "message" in error
+    ) {
+      return error as PostgrestError;
+    }
+    return error instanceof Error ? error : new Error(String(error));
+  }
+
   /**
    * Fetch the complete questionnaire structure
    * Returns sections ordered by display_order
@@ -51,7 +63,7 @@ export class OnboardingService {
       return { data: questionnaire, error: null };
     } catch (error: unknown) {
       console.error("Failed to fetch questionnaire:", error);
-      return { data: null, error: error as PostgrestError };
+      return { data: null, error: this.toError(error) };
     }
   }
 
@@ -77,7 +89,7 @@ export class OnboardingService {
       return { data: crucialQuestionnaire, error: null };
     } catch (error: unknown) {
       console.error("Failed to fetch crucial questionnaire:", error);
-      return { data: null, error: error as PostgrestError };
+      return { data: null, error: this.toError(error) };
     }
   }
 
@@ -111,14 +123,13 @@ export class OnboardingService {
       return { data: section, error: null };
     } catch (error: unknown) {
       console.error(`Failed to fetch section ${sectionId}:`, error);
-      return { data: null, error: error as PostgrestError };
+      return { data: null, error: this.toError(error) };
     }
   }
 
   /**
    * Save a single answer to user's profile
-   * Uses direct JSONB update via RPC (no fetch needed)
-   * Used for single question updates from profile page
+   * Uses atomic RPC (prevents race conditions)
    */
   async saveAnswer(
     userId: string,
@@ -142,61 +153,16 @@ export class OnboardingService {
   }
 
   /**
-   * Save multiple answers at once (bulk update)
-   * Used during ONBOARDING completion (~22 crucial questions)
-   * Uses fetch + merge approach for efficiency
+   * Save multiple answers at once
+   * Uses atomic server-side merge (prevents race conditions)
    */
-  async saveAnswersOnboarding(
+  async saveAnswers(
     payload: SaveAnswersPayload,
   ): Promise<{ error: PostgrestError | null }> {
     try {
       const { userId, answers } = payload;
 
-      // Get current questionnaire_data to merge with new answers
-      const { data: profile, error: fetchError } = await supabase
-        .from("profiles")
-        .select("questionnaire_data")
-        .eq("id", userId)
-        .single();
-
-      if (fetchError) throw fetchError;
-
-      // Merge new answers with existing data
-      const updatedData = {
-        ...(profile?.questionnaire_data || {}),
-        ...answers,
-      };
-
-      // Update profile with all answers
-      const { error: updateError } = await supabase
-        .from("profiles")
-        .update({
-          questionnaire_data: updatedData,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", userId);
-
-      if (updateError) throw updateError;
-
-      return { error: null };
-    } catch (error: unknown) {
-      console.error("Failed to save onboarding answers:", error);
-      return { error: error as PostgrestError };
-    }
-  }
-
-  /**
-   * Save multiple answers from PROFILE page
-   * Uses direct JSONB batch update via RPC (more efficient)
-   * Works for any number of questions (1 to 50)
-   */
-  async saveAnswersProfile(
-    payload: SaveAnswersPayload,
-  ): Promise<{ error: PostgrestError | null }> {
-    try {
-      const { userId, answers } = payload;
-
-      // Direct JSONB batch update - no fetch needed
+      // Atomic server-side merge via RPC
       const { error } = await supabase.rpc("update_multiple_answers", {
         user_id: userId,
         answers_data: answers,
@@ -206,7 +172,7 @@ export class OnboardingService {
 
       return { error: null };
     } catch (error: unknown) {
-      console.error("Failed to save profile answers:", error);
+      console.error("Failed to save answers:", error);
       return { error: error as PostgrestError };
     }
   }

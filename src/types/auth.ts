@@ -35,11 +35,5 @@ export interface LoginPayload {
   password: string;
 }
 
-export interface ApiError {
-  message: string;
-  code?: string;
-  status?: number;
-}
-
 // Generic error type for auth operations
 export type AuthErrorType = AuthError | Error | unknown;

@@ -2,10 +2,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { DASHBOARD } from "../../helpers/getters";
+import { notifyError } from "../../helpers/helper";
 import { useAppDispatch } from "../../hooks/redux";
 import { updateProfile } from "../../store/authSlice";
 import type { QuestionnaireData } from "../../types/profile";
-import { onboardingKeys } from "../query-key-factory";
+import { onboardingKeys, profileKeys } from "../query-key-factory";
 import {
   OnboardingService,
   type SaveAnswersPayload,
@@ -21,7 +22,7 @@ const onboardingService = new OnboardingService();
  */
 export const handleOnboardingError = (error: unknown) => {
   const errorMessage = onboardingService.getErrorMessage(error);
-  console.error("Onboarding error:", errorMessage);
+  notifyError(errorMessage);
   return errorMessage;
 };
 
@@ -80,7 +81,7 @@ export const useGetQuestionSection = (sectionId: string) => {
 
 /**
  * Hook: Save a single answer
- * Uses direct JSONB update (efficient for single updates)
+ * Uses atomic direct JSONB update (no race conditions)
  * Used from profile page for individual question edits
  */
 export const useSaveAnswer = () => {
@@ -112,27 +113,26 @@ export const useSaveAnswer = () => {
         queryKey: onboardingKeys.progress(variables.userId),
       });
       queryClient.invalidateQueries({
-        queryKey: ["profile", variables.userId],
+        queryKey: profileKeys.detail(variables.userId),
       });
     },
     onError: (error: unknown) => {
       handleOnboardingError(error);
-      throw error;
     },
   });
 };
 
 /**
- * Hook: Save multiple answers during ONBOARDING
- * Uses fetch + merge approach (efficient for bulk onboarding)
- * Primary method for completing onboarding (~22 crucial questions)
+ * Hook: Save multiple answers
+ * Uses atomic server-side merge (prevents race conditions)
+ * Works for both onboarding completion and profile bulk updates
  */
-export const useSaveAnswersOnboarding = () => {
+export const useSaveAnswers = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (payload: SaveAnswersPayload) => {
-      const { error } = await onboardingService.saveAnswersOnboarding(payload);
+      const { error } = await onboardingService.saveAnswers(payload);
 
       if (error) throw error;
 
@@ -144,44 +144,11 @@ export const useSaveAnswersOnboarding = () => {
         queryKey: onboardingKeys.progress(data.userId),
       });
       queryClient.invalidateQueries({
-        queryKey: ["profile", data.userId],
+        queryKey: profileKeys.detail(data.userId),
       });
     },
     onError: (error: unknown) => {
       handleOnboardingError(error);
-      throw error;
-    },
-  });
-};
-
-/**
- * Hook: Save multiple answers from PROFILE page
- * Uses direct JSONB batch update (efficient for profile edits)
- * Works for any number of questions (1 to 50)
- */
-export const useSaveAnswersProfile = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (payload: SaveAnswersPayload) => {
-      const { error } = await onboardingService.saveAnswersProfile(payload);
-
-      if (error) throw error;
-
-      return payload;
-    },
-    onSuccess: (data) => {
-      // Invalidate progress and profile queries
-      queryClient.invalidateQueries({
-        queryKey: onboardingKeys.progress(data.userId),
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["profile", data.userId],
-      });
-    },
-    onError: (error: unknown) => {
-      handleOnboardingError(error);
-      throw error;
     },
   });
 };
@@ -229,7 +196,7 @@ export const useCompleteOnboarding = () => {
         queryKey: onboardingKeys.all,
       });
       queryClient.invalidateQueries({
-        queryKey: ["profile", data.userId],
+        queryKey: profileKeys.detail(data.userId),
       });
 
       // Navigate to dashboard
@@ -237,7 +204,6 @@ export const useCompleteOnboarding = () => {
     },
     onError: (error: unknown) => {
       handleOnboardingError(error);
-      throw error;
     },
   });
 };

@@ -1,7 +1,7 @@
-import type { AuthError } from "@supabase/supabase-js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { AUTH_HOME, DASHBOARD, VERIFY_EMAIL } from "../../helpers/getters";
+import { notifyError } from "../../helpers/helper";
 import { useAppDispatch } from "../../hooks/redux";
 import {
   clearAuth,
@@ -10,7 +10,7 @@ import {
   setLoading,
   updateProfile,
 } from "../../store/authSlice";
-import type { ApiError, LoginPayload, SignUpPayload } from "../../types/auth";
+import type { LoginPayload, SignUpPayload } from "../../types/auth";
 import { ProfileService } from "../profile/profile.service";
 import { authKeys } from "../query-key-factory";
 import { AuthService } from "./auth.service";
@@ -22,21 +22,12 @@ const profileService = new ProfileService();
 const authService = new AuthService();
 
 /**
- * Helper function to handle Supabase errors
+ * Helper function to handle auth errors
  */
-export const handleSupabaseError = (error: unknown): ApiError => {
-  if (error && typeof error === "object" && "message" in error) {
-    const err = error as AuthError;
-    return {
-      message: authService.getErrorMessage(err),
-      code: err.code,
-      status: err.status,
-    };
-  }
-  return {
-    message: "An unexpected error occurred",
-    code: "UNKNOWN_ERROR",
-  };
+export const handleAuthError = (error: unknown) => {
+  const errorMessage = authService.getErrorMessage(error as Error);
+  notifyError(errorMessage);
+  return errorMessage;
 };
 
 /**
@@ -107,9 +98,7 @@ export const useCreateUser = () => {
     },
     onError: (error: unknown) => {
       dispatch(setAuthError());
-      const apiError = handleSupabaseError(error);
-      console.error("Sign up error:", apiError);
-      throw apiError;
+      handleAuthError(error);
     },
   });
 };
@@ -162,9 +151,7 @@ export const useLoginUser = () => {
     },
     onError: (error: unknown) => {
       dispatch(setAuthError());
-      const apiError = handleSupabaseError(error);
-      console.error("Login error:", apiError);
-      throw apiError;
+      handleAuthError(error);
     },
   });
 };
@@ -196,9 +183,7 @@ export const useUpdateUserPassword = () => {
       navigate(DASHBOARD);
     },
     onError: (error: unknown) => {
-      const apiError = handleSupabaseError(error);
-      console.error("Password update error:", apiError);
-      throw apiError;
+      handleAuthError(error);
     },
   });
 };
@@ -223,9 +208,7 @@ export const useSendPasswordResetEmail = () => {
       });
     },
     onError: (error: unknown) => {
-      const apiError = handleSupabaseError(error);
-      console.error("Password reset error:", apiError);
-      throw apiError;
+      handleAuthError(error);
     },
   });
 };
@@ -243,9 +226,7 @@ export const useResendConfirmationEmail = () => {
       return { success: true, message: "Confirmation email resent" };
     },
     onError: (error: unknown) => {
-      const apiError = handleSupabaseError(error);
-      console.error("Resend confirmation error:", apiError);
-      throw apiError;
+      handleAuthError(error);
     },
   });
 };
@@ -316,9 +297,7 @@ export const useRefreshSession = () => {
     },
     onError: (error: unknown) => {
       dispatch(clearAuth());
-      const apiError = handleSupabaseError(error);
-      console.error("Session refresh error:", apiError);
-      throw apiError;
+      handleAuthError(error);
     },
   });
 };
@@ -347,9 +326,7 @@ export const useLogout = () => {
       dispatch(clearAuth());
       queryClient.clear();
       navigate(AUTH_HOME);
-
-      const apiError = handleSupabaseError(error);
-      console.error("Logout error:", apiError);
+      handleAuthError(error);
     },
   });
 };
@@ -372,9 +349,7 @@ export const useOAuthSignIn = () => {
       return result.data;
     },
     onError: (error: unknown) => {
-      const apiError = handleSupabaseError(error);
-      console.error("OAuth error:", apiError);
-      throw apiError;
+      handleAuthError(error);
     },
     onSettled: () => {
       dispatch(setLoading(false));

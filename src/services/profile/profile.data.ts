@@ -6,6 +6,7 @@ import { ProfileService } from "./profile.service";
 import { updateProfile } from "../../store/authSlice";
 import type { Profile } from "../../types/profile";
 import { profileKeys } from "../query-key-factory";
+import { notifyError } from "../../helpers/helper";
 
 /**
  * Singleton instance of ProfileService
@@ -17,7 +18,7 @@ const profileService = new ProfileService();
  */
 export const handleProfileError = (error: unknown) => {
   const errorMessage = profileService.getErrorMessage(error as Error);
-  console.error("Profile error:", errorMessage);
+  notifyError(errorMessage);
   return errorMessage;
 };
 
@@ -93,7 +94,6 @@ export const useUpdateProfile = () => {
     },
     onError: (error: unknown) => {
       handleProfileError(error);
-      throw error;
     },
   });
 };
@@ -132,7 +132,6 @@ export const useCompleteOnboarding = () => {
     },
     onError: (error: unknown) => {
       handleProfileError(error);
-      throw error;
     },
   });
 };
@@ -167,7 +166,6 @@ export const useUploadAvatar = () => {
     },
     onError: (error: unknown) => {
       handleProfileError(error);
-      throw error;
     },
   });
 };
