@@ -2,15 +2,19 @@ import clsx from "clsx";
 import React from "react";
 import { useNavigate } from "react-router";
 import { Step, Stepper } from "../../../../components/stepper/Stepper";
-import { COACH } from "../../../../helpers/getters";
+import { COACH, DASHBOARD } from "../../../../helpers/getters";
 import { STEPPER_PROGRESS, STEPPER_SIZE } from "../../../../helpers/types";
 import { useAppSelector } from "../../../../hooks/redux";
 import { selectProfile } from "../../../../store/authSlice";
 import classes from "./OnboardingQuestionnaire.module.css";
+import { useGetCrucialQuestionnaire } from "../../../../services/onboarding/onboarding.data";
 
 const OnboardingQuestionnaire = () => {
   const user = useAppSelector(selectProfile);
   const navigate = useNavigate();
+  const { data: crucialQuestions, isLoading } = useGetCrucialQuestionnaire();
+
+  console.log("Crucial Questions:", crucialQuestions);
 
   React.useEffect(() => {
     if (user?.is_onboarded) {
@@ -27,8 +31,10 @@ const OnboardingQuestionnaire = () => {
         nextButtonText="Next"
         progressIndicator={STEPPER_PROGRESS.LINE}
         size={STEPPER_SIZE.FULLSCREEN}
+        showCancelButton
+        handleCancel={() => navigate(DASHBOARD)}
       >
-        <Step hideBackButton nextButtonText="Agree and continue">
+        <Step backButtonText="Cancel" nextButtonText="Agree and continue">
           <div className={classes.disclaimerContainer}>
             <div className={clsx(classes.disclaimer, classes.step)}>
               <div className={clsx(classes.title, "heading-1")}>
@@ -71,7 +77,7 @@ const OnboardingQuestionnaire = () => {
             </div>
           </div>
         </Step>
-        
+
         <Step>
           <div className={classes.step}>
             <div className={clsx(classes.title, "heading-1")}>

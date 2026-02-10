@@ -1,11 +1,11 @@
 import type { AuthError, PostgrestError } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 import type { Profile } from "../../types/profile";
-import { handleSupabaseError } from "../auth/auth.data";
+import { notifyError } from "../../helpers/helper";
 
 export interface ProfileResponse<T = Profile> {
   data: T | null;
-  error: PostgrestError | null;
+  error: PostgrestError | Error | null;
 }
 
 export interface ProfilesResponse<T = Profile> {
@@ -17,6 +17,20 @@ export interface ProfilesResponse<T = Profile> {
  * ProfileService - Handles all Supabase profile-related operations
  */
 export class ProfileService {
+  private toError(error: unknown): PostgrestError | Error {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      "message" in error &&
++     "details" in error &&
++     "hint" in error
+    ) {
+      return error as PostgrestError;
+    }
+    return error instanceof Error ? error : new Error(String(error));
+  }
+
   /**
    * Get a user's profile by ID
    */
@@ -32,7 +46,7 @@ export class ProfileService {
 
       return { data, error: null };
     } catch (error: unknown) {
-      return { data: null, error: error as PostgrestError };
+      return { data: null, error: this.toError(error) };
     }
   }
 
@@ -49,7 +63,7 @@ export class ProfileService {
 
       return await this.getProfile(user.id);
     } catch (error: unknown) {
-      return { data: null, error: error as PostgrestError };
+      return { data: null, error: this.toError(error) };
     }
   }
 
@@ -71,7 +85,7 @@ export class ProfileService {
       if (error) throw error;
       return { data, error: null };
     } catch (error: unknown) {
-      return { data: null, error: error as PostgrestError };
+      return { data: null, error: this.toError(error) };
     }
   }
 
@@ -252,9 +266,9 @@ export class ProfileService {
 
       return Math.round((completed / total) * 100);
     } catch (error: unknown) {
-      const apiError = handleSupabaseError(error);
-      console.error("Get profile completion error:", apiError);
-      throw apiError;
+      const msg = this.getErrorMessage(error);
+      notifyError(msg);
+      return 0;
     }
   }
 
