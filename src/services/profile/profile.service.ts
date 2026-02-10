@@ -1,7 +1,7 @@
 import type { AuthError, PostgrestError } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 import type { Profile } from "../../types/profile";
-import { handleAuthError } from "../auth/auth.data";
+import { notifyError } from "../../helpers/helper";
 
 export interface ProfileResponse<T = Profile> {
   data: T | null;
@@ -264,7 +264,8 @@ export class ProfileService {
 
       return Math.round((completed / total) * 100);
     } catch (error: unknown) {
-      handleAuthError(error);
+      const msg = this.getErrorMessage(error);
+      notifyError(msg);
       return 0;
     }
   }
