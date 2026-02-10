@@ -22,7 +22,9 @@ export class ProfileService {
       typeof error === "object" &&
       error !== null &&
       "code" in error &&
-      "message" in error
+      "message" in error &&
++     "details" in error &&
++     "hint" in error
     ) {
       return error as PostgrestError;
     }
