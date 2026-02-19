@@ -1,0 +1,113 @@
+/* Examples.module.css */
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: var(--bg-primary);
+  min-height: 100vh;
+}
+
+.section {
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+}
+
+.description {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.formControl {
+  max-width: 480px;
+}
+
+.selectedInfo {
+  margin-top: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Form Styles */
+.form {
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border-radius: 12px;
+  border: 2px solid var(--border-default);
+  background: var(--surface-primary);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.input:hover {
+  border-color: var(--border-primary);
+  background: var(--surface-hover);
+}
+
+.input:focus {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+  border-color: var(--primary-500);
+}
+
+.input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.submitButton {
+  padding: 1rem 1.5rem;
+  background: var(--gradient-primary);
+  color: var(--text-on-primary);
+  border: none;
+  border-radius: 12px;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-glow-subtle);
+}
+
+.submitButton:hover {
+  background: linear-gradient(135deg, var(--primary-700) 0%, var(--primary-500) 100%);
+  box-shadow: var(--shadow-glow-primary);
+  transform: translateY(-1px);
+}
+
+.submitButton:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .section {
+    padding: 1.5rem;
+  }
+
+  .formControl {
+    max-width: 100%;
+  }
+
+  .form {
+    max-width: 100%;
+  }
+}

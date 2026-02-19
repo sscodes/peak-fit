@@ -1,0 +1,388 @@
+/* DatePicker.module.css - Uses PeakFit Theme System */
+
+.container {
+  position: relative;
+  width: 100%;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.required {
+  color: var(--error-500);
+  margin-left: 0.25rem;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+/* ===============================
+   Trigger Button
+   =============================== */
+.trigger {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border-radius: 12px;
+  border: 2px solid var(--border-default);
+  background: var(--surface-primary);
+  color: var(--text-primary);
+  text-align: left;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.trigger:hover:not(.disabled) {
+  border-color: var(--border-primary);
+  background: var(--surface-hover);
+}
+
+.trigger:focus {
+  outline: 2px solid var(--primary-500);
+  border-color: var(--primary-500);
+}
+
+.trigger.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--surface-disabled);
+  border-color: var(--border-subtle);
+}
+
+.trigger.hasError {
+  border-color: var(--error-500);
+}
+
+/* ===============================
+   Trigger Content
+   =============================== */
+.triggerContent {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.calendarIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--primary-400);
+  flex-shrink: 0;
+}
+
+.placeholder {
+  color: var(--text-tertiary);
+}
+
+/* ===============================
+   Clear Button
+   =============================== */
+.clearButton {
+  padding: 0.25rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clearButton:hover {
+  background: var(--surface-hover);
+}
+
+.clearIcon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--text-secondary);
+}
+
+/* ===============================
+   Error Message
+   =============================== */
+.error {
+  margin-top: 0.375rem;
+  color: var(--error-400);
+}
+
+/* ===============================
+   Backdrop & Popover
+   =============================== */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: transparent;
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  z-index: 50;
+  animation: fadeInScale 0.2s ease-out;
+}
+
+.calendarWrapper {
+  background: var(--surface-secondary);
+  border: 2px solid var(--border-strong);
+  border-radius: 16px;
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+}
+
+/* ===============================
+   Animations
+   =============================== */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===============================
+   Custom Dropdown Styles
+   =============================== */
+.customCaption {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.customDropdown {
+  position: relative;
+}
+
+.customDropdownTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--surface-hover);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.customDropdownTrigger:hover {
+  background: var(--surface-active);
+  border-color: var(--primary-500);
+}
+
+.dropdownIcon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.monthDropdown {
+  min-width: 120px;
+}
+
+.yearDropdown {
+  min-width: 80px;
+}
+
+.customDropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.25rem;
+  max-height: 200px;
+  overflow-y: auto;
+  background: var(--surface-secondary);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  animation: fadeInScale 0.15s ease-out;
+}
+
+.customDropdownOption {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.customDropdownOption:hover {
+  background: var(--surface-hover);
+}
+
+.customDropdownOption.selected {
+  background: var(--primary-900);
+  color: var(--primary-300);
+  font-weight: 600;
+}
+
+/* Custom scrollbar for dropdown */
+.customDropdownMenu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.customDropdownMenu::-webkit-scrollbar-track {
+  background: var(--surface-secondary);
+}
+
+.customDropdownMenu::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: 3px;
+}
+
+.customDropdownMenu::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
+}
+
+/* ===============================
+   Responsive
+   =============================== */
+@media (max-width: 640px) {
+  .trigger {
+    padding: 0.75rem 0.875rem;
+  }
+
+  .calendarIcon {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+}
+
+
+/* Month Dropdown Styles */
+.customCaption {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+  padding: 0 0.5rem;
+}
+
+.monthDropdown {
+  position: relative;
+  flex: 1;
+}
+
+.monthDropdownTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: var(--surface-hover);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.monthDropdownTrigger:hover {
+  background: var(--surface-active);
+  border-color: var(--primary-500);
+}
+
+.monthDropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.25rem;
+  max-height: 200px;
+  overflow-y: auto;
+  background: var(--surface-secondary);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+}
+
+.monthDropdownOption {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.monthDropdownOption:hover {
+  background: var(--surface-hover);
+}
+
+.monthDropdownOption.active {
+  background: var(--primary-900);
+  color: var(--primary-300);
+  font-weight: 600;
+}
+
+.yearSelect {
+  padding: 0.5rem 0.75rem;
+  background: var(--surface-hover);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 80px;
+}
+
+.yearSelect:hover {
+  background: var(--surface-active);
+  border-color: var(--primary-500);
+}
+
+.monthDropdownMenu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.monthDropdownMenu::-webkit-scrollbar-track {
+  background: var(--surface-secondary);
+}
+
+.monthDropdownMenu::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: 3px;
+}
