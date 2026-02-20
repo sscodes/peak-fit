@@ -5,7 +5,7 @@
   --rdp-cell-size: 42px;
   --rdp-accent-color: var(--primary-500);
   --rdp-background-color: transparent;
-  padding: 1rem;
+  padding: 0 0.5rem;
 }
 
 /* Hide the entire default caption section */

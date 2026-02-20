@@ -157,115 +157,6 @@
 }
 
 /* ===============================
-   Custom Dropdown Styles
-   =============================== */
-.customCaption {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-  margin-top: 12px;
-  margin-bottom: 12px;
-}
-
-.customDropdown {
-  position: relative;
-}
-
-.customDropdownTrigger {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background: var(--surface-hover);
-  border: 1px solid var(--border-default);
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-family: var(--font-ui);
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  width: 100%;
-}
-
-.customDropdownTrigger:hover {
-  background: var(--surface-active);
-  border-color: var(--primary-500);
-}
-
-.dropdownIcon {
-  width: 1rem;
-  height: 1rem;
-  flex-shrink: 0;
-}
-
-.monthDropdown {
-  min-width: 120px;
-}
-
-.yearDropdown {
-  min-width: 80px;
-}
-
-.customDropdownMenu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  margin-top: 0.25rem;
-  max-height: 200px;
-  overflow-y: auto;
-  background: var(--surface-secondary);
-  border: 1px solid var(--border-strong);
-  border-radius: 8px;
-  box-shadow: var(--shadow-lg);
-  z-index: 100;
-  animation: fadeInScale 0.15s ease-out;
-}
-
-.customDropdownOption {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  background: transparent;
-  border: none;
-  color: var(--text-primary);
-  font-family: var(--font-ui);
-  font-size: 0.875rem;
-  text-align: left;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.customDropdownOption:hover {
-  background: var(--surface-hover);
-}
-
-.customDropdownOption.selected {
-  background: var(--primary-900);
-  color: var(--primary-300);
-  font-weight: 600;
-}
-
-/* Custom scrollbar for dropdown */
-.customDropdownMenu::-webkit-scrollbar {
-  width: 6px;
-}
-
-.customDropdownMenu::-webkit-scrollbar-track {
-  background: var(--surface-secondary);
-}
-
-.customDropdownMenu::-webkit-scrollbar-thumb {
-  background: var(--border-default);
-  border-radius: 3px;
-}
-
-.customDropdownMenu::-webkit-scrollbar-thumb:hover {
-  background: var(--border-strong);
-}
-
-/* ===============================
    Responsive
    =============================== */
 @media (max-width: 640px) {
@@ -279,13 +170,12 @@
   }
 }
 
-
 /* Month Dropdown Styles */
 .customCaption {
   display: flex;
   gap: 0.5rem;
   justify-content: center;
-  margin-bottom: 1rem;
+  margin-top: 12px;
   padding: 0 0.5rem;
 }
 

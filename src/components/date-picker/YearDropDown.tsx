@@ -23,6 +23,7 @@ const YearDropDown = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const selectedYearRef = useRef<HTMLButtonElement>(null);
 
   const handleYearChange = useCallback(
     (year: number) => {
@@ -51,6 +52,12 @@ const YearDropDown = ({
         setIsOpen(false);
       }
     };
+    if (isOpen && selectedYearRef.current) {
+      selectedYearRef.current.scrollIntoView({
+        block: "center",
+        behavior: "instant",
+      });
+    }
     if (isOpen) document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
@@ -70,6 +77,7 @@ const YearDropDown = ({
           {years.map((year, idx) => (
             <button
               key={idx}
+              ref={year === month.getFullYear() ? selectedYearRef : null}
               type="button"
               className={`${classes.monthDropdownOption} ${year === month.getFullYear() ? classes.active : ""}`}
               onClick={() => {

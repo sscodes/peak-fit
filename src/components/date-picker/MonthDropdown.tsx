@@ -19,6 +19,7 @@ export const MonthDropdown = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const selectedMonthRef = useRef<HTMLButtonElement>(null);
 
   const months = useMemo(
     () => [
@@ -56,6 +57,12 @@ export const MonthDropdown = ({
         setIsOpen(false);
       }
     };
+    if (isOpen && selectedMonthRef.current) {
+      selectedMonthRef.current.scrollIntoView({
+        block: "center",
+        behavior: "instant",
+      });
+    }
     if (isOpen) document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
@@ -75,6 +82,7 @@ export const MonthDropdown = ({
           {months.map((m, idx) => (
             <button
               key={idx}
+              ref={idx === month.getMonth() ? selectedMonthRef : null}
               type="button"
               className={`${classes.monthDropdownOption} ${idx === month.getMonth() ? classes.active : ""}`}
               onClick={() => {
