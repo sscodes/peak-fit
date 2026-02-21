@@ -41,8 +41,7 @@ export const MonthDropdown = ({
 
   const handleMonthChange = useCallback(
     (monthIndex: number) => {
-      const newDate = new Date(month);
-      newDate.setMonth(monthIndex);
+      const newDate = new Date(month.getFullYear(), monthIndex, 1);
       setMonth(newDate);
     },
     [month, setMonth],

@@ -2,10 +2,11 @@
 
 .peakfit-datepicker-range,
 .peakfit-datepicker {
+  padding: 0 0.5rem;
+
   --rdp-cell-size: 42px;
   --rdp-accent-color: var(--primary-500);
   --rdp-background-color: transparent;
-  padding: 0 0.5rem;
 }
 
 /* Hide the entire default caption section */
@@ -44,13 +45,4 @@
 .peakfit-datepicker-range .rdp-range_middle {
   background-color: var(--primary-200);
   color: var(--primary-950);
-}
-
-.peakfit-datepicker-range
-  .rdp-day
-  .rdp-selected
-  .rdp-range_start
-  .rdp-range_end {
-  border: 1px solid var(--primary-500);
-  border-radius: 50%;
 }

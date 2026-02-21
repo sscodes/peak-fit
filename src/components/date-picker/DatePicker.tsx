@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { Calendar, X } from "lucide-react";
 import React, { useState } from "react";
 import { DayPicker } from "react-day-picker";
-import "react-day-picker/dist/style.css";
+import "react-day-picker/style.css";
 import classes from "./DatePicker.module.css";
 import "./Datepicker.css";
 import { MonthDropdown } from "./MonthDropdown";
@@ -62,10 +62,17 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       )}
 
       <div className={classes.inputWrapper}>
-        <button
-          type="button"
+        <div
+          role="button"
+          tabIndex={disabled ? -1 : 0}
           onClick={() => !disabled && setIsOpen(!isOpen)}
-          disabled={disabled}
+          onKeyDown={(e) => {
+            if (!disabled && (e.key === "Enter" || e.key === " ")) {
+              e.preventDefault();
+              setIsOpen(!isOpen);
+            }
+          }}
+          aria-disabled={disabled}
           className={`${classes.trigger} ${disabled ? classes.disabled : ""} ${error ? classes.hasError : ""}`}
         >
           <div className={classes.triggerContent}>
@@ -87,7 +94,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               <X className={classes.clearIcon} />
             </button>
           )}
-        </button>
+        </div>
 
         {error && <p className={`${classes.error} caption`}>{error}</p>}
 

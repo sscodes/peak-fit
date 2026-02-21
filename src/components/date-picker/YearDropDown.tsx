@@ -27,8 +27,7 @@ const YearDropDown = ({
 
   const handleYearChange = useCallback(
     (year: number) => {
-      const newDate = new Date(month);
-      newDate.setFullYear(year);
+      const newDate = new Date(year, month.getMonth(), 1);
       setMonth(newDate);
     },
     [setMonth, month],

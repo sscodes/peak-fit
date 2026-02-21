@@ -73,10 +73,17 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
       )}
 
       <div className={classes.inputWrapper}>
-        <button
-          type="button"
+        <div
+          role="button"
+          tabIndex={disabled ? -1 : 0}
           onClick={() => !disabled && setIsOpen(!isOpen)}
-          disabled={disabled}
+          onKeyDown={(e) => {
+            if (!disabled && (e.key === "Enter" || e.key === " ")) {
+              e.preventDefault();
+              setIsOpen(!isOpen);
+            }
+          }}
+          aria-disabled={disabled}
           className={`${classes.trigger} ${disabled ? classes.disabled : ""} ${error ? classes.hasError : ""}`}
         >
           <div className={classes.triggerContent}>
@@ -98,7 +105,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
               <X className={classes.clearIcon} />
             </button>
           )}
-        </button>
+        </div>
 
         {error && <p className={`${classes.error} caption`}>{error}</p>}
 
