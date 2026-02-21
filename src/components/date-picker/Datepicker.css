@@ -1,0 +1,48 @@
+/* PeakFit DatePicker Global Styles */
+
+.peakfit-datepicker-range,
+.peakfit-datepicker {
+  padding: 0 0.5rem;
+
+  --rdp-cell-size: 42px;
+  --rdp-accent-color: var(--primary-500);
+  --rdp-background-color: transparent;
+}
+
+/* Hide the entire default caption section */
+.peakfit-datepicker-range .rdp-caption,
+.peakfit-datepicker .rdp-caption {
+  display: none;
+}
+
+.peakfit-datepicker .rdp-selected .rdp-day_button {
+  border: 1px solid var(--primary-500);
+  border-radius: 50%;
+}
+
+/* Range Selection Styles */
+.peakfit-datepicker-range .rdp-range_start,
+.peakfit-datepicker-range .rdp-range_end {
+  background: var(--primary-200);
+  color: var(--primary-950);
+  font-weight: 600;
+}
+
+.peakfit-datepicker-range .rdp-range_start,
+.peakfit-datepicker-range .rdp-range_start .rdp-day_button {
+  border-radius: 0;
+  border: 0;
+  background-color: var(--primary-200);
+}
+
+.peakfit-datepicker-range .rdp-range_end,
+.peakfit-datepicker-range .rdp-range_end .rdp-day_button {
+  border-radius: 0;
+  border: 0;
+  background-color: var(--primary-200);
+}
+
+.peakfit-datepicker-range .rdp-range_middle {
+  background-color: var(--primary-200);
+  color: var(--primary-950);
+}
