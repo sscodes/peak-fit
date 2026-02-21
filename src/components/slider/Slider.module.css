@@ -1,0 +1,262 @@
+/* Slider.module.css - Uses PeakFit Theme System */
+
+.container {
+  width: 100%;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.label {
+  display: block;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.sliderWrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.value {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  min-width: 2.5rem;
+  text-align: center;
+}
+
+.minValue {
+  text-align: right;
+}
+
+.maxValue {
+  text-align: left;
+}
+
+/* ===============================
+   Slider Track
+   =============================== */
+.sliderTrack {
+  position: relative;
+  flex: 1;
+  background: var(--surface-tertiary);
+  border: 1px solid var(--border-default);
+  width: 100px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Sizes */
+.sliderTrack.small {
+  height: 8px;
+}
+
+.sliderTrack.medium {
+  height: 12px;
+}
+
+.sliderTrack.large {
+  height: 16px;
+}
+
+.sliderTrack:hover {
+  background: var(--surface-hover);
+}
+
+.sliderTrack.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sliderTrack.disabled:hover {
+  background: var(--surface-tertiary);
+}
+
+/* ===============================
+   Filled Track
+   =============================== */
+.sliderFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--gradient-primary);
+  border-radius: 100px;
+  pointer-events: none;
+  /* No transition - instant response */
+}
+
+/* ===============================
+   Thumb
+   =============================== */
+.thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--surface-primary);
+  border: 3px solid var(--primary-500);
+  border-radius: 50%;
+  box-shadow: var(--shadow-md);
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+/* Thumb sizes based on track size */
+.small .thumb {
+  width: 18px;
+  height: 18px;
+}
+
+.medium .thumb {
+  width: 22px;
+  height: 22px;
+}
+
+.large .thumb {
+  width: 26px;
+  height: 26px;
+}
+
+.thumb:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: var(--shadow-glow-primary);
+}
+
+/* Disable the width transition while dragging */
+.sliderFill.dragging {
+  transition: none; 
+}
+
+/* Update your existing .thumb.dragging class */
+.thumb.dragging {
+  transform: translate(-50%, -50%) scale(1.15);
+  box-shadow: var(--shadow-glow-primary);
+  /* Override 'transition: all' so 'left' updates instantly, 
+     but keep the smooth scale and glow effect */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; 
+}
+
+.disabled .thumb {
+  cursor: not-allowed;
+}
+
+.disabled .thumb:hover {
+  transform: translate(-50%, -50%);
+  box-shadow: var(--shadow-md);
+}
+
+/* ===============================
+   Tooltip
+   =============================== */
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.375rem 0.75rem;
+  background: var(--surface-secondary);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: var(--shadow-lg);
+  pointer-events: none;
+  animation: tooltipFadeIn 0.2s ease-out;
+  z-index: 10;
+}
+
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid var(--surface-secondary);
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* ===============================
+   Discrete Steps
+   =============================== */
+.stepsContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stepsSubContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 98%;
+  height: 100%;
+}
+
+.stepMarker {
+  width: 4px;
+  height: 4px;
+  background: var(--surface-hover);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  background: var(--primary-400);
+}
+
+.stepMarker.active {
+  background: var(--primary-100);
+}
+
+/* Hide step markers on small size for cleaner look */
+.small .stepMarker {
+  width: 3px;
+  height: 3px;
+}
+
+/* ===============================
+   Responsive
+   =============================== */
+@media (max-width: 640px) {
+  .sliderWrapper {
+    gap: 0.75rem;
+  }
+
+  .value {
+    font-size: 0.75rem;
+    min-width: 2rem;
+  }
+
+  .tooltip {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
