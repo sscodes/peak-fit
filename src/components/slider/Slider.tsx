@@ -51,7 +51,7 @@ export const Slider: React.FC<SliderProps> = ({
       let newValue = min + percent * (max - min);
 
       // Snap to step
-      const actualStep = type === "discrete" ? safeStep : 1;
+      const actualStep = type === SLIDER_TYPE.DISCRETE ? safeStep : 1;
       newValue = Math.round(newValue / actualStep) * actualStep;
       newValue = Math.max(min, Math.min(max, newValue));
 
