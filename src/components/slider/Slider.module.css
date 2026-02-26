@@ -172,7 +172,7 @@
   white-space: nowrap;
   box-shadow: var(--shadow-lg);
   pointer-events: none;
-  animation: tooltipFadeIn 0.2s ease-out;
+  animation: tooltip-fade-in 0.2s ease-out;
   z-index: 10;
 }
 
@@ -189,7 +189,7 @@
   border-top: 6px solid var(--surface-secondary);
 }
 
-@keyframes tooltipFadeIn {
+@keyframes tooltip-fade-in {
   from {
     opacity: 0;
     transform: translateX(-50%) translateY(-4px);
@@ -226,7 +226,6 @@
 .stepMarker {
   width: 4px;
   height: 4px;
-  background: var(--surface-hover);
   border-radius: 50%;
   transition: all 0.2s ease;
   background: var(--primary-400);

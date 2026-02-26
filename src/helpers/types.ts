@@ -41,3 +41,14 @@ export enum STEPPER_SIZE {
   LARGE = "large",
   FULLSCREEN = "fullscreen",
 }
+
+export enum SLIDER_TYPE {
+  DISCRETE = "discrete",
+  CONTINUOUS = "continuous",
+}
+
+export enum SLIDER_SIZE {
+  SMALL = "small",
+  MEDIUM = "medium",
+  LARGE = "large",
+}

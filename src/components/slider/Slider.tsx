@@ -1,17 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { SLIDER_SIZE, SLIDER_TYPE } from "../../helpers/types";
 import classes from "./Slider.module.css";
-
-type SliderSize = "small" | "medium" | "large";
-type SliderType = "continuous" | "discrete";
 
 interface SliderProps {
   min: number;
   max: number;
   value: number;
   onChange: (value: number) => void;
-  type?: SliderType;
+  type?: SLIDER_TYPE;
   step?: number;
-  size?: SliderSize;
+  size?: SLIDER_SIZE;
   label?: string;
   disabled?: boolean;
   showMinMax?: boolean;
@@ -23,9 +21,9 @@ export const Slider: React.FC<SliderProps> = ({
   max,
   value,
   onChange,
-  type = "continuous",
+  type = SLIDER_TYPE.CONTINUOUS,
   step = 1,
-  size = "medium",
+  size = SLIDER_SIZE.MEDIUM,
   label,
   disabled = false,
   showMinMax = true,
@@ -36,27 +34,33 @@ export const Slider: React.FC<SliderProps> = ({
   const sliderRef = useRef<HTMLDivElement>(null);
 
   // Calculate percentage from value
-  const percentage = ((value - min) / (max - min)) * 100;
+  const percentage = max === min ? 0 : ((value - min) / (max - min)) * 100;
+
+  // Guard: step must be positive
+  const safeStep = Math.max(step, Number.EPSILON);
 
   // Handle value calculation and update
-  const updateValue = (clientX: number) => {
-    if (!sliderRef.current || disabled) return;
+  const updateValue = useCallback(
+    (clientX: number) => {
+      if (!sliderRef.current || disabled) return;
 
-    const rect = sliderRef.current.getBoundingClientRect();
-    const offsetX = Math.max(0, Math.min(clientX - rect.left, rect.width));
-    const percent = offsetX / rect.width;
+      const rect = sliderRef.current.getBoundingClientRect();
+      const offsetX = Math.max(0, Math.min(clientX - rect.left, rect.width));
+      const percent = offsetX / rect.width;
 
-    let newValue = min + percent * (max - min);
+      let newValue = min + percent * (max - min);
 
-    // Snap to step
-    const actualStep = type === "discrete" ? step : 1;
-    newValue = Math.round(newValue / actualStep) * actualStep;
-    newValue = Math.max(min, Math.min(max, newValue));
+      // Snap to step
+      const actualStep = type === "discrete" ? safeStep : 1;
+      newValue = Math.round(newValue / actualStep) * actualStep;
+      newValue = Math.max(min, Math.min(max, newValue));
 
-    if (newValue !== value) {
-      onChange(newValue);
-    }
-  };
+      if (newValue !== value) {
+        onChange(newValue);
+      }
+    },
+    [disabled, max, min, onChange, safeStep, type, value],
+  );
 
   // Mouse handlers
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -88,6 +92,7 @@ export const Slider: React.FC<SliderProps> = ({
 
     const handleEnd = () => {
       setIsDragging(false);
+      setShowTooltip(false);
     };
 
     document.addEventListener("mousemove", handleMouseMove);
@@ -101,7 +106,7 @@ export const Slider: React.FC<SliderProps> = ({
       document.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("touchend", handleEnd);
     };
-  }, [isDragging, value, min, max, step, type, disabled]);
+  }, [isDragging, value, min, max, step, type, disabled, updateValue]);
 
   // Format value for display
   const formatValue = (val: number): string => {
@@ -110,8 +115,9 @@ export const Slider: React.FC<SliderProps> = ({
 
   // Generate step markers for discrete mode
   const generateSteps = () => {
+    if (safeStep <= 0) return [];
     const steps = [];
-    for (let i = min; i <= max; i += step) {
+    for (let i = min; i <= max; i += safeStep) {
       steps.push({
         value: i,
         isActive: i <= value,
@@ -141,13 +147,12 @@ export const Slider: React.FC<SliderProps> = ({
         >
           {/* Filled track */}
           <div
-            // Add the dragging conditional class here:
             className={`${classes.sliderFill} ${isDragging ? classes.dragging : ""}`}
             style={{ width: `${percentage}%` }}
           />
 
           {/* Discrete step markers */}
-          {type === "discrete" && (
+          {type === SLIDER_TYPE.DISCRETE && (
             <div className={classes.stepsContainer}>
               <div className={classes.stepsSubContainer}>
                 {generateSteps().map((step, i) => (
@@ -165,6 +170,40 @@ export const Slider: React.FC<SliderProps> = ({
             className={`${classes.thumb} ${isDragging ? classes.dragging : ""}`}
             style={{
               left: `${percentage === 0 ? 1 : percentage === 100 ? 99 : percentage}%`,
+            }}
+            role="slider"
+            tabIndex={disabled ? -1 : 0}
+            aria-valuemin={min}
+            aria-valuemax={max}
+            aria-valuenow={value}
+            aria-label={label}
+            aria-disabled={disabled}
+            onKeyDown={(e) => {
+              if (disabled) return;
+              const actualStep = type === "discrete" ? step : 1;
+              if (e.key === "ArrowRight" || e.key === "ArrowUp") {
+                e.preventDefault();
+                onChange(
+                  Math.min(
+                    max,
+                    Math.round((value + actualStep) / actualStep) * actualStep,
+                  ),
+                );
+              } else if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
+                e.preventDefault();
+                onChange(
+                  Math.max(
+                    min,
+                    Math.round((value - actualStep) / actualStep) * actualStep,
+                  ),
+                );
+              } else if (e.key === "Home") {
+                e.preventDefault();
+                onChange(min);
+              } else if (e.key === "End") {
+                e.preventDefault();
+                onChange(max);
+              }
             }}
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => !isDragging && setShowTooltip(false)}
