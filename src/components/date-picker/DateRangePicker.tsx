@@ -1,8 +1,8 @@
 import { format } from "date-fns";
-import { Calendar, X } from "lucide-react";
 import React, { useState } from "react";
 import { DayPicker, type DateRange } from "react-day-picker";
 import "react-day-picker/style.css";
+import { HiOutlineCalendarDateRange, HiOutlineXMark } from "react-icons/hi2";
 import classes from "./DatePicker.module.css";
 import "./Datepicker.css";
 import { MonthDropdown } from "./MonthDropdown";
@@ -40,15 +40,31 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [month, setMonth] = useState<Date>(selected?.from || new Date());
 
-  const handleSelect = (range: DateRange | undefined) => {
-    onSelect(range);
-    // Only close if we have both dates AND they're different (a real range)
-    if (
-      range?.from &&
-      range?.to &&
-      range.from.getTime() !== range.to.getTime()
-    ) {
-      setIsOpen(false);
+  const handleSelect = (_range: DateRange | undefined, selectedDay: Date) => {
+    // 1. If we already have a complete range, OR no dates selected yet:
+    // Start a completely new range with the clicked day as 'from'.
+    if (!selected?.from || (selected?.from && selected?.to)) {
+      onSelect({ from: selectedDay, to: undefined });
+      return;
+    }
+
+    // 2. If we only have a 'from' date, let's complete the range!
+    if (selected?.from && !selected?.to) {
+      // SMART BEHAVIOR: Check if the clicked day is BEFORE the 'from' date.
+      if (selectedDay < selected.from) {
+        // Swap them! Make the earlier date 'from' and the original date 'to'
+        onSelect({ from: selectedDay, to: selected.from });
+        setIsOpen(false); // Range is complete, close the popover
+      } else {
+        // Normal forward selection
+        onSelect({ from: selected.from, to: selectedDay });
+
+        // Only close the popover if they didn't click the exact same day twice
+        // (Clicking the same day twice creates a 1-day range)
+        if (selected.from.getTime() !== selectedDay.getTime()) {
+          setIsOpen(false);
+        }
+      }
     }
   };
 
@@ -87,7 +103,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
           className={`${classes.trigger} ${disabled ? classes.disabled : ""} ${error ? classes.hasError : ""}`}
         >
           <div className={classes.triggerContent}>
-            <Calendar className={classes.calendarIcon} />
+            <HiOutlineCalendarDateRange className={classes.calendarIcon} />
             <span
               className={`input-text ${!selected?.from ? classes.placeholder : ""}`}
             >
@@ -102,7 +118,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
               className={classes.clearButton}
               aria-label="Clear date range"
             >
-              <X className={classes.clearIcon} />
+              <HiOutlineXMark className={classes.clearIcon} />
             </button>
           )}
         </div>
@@ -118,8 +134,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
             <div className={classes.popover}>
               <div className={classes.calendarWrapper}>
-                {/* Custom Caption */}
-                <div className={classes.customCaption}>
+                <div className={classes.dropdownSection}>
                   <MonthDropdown month={month} setMonth={setMonth} />
                   <YearDropDown
                     month={month}

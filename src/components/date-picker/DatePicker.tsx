@@ -1,8 +1,9 @@
 import { format } from "date-fns";
-import { Calendar, X } from "lucide-react";
 import React, { useState } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
+import { HiOutlineCalendar } from "react-icons/hi";
+import { HiOutlineXMark } from "react-icons/hi2";
 import classes from "./DatePicker.module.css";
 import "./Datepicker.css";
 import { MonthDropdown } from "./MonthDropdown";
@@ -76,7 +77,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           className={`${classes.trigger} ${disabled ? classes.disabled : ""} ${error ? classes.hasError : ""}`}
         >
           <div className={classes.triggerContent}>
-            <Calendar className={classes.calendarIcon} />
+            <HiOutlineCalendar className={classes.calendarIcon} />
             <span
               className={`input-text ${!selected ? classes.placeholder : ""}`}
             >
@@ -91,7 +92,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               className={classes.clearButton}
               aria-label="Clear date"
             >
-              <X className={classes.clearIcon} />
+              <HiOutlineXMark className={classes.clearIcon} />
             </button>
           )}
         </div>
@@ -107,8 +108,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
             <div className={classes.popover}>
               <div className={classes.calendarWrapper}>
-                {/* Custom Caption */}
-                <div className={classes.customCaption}>
+                <div className={classes.dropdownSection}>
                   <MonthDropdown month={month} setMonth={setMonth} />
                   <YearDropDown
                     month={month}
