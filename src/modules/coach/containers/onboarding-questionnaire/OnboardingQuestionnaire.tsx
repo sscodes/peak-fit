@@ -128,8 +128,8 @@ const OnboardingQuestionnaire = () => {
     //   </Stepper>
     // </div>
     <div>
-      {/* <DatePickerExamples /> */}
-      <SliderExamples />
+      <DatePickerExamples />
+      {/* <SliderExamples /> */}
     </div>
   );
 };

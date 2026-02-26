@@ -180,13 +180,12 @@ export const Slider: React.FC<SliderProps> = ({
             aria-disabled={disabled}
             onKeyDown={(e) => {
               if (disabled) return;
-              const actualStep = type === "discrete" ? step : 1;
               if (e.key === "ArrowRight" || e.key === "ArrowUp") {
                 e.preventDefault();
                 onChange(
                   Math.min(
                     max,
-                    Math.round((value + actualStep) / actualStep) * actualStep,
+                    Math.round((value + safeStep) / safeStep) * safeStep,
                   ),
                 );
               } else if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
@@ -194,7 +193,7 @@ export const Slider: React.FC<SliderProps> = ({
                 onChange(
                   Math.max(
                     min,
-                    Math.round((value - actualStep) / actualStep) * actualStep,
+                    Math.round((value - safeStep) / safeStep) * safeStep,
                   ),
                 );
               } else if (e.key === "Home") {
