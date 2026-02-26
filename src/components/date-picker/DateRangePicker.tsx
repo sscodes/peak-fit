@@ -1,8 +1,8 @@
-import { format } from "date-fns";
-import { Calendar, X } from "lucide-react";
+import { format, isBefore, isSameDay, startOfDay } from "date-fns";
 import React, { useState } from "react";
 import { DayPicker, type DateRange } from "react-day-picker";
 import "react-day-picker/style.css";
+import { HiOutlineCalendarDateRange, HiOutlineXMark } from "react-icons/hi2";
 import classes from "./DatePicker.module.css";
 import "./Datepicker.css";
 import { MonthDropdown } from "./MonthDropdown";
@@ -40,16 +40,34 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [month, setMonth] = useState<Date>(selected?.from || new Date());
 
-  const handleSelect = (range: DateRange | undefined) => {
-    onSelect(range);
-    // Only close if we have both dates AND they're different (a real range)
-    if (
-      range?.from &&
-      range?.to &&
-      range.from.getTime() !== range.to.getTime()
-    ) {
-      setIsOpen(false);
+  const handleSelect = (_range: DateRange | undefined, selectedDay: Date) => {
+    const normalizedClick = startOfDay(selectedDay);
+
+    // 1. If no date is selected, or a full range was already finished:
+    // Start a new selection with just the 'from' date.
+    if (!selected?.from || (selected?.from && selected?.to)) {
+      onSelect({ from: normalizedClick, to: undefined });
+      return;
     }
+
+    // 2. If the user clicks the SAME day as the 'from' date:
+    // Do nothing. We don't want a 1-day range (e.g., Feb 12 - Feb 12).
+    if (isSameDay(selected.from, normalizedClick)) {
+      return;
+    }
+
+    // 3. Complete the range with a distinct second date
+    let newRange: DateRange;
+    if (isBefore(normalizedClick, selected.from)) {
+      // Backwards selection: swap them
+      newRange = { from: normalizedClick, to: startOfDay(selected.from) };
+    } else {
+      // Forward selection
+      newRange = { from: startOfDay(selected.from), to: normalizedClick };
+    }
+
+    onSelect(newRange);
+    setIsOpen(false); // Only close now that we have a valid, 2-date range
   };
 
   const handleClear = (e: React.MouseEvent) => {
@@ -58,8 +76,16 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   };
 
   const getDisplayText = () => {
-    if (!selected?.from) return placeholder;
-    if (!selected.to) return format(selected.from, "MMM dd, yyyy");
+    // If we don't have both dates, or if they are the same day, show placeholder
+    if (
+      !selected?.from ||
+      !selected?.to ||
+      isSameDay(selected.from, selected.to)
+    ) {
+      return placeholder;
+    }
+
+    // Only show the range text when we have two distinct dates
     return `${format(selected.from, "MMM dd")} - ${format(selected.to, "MMM dd, yyyy")}`;
   };
 
@@ -87,7 +113,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
           className={`${classes.trigger} ${disabled ? classes.disabled : ""} ${error ? classes.hasError : ""}`}
         >
           <div className={classes.triggerContent}>
-            <Calendar className={classes.calendarIcon} />
+            <HiOutlineCalendarDateRange className={classes.calendarIcon} />
             <span
               className={`input-text ${!selected?.from ? classes.placeholder : ""}`}
             >
@@ -102,7 +128,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
               className={classes.clearButton}
               aria-label="Clear date range"
             >
-              <X className={classes.clearIcon} />
+              <HiOutlineXMark className={classes.clearIcon} />
             </button>
           )}
         </div>
@@ -118,8 +144,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
             <div className={classes.popover}>
               <div className={classes.calendarWrapper}>
-                {/* Custom Caption */}
-                <div className={classes.customCaption}>
+                <div className={classes.dropdownSection}>
                   <MonthDropdown month={month} setMonth={setMonth} />
                   <YearDropDown
                     month={month}

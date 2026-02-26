@@ -20,6 +20,12 @@
   border-radius: 50%;
 }
 
+.peakfit-datepicker-range .rdp-selected .rdp-day_button {
+  border-radius: 0;
+  border: 0;
+  background-color: var(--primary-200);
+}
+
 /* Range Selection Styles */
 .peakfit-datepicker-range .rdp-range_start,
 .peakfit-datepicker-range .rdp-range_end {

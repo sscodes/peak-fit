@@ -1,4 +1,3 @@
-import { ChevronDown } from "lucide-react";
 import {
   useCallback,
   useEffect,
@@ -8,6 +7,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
+import { HiOutlineChevronDown } from "react-icons/hi";
 import classes from "./DatePicker.module.css";
 
 export const MonthDropdown = ({
@@ -74,7 +74,7 @@ export const MonthDropdown = ({
         onClick={() => setIsOpen(!isOpen)}
       >
         {months[month.getMonth()]}
-        <ChevronDown size={16} />
+        <HiOutlineChevronDown size={16} />
       </button>
       {isOpen && (
         <div className={classes.monthDropdownMenu}>
