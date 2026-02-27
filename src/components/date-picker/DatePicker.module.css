@@ -25,12 +25,11 @@
    =============================== */
 .trigger {
   width: 100%;
-  padding: 0.875rem 1rem;
-  border-radius: 12px;
-  border: 2px solid var(--border-default);
-  background: var(--surface-primary);
-  color: var(--text-primary);
-  text-align: left;
+  box-shadow: var(--shadow-inset);
+  padding: 8px;
+  border-radius: 8px;
+  color: var(--text-inverse);
+  background: var(--primary-200);
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
@@ -39,14 +38,10 @@
   cursor: pointer;
 }
 
-.trigger:hover:not(.disabled) {
-  border-color: var(--border-primary);
-  background: var(--surface-hover);
-}
-
 .trigger:focus {
   outline: 2px solid var(--primary-500);
   border-color: var(--primary-500);
+  outline-offset: 2px;
 }
 
 .trigger.disabled {
@@ -74,12 +69,12 @@
 .calendarIcon {
   width: 1.25rem;
   height: 1.25rem;
-  color: var(--primary-400);
+  color: var(--text-inverse);
   flex-shrink: 0;
 }
 
 .placeholder {
-  color: var(--text-tertiary);
+  color: var(--text-inverse);
 }
 
 /* ===============================
@@ -98,14 +93,10 @@
   justify-content: center;
 }
 
-.clearButton:hover {
-  background: var(--surface-hover);
-}
-
 .clearIcon {
   width: 1rem;
   height: 1rem;
-  color: var(--text-secondary);
+  color: var(--text-inverse);
 }
 
 /* ===============================

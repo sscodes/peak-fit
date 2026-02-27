@@ -1,0 +1,107 @@
+.single-select {
+  width: 100%;
+}
+
+.single-select .select__control {
+  background-color: var(--primary-200);
+  box-shadow: var(--shadow-inset);
+  padding: 8px;
+  border-radius: 8px;
+  color: var(--text-inverse);
+  border: none;
+}
+
+/* Replace .select__control:focus with this */
+.single-select .select__control--is-focused {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+  border-color: var(--primary-500);
+
+  /* Critical: remove default shadow so the outline is clean */
+  box-shadow: var(--shadow-inset);
+}
+
+.single-select .select__control--is-focused .select__input {
+  font-family: var(--font-ui) !important;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  letter-spacing: 0 !important;
+  font-style: normal !important;
+}
+
+.single-select .select__control--is-disabled .select__single-value,
+.single-select .select__control--is-disabled .select__placeholder {
+  color: var(--text-disabled);
+}
+
+.single-select .select__single-value,
+.single-select .select__placeholder {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.single-select .select__indicator-separator {
+  display: none;
+}
+
+.single-select .select__indicator {
+  color: var(--text-inverse);
+}
+
+.single-select.select--is-disabled
+  .select__control.select__control--is-disabled
+  .select__indicators
+  .select__indicator {
+  color: var(--text-disabled);
+}
+
+.single-select .select__menu-list {
+  background: var(--surface-primary);
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border: 2px solid var(--border-subtle);
+}
+
+.single-select .select__menu-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.single-select .select__menu-list::-webkit-scrollbar-track {
+  background: var(--surface-secondary);
+}
+
+.single-select .select__menu-list::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+}
+
+.single-select .select__option {
+  padding: 20px;
+  cursor: pointer;
+}
+
+/* Hover / Focused State */
+.single-select .select__option--is-focused {
+  background-color: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+/* Selected State */
+.single-select .select__option--is-selected {
+  background-color: var(--surface-active);
+  color: var(--text-primary);
+}
+
+/* Selected AND Focused (Hovering over the already selected item) */
+.single-select .select__option--is-selected.select__option--is-focused {
+  background-color: var(--surface-hover);
+}
+
+.single-select .select__menu-notice.select__menu-notice--no-options {
+  padding: 20px;
+  color: var(--text-secondary);
+}
