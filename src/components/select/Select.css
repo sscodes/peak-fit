@@ -11,10 +11,6 @@
   border: none;
 }
 
-.single-select.select--is-disabled {
-  cursor: not-allowed;
-}
-
 /* Replace .select__control:focus with this */
 .single-select .select__control--is-focused {
   outline: 2px solid var(--primary-500);
