@@ -11,6 +11,8 @@ interface SelectProps {
   placeholder?: string;
   value?: { value: string; label: string } | null;
   noOptionsMessage?: () => string;
+  onChange: (selectedOption: { value: string; label: string } | null) => void;
+  name?: string;
 }
 
 const Select = ({
@@ -23,6 +25,8 @@ const Select = ({
   placeholder = "Select an option",
   value = null,
   noOptionsMessage = () => "No such option available",
+  onChange,
+  name,
 }: SelectProps) => {
   return (
     <SelectRS
@@ -34,9 +38,10 @@ const Select = ({
       isLoading={isLoading}
       isClearable={isClearable}
       isSearchable={isSearchable}
-      name="color"
+      name={name}
       placeholder={placeholder}
       noOptionsMessage={noOptionsMessage}
+      onChange={onChange}
     />
   );
 };
