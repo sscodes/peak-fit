@@ -11,6 +11,8 @@ import type { Question, Questionnaire } from "../../../../types/questions";
 import classes from "./OnboardingQuestionnaire.module.css";
 import DatePickerExamples from "../../../../components/date-picker/Component";
 import SliderExamples from "../../../../components/slider/Example";
+import SelectComponent from "../../../../components/select/Select";
+import SelectExample from "../../../../components/select/Example";
 
 type QuestionWithSectionMeta = Question & {
   section_title: string;
@@ -128,8 +130,9 @@ const OnboardingQuestionnaire = () => {
     //   </Stepper>
     // </div>
     <div>
-      <DatePickerExamples />
+      {/* <DatePickerExamples /> */}
       {/* <SliderExamples /> */}
+      <SelectExample />
     </div>
   );
 };
