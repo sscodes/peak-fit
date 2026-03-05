@@ -1,5 +1,15 @@
-import SelectRS from "react-select";
+import SelectRS, {
+  type ActionMeta,
+  type MultiValue,
+  type SingleValue,
+} from "react-select";
+import makeAnimated from "react-select/animated";
 import "./Select.css";
+
+interface Option {
+  value: string;
+  label: string;
+}
 
 interface SelectProps {
   isDisabled?: boolean;
@@ -9,10 +19,14 @@ interface SelectProps {
   options: { value: string; label: string }[];
   customClass?: string;
   placeholder?: string;
-  value?: { value: string; label: string } | null;
+  value?: MultiValue<Option> | SingleValue<Option>;
   noOptionsMessage?: () => string;
-  onChange: (selectedOption: { value: string; label: string } | null) => void;
+  onChange: (
+    newValue: MultiValue<Option> | SingleValue<Option>,
+    actionMeta: ActionMeta<Option>,
+  ) => void;
   name?: string;
+  isMulti?: boolean;
 }
 
 const Select = ({
@@ -27,7 +41,9 @@ const Select = ({
   noOptionsMessage = () => "No such option available",
   onChange,
   name,
+  isMulti = false,
 }: SelectProps) => {
+  const animatedComponents = makeAnimated();
   return (
     <SelectRS
       className={`single-select ${customClass}`}
@@ -42,6 +58,8 @@ const Select = ({
       placeholder={placeholder}
       noOptionsMessage={noOptionsMessage}
       onChange={onChange}
+      isMulti={isMulti}
+      components={animatedComponents}
     />
   );
 };

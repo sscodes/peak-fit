@@ -105,3 +105,69 @@
   padding: 20px;
   color: var(--text-secondary);
 }
+
+.single-select .select__multi-value {
+  background-color: var(--surface-active);
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin: 2px;
+  width: fit-content !important;
+}
+
+.single-select .select__multi-value .select__multi-value__label {
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.single-select .select__multi-value .select__multi-value__remove {
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.single-select .select__multi-value .select__multi-value__remove:hover {
+  color: var(--text-primary);
+  background-color: transparent;
+}
+
+/* 1. The Container: Force a single row and allow horizontal scrolling */
+.single-select .select__value-container--is-multi {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important; /* Prevent vertical jitter */
+  gap: 0 !important; /* We will use margins on children for better compatibility */
+  scrollbar-width: none; /* Hides scrollbar in Firefox */
+}
+
+/* Hide scrollbar in Chrome/Safari */
+.single-select .select__value-container--is-multi::-webkit-scrollbar {
+  display: none;
+}
+
+/* 2. The Animation Wrappers: Prevent overlapping and squishing */
+/* These are the direct div children seen in your DevTools */
+.single-select .select__value-container--is-multi > div {
+  flex: 0 0 auto !important; /* Don't grow, don't shrink */
+  min-width: max-content !important; /* Ensure they never overlap */
+  margin-right: 8px !important; /* This creates the visual "gap" between chips */
+}
+
+/* 3. The Chips: Ensure they don't have internal margins that clash */
+.single-select .select__multi-value {
+  margin: 0 !important; 
+  flex-shrink: 0 !important;
+  background-color: var(--surface-active);
+  border-radius: 4px;
+}
+
+/* 4. The Input: Ensure the typing area doesn't collapse to 0px */
+.single-select .select__input-container {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: 4px !important;
+}
