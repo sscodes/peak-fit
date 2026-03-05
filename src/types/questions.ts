@@ -41,3 +41,9 @@ export interface ConditionalDisplay {
   depends_on: string;
   show_when: string;
 }
+
+export type QuestionWithSectionMeta = Question & {
+  section_title: string;
+  section_description: string;
+  section_icon: string;
+};

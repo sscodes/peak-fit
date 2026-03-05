@@ -1,0 +1,52 @@
+.step * {
+  background-color: var(--bg-tertiary);
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.subTitle {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.step {
+  margin-bottom: 25px;
+  height: 500px;
+  overflow-y: scroll;
+  background-color: var(--bg-tertiary);
+  display: flex;
+  justify-content: center;
+}
+
+.step::-webkit-scrollbar {
+  width: 6px;
+}
+
+.step::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.step::-webkit-scrollbar-thumb {
+  background: var(--surface-active);
+  border-radius: 3px;
+}
+
+.step::-webkit-scrollbar-thumb:hover {
+  background: var(--surface-hover);
+}
+
+.subContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 40%;
+}

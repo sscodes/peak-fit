@@ -27,6 +27,7 @@
     "date-fns": "^4.1.0",
     "formik": "^2.4.6",
     "framer-motion": "^12.18.1",
+    "lucide-react": "^0.577.0",
     "postprocessing": "^6.37.3",
     "react": "^19.1.0",
     "react-day-picker": "^9.13.2",
