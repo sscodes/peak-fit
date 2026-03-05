@@ -90,6 +90,11 @@
   color: var(--text-primary);
 }
 
+.single-select .select__option--is-focused:active {
+  background-color: var(--surface-active);
+  color: var(--text-primary);
+}
+
 /* Selected State */
 .single-select .select__option--is-selected {
   background-color: var(--surface-active);
