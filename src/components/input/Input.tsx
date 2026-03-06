@@ -8,7 +8,7 @@ type InputProps = {
   labelClasses?: string;
   inputClasses?: string;
   inputGroupClasses?: string;
-  isError: string | false | undefined;
+  isError?: string | false | undefined;
   error?: string;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
