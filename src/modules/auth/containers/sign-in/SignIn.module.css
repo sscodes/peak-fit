@@ -1,7 +1,3 @@
-.step * {
-  background-color: var(--bg-tertiary);
-}
-
 .welcomeIcon {
   display: flex;
   justify-content: center;

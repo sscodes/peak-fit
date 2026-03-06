@@ -18,7 +18,6 @@ interface DateRangePickerProps {
   className?: string;
   label?: string;
   error?: string;
-  required?: boolean;
   lowerYearLimit?: number;
   upperYearLimit?: number;
 }
@@ -33,7 +32,6 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   className = "",
   label,
   error,
-  required = false,
   lowerYearLimit = 100,
   upperYearLimit = 0,
 }) => {
@@ -94,7 +92,6 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
       {label && (
         <label className={`label ${classes.label}`}>
           {label}
-          {required && <span className={classes.required}>*</span>}
         </label>
       )}
 

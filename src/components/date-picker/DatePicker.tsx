@@ -9,8 +9,6 @@ import "./Datepicker.css";
 import { MonthDropdown } from "./MonthDropdown";
 import YearDropDown from "./YearDropDown";
 
-// Simple Custom Month Dropdown
-
 interface DatePickerProps {
   selected?: Date;
   onSelect: (date: Date | undefined) => void;
@@ -21,7 +19,7 @@ interface DatePickerProps {
   className?: string;
   label?: string;
   error?: string;
-  required?: boolean;
+  isError?: string | false | undefined;
   lowerYearLimit?: number;
   upperYearLimit?: number;
 }
@@ -36,7 +34,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   className = "",
   label,
   error,
-  required = false,
+  isError,
   lowerYearLimit = 100,
   upperYearLimit = 0,
 }) => {
@@ -55,12 +53,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   return (
     <div className={`${classes.container} ${className}`}>
-      {label && (
-        <label className={`label ${classes.label}`}>
-          {label}
-          {required && <span className={classes.required}>*</span>}
-        </label>
-      )}
+      {label && <label className={`label ${classes.label}`}>{label}</label>}
 
       <div className={classes.inputWrapper}>
         <div
@@ -97,7 +90,11 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           )}
         </div>
 
-        {error && <p className={`${classes.error} caption`}>{error}</p>}
+        {isError ? (
+          <div className={classes.errors}>{error}</div>
+        ) : (
+          <div className={classes.errorsFiller}>error filler</div>
+        )}
 
         {isOpen && !disabled && (
           <>

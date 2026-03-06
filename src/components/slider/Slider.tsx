@@ -10,7 +10,7 @@ interface SliderProps {
   type?: SLIDER_TYPE;
   step?: number;
   size?: SLIDER_SIZE;
-  label?: string;
+  label: string;
   disabled?: boolean;
   showMinMax?: boolean;
   className?: string;
