@@ -23,10 +23,10 @@ const Input = ({
   ...rest
 }: InputProps) => {
   return (
-    <div className={inputGroupClasses}>
+    <div className={clsx(inputGroupClasses, classes.inputGroup)}>
       <label
         htmlFor={id}
-        className={clsx(classes.title, "label", labelClasses)}
+        className={clsx(classes.label, "label", labelClasses)}
       >
         {label}
       </label>
@@ -39,7 +39,9 @@ const Input = ({
       {isError ? (
         <div className={classes.errors}>{error}</div>
       ) : (
-        <div className={classes.errorsFiller}>error filler</div>
+        <div className={classes.errorsFiller} aria-hidden="true">
+          &nbsp;
+        </div>
       )}
     </div>
   );

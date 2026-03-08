@@ -5,6 +5,8 @@ import SelectRS, {
 } from "react-select";
 import makeAnimated from "react-select/animated";
 import "./Select.css";
+import { clsx } from "clsx";
+import classes from "./Select.module.css";
 
 interface Option {
   value: string;
@@ -25,8 +27,12 @@ interface SelectProps {
     newValue: MultiValue<Option> | SingleValue<Option>,
     actionMeta: ActionMeta<Option>,
   ) => void;
-  name?: string;
+  name: string;
   isMulti?: boolean;
+  label: string;
+  labelClasses?: string;
+  isError?: string | false | undefined;
+  error?: string;
 }
 
 const Select = ({
@@ -42,25 +48,45 @@ const Select = ({
   onChange,
   name,
   isMulti = false,
+  label,
+  labelClasses,
+  isError,
+  error = "",
 }: SelectProps) => {
   const animatedComponents = makeAnimated();
   return (
-    <SelectRS
-      className={`single-select ${customClass}`}
-      classNamePrefix="select"
-      defaultValue={value}
-      options={options}
-      isDisabled={isDisabled}
-      isLoading={isLoading}
-      isClearable={isClearable}
-      isSearchable={isSearchable}
-      name={name}
-      placeholder={placeholder}
-      noOptionsMessage={noOptionsMessage}
-      onChange={onChange}
-      isMulti={isMulti}
-      components={animatedComponents}
-    />
+    <div className={classes.inputGroup}>
+      <label
+        htmlFor={name}
+        className={clsx(classes.label, "label", labelClasses)}
+      >
+        {label}
+      </label>
+      <SelectRS
+        id={name}
+        className={`single-select ${customClass}`}
+        classNamePrefix="select"
+        defaultValue={value}
+        options={options}
+        isDisabled={isDisabled}
+        isLoading={isLoading}
+        isClearable={isClearable}
+        isSearchable={isSearchable}
+        name={name}
+        placeholder={placeholder}
+        noOptionsMessage={noOptionsMessage}
+        onChange={onChange}
+        isMulti={isMulti}
+        components={animatedComponents}
+      />
+      {isError ? (
+        <div className={classes.errors}>{error}</div>
+      ) : (
+        <div className={classes.errorsFiller} aria-hidden="true">
+          &nbsp;
+        </div>
+      )}
+    </div>
   );
 };
 

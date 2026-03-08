@@ -1,11 +1,12 @@
 .single-select {
   width: 100%;
+  min-width: 0px;
+  max-width: 640px;
 }
 
 .single-select .select__control {
   background-color: var(--primary-200);
   box-shadow: var(--shadow-inset);
-  padding: 8px;
   border-radius: 8px;
   color: var(--text-inverse);
   border: none;
@@ -80,7 +81,7 @@
 }
 
 .single-select .select__option {
-  padding: 20px;
+  padding: 8px;
   cursor: pointer;
 }
 

@@ -1,6 +1,19 @@
-.title {
-  text-align: center;
+.inputGroup{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0px;
+  max-width: 640px;
+}
+
+.label {
+  display: flex;
+  justify-content: start;
+  align-items: center;
   color: var(--text-primary);
+  width: 100%;
 }
 
 .input {
@@ -28,8 +41,10 @@
 
 .errors {
   color: var(--error-500);
+  width: 100%;
 }
 
 .errorsFiller {
   opacity: 0;
+  width: 100%;
 }
