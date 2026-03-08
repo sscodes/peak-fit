@@ -27,7 +27,7 @@ interface SelectProps {
     newValue: MultiValue<Option> | SingleValue<Option>,
     actionMeta: ActionMeta<Option>,
   ) => void;
-  name?: string;
+  name: string;
   isMulti?: boolean;
   label: string;
   labelClasses?: string;
@@ -82,7 +82,9 @@ const Select = ({
       {isError ? (
         <div className={classes.errors}>{error}</div>
       ) : (
-        <div className={classes.errorsFiller}>error filler</div>
+        <div className={classes.errorsFiller} aria-hidden="true">
+          &nbsp;
+        </div>
       )}
     </div>
   );

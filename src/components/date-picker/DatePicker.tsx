@@ -67,7 +67,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             }
           }}
           aria-disabled={disabled}
-          className={`${classes.trigger} ${disabled ? classes.disabled : ""} ${error ? classes.hasError : ""}`}
+          className={`${classes.trigger} ${disabled ? classes.disabled : ""}`}
         >
           <div className={classes.triggerContent}>
             <HiOutlineCalendar className={classes.calendarIcon} />
@@ -93,7 +93,9 @@ export const DatePicker: React.FC<DatePickerProps> = ({
         {isError ? (
           <div className={classes.errors}>{error}</div>
         ) : (
-          <div className={classes.errorsFiller}>error filler</div>
+          <div className={classes.errorsFiller} aria-hidden="true">
+            &nbsp;
+          </div>
         )}
 
         {isOpen && !disabled && (

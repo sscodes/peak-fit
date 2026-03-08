@@ -39,7 +39,9 @@ const Input = ({
       {isError ? (
         <div className={classes.errors}>{error}</div>
       ) : (
-        <div className={classes.errorsFiller}>error filler</div>
+        <div className={classes.errorsFiller} aria-hidden="true">
+          &nbsp;
+        </div>
       )}
     </div>
   );
