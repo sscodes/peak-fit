@@ -1,11 +1,116 @@
 import clsx from "clsx";
-import type { QuestionWithSectionMeta } from "../../../../../../types/questions";
-import classes from "./Question.module.css";
-import Input from "../../../../../../components/input/Input";
+import type { FormikProps } from "formik/dist/types";
+import { useState } from "react";
+import type { MultiValue, SingleValue } from "react-select";
+import { DatePicker } from "../../../../../../components/date-picker/DatePicker";
 import Icon from "../../../../../../components/icon/Icon";
+import Input from "../../../../../../components/input/Input";
+import Select from "../../../../../../components/select/Select";
+import { Slider } from "../../../../../../components/slider/Slider";
+import {
+  INPUT_TYPE,
+  type FormValues,
+  type Option,
+  type QuestionWithSectionMeta,
+} from "../../../../../../types/questions";
+import classes from "./Question.module.css";
 
-const Question = ({ question }: { question: QuestionWithSectionMeta }) => {
-  console.log("Rendering Question Component with question:", question); // Debug log
+const Question = ({
+  formik,
+  question,
+}: {
+  formik: FormikProps<FormValues>;
+  question: QuestionWithSectionMeta;
+}) => {
+  const [sliderValue, setSliderValue] = useState(50);
+  // console.log("Rendering Question Component with question:", question); // Debug log
+  const getInputComponent = () => {
+    switch (question.input_type) {
+      case INPUT_TYPE.TEXT:
+      case INPUT_TYPE.NUMBER:
+        return (
+          <Input
+            label={question.label}
+            id={question.id}
+            type={question.input_type}
+            placeholder={question.placeholder}
+            isError={formik.touched[question.id] && formik.errors[question.id]}
+            error={formik.errors[question.id]}
+            value={formik.values[question.id] as string | number}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+        );
+      case INPUT_TYPE.SELECT:
+        return (
+          <Select
+            label={question.label}
+            options={question.options || []}
+            customClass={classes.selectContainer}
+            isClearable
+            onChange={(newValue) => {
+              formik.setFieldValue(
+                question.id,
+                (newValue as SingleValue<Option>)?.value ?? "",
+              );
+            }}
+            value={
+              question.options?.find(
+                (opt) => opt.value === formik.values[question.id],
+              ) || null
+            }
+            name={question.id}
+            isError={formik.touched[question.id] && formik.errors[question.id]}
+            error={formik.errors[question.id]}
+            placeholder={question.placeholder}
+          />
+        );
+      case INPUT_TYPE.MULTI_SELECT:
+        return (
+          <Select
+            label={question.label}
+            options={question.options || []}
+            customClass={classes.selectContainer}
+            isMulti
+            onChange={(newValue) => {
+              const values = newValue
+                ? (newValue as MultiValue<Option>).map(
+                    (opt: Option) => opt.value,
+                  )
+                : [];
+              formik.setFieldValue(question.id, values);
+            }}
+            name={question.id}
+            value={question.options?.filter((opt) =>
+              (formik.values[question.id] as string[])?.includes(opt.value),
+            )}
+            placeholder={question.placeholder}
+          />
+        );
+      case INPUT_TYPE.DATE:
+        return (
+          <DatePicker
+            selected={formik.values[question.id] as Date | undefined}
+            onSelect={formik.handleChange}
+            placeholder={question.placeholder}
+            label={question.label}
+            isError={formik.touched[question.id] && formik.errors[question.id]}
+            error={formik.errors[question.id]}
+          />
+        );
+      case INPUT_TYPE.SLIDER:
+        return (
+          <Slider
+            min={question.validation?.min ?? 0}
+            max={question.validation?.max ?? 100}
+            value={sliderValue}
+            onChange={setSliderValue}
+            label={question.label}
+          />
+        );
+    }
+  };
+
   return (
     <div className={classes.step}>
       <div className={classes.subContainer}>
@@ -18,11 +123,7 @@ const Question = ({ question }: { question: QuestionWithSectionMeta }) => {
         <div className={clsx(classes.subTitle, "heading-5")}>
           {question.section_description}
         </div>
-        <Input
-          label={question.label}
-          id={question.id}
-          type={question.input_type}
-        />
+        <div className={classes.inputGroup}>{getInputComponent()}</div>
       </div>
     </div>
   );

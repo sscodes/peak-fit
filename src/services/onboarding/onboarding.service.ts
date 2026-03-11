@@ -52,12 +52,15 @@ export class OnboardingService {
       if (error) throw error;
 
       // Transform database rows into Questionnaire format
-      const questionnaire: Questionnaire = (data || []).map((section) => ({
+      const questionnaire: Questionnaire = (data || []).map((section: QuestionSection) => ({
         id: section.id,
         title: section.title,
         description: section.description,
         icon: section.icon,
         questions: section.questions,
+        created_at: section.created_at,
+        updated_at: section.updated_at,
+        display_order: section.display_order,
       }));
 
       return { data: questionnaire, error: null };
@@ -118,6 +121,9 @@ export class OnboardingService {
         description: data.description,
         icon: data.icon,
         questions: data.questions,
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        display_order: data.display_order,
       };
 
       return { data: section, error: null };

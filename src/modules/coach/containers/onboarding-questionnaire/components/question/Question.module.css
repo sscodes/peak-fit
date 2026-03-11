@@ -1,7 +1,3 @@
-.step * {
-  background-color: var(--bg-tertiary);
-}
-
 .iconContainer {
   display: flex;
   align-items: center;
@@ -49,4 +45,10 @@
   flex-direction: column;
   gap: 20px;
   width: 40%;
+}
+
+.inputGroup {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
