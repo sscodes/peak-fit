@@ -21,7 +21,7 @@ export interface Question {
   crucial: boolean;
   options?: Option[];
   sub_label?: string;
-  default_value: string | number | null;
+  default_value: string | number | string[] | null;
   conditional_display?: ConditionalDisplay;
   icon?: string;
 }

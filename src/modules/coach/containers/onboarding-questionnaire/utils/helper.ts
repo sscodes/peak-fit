@@ -7,19 +7,11 @@ export function evaluateConditionalDisplay(
 ): boolean {
   switch (operator) {
     case CONDITIONAL_OPERATOR.EQUALS:
-      if (Array.isArray(dependentValue))
-        return dependentValue
-          .map((v) => v.toLowerCase())
-          .includes(targetValue.toLowerCase());
       return (
         dependentValue?.toString().toLowerCase() === targetValue.toLowerCase()
       );
 
     case CONDITIONAL_OPERATOR.NOT_EQUALS:
-      if (Array.isArray(dependentValue))
-        return !dependentValue
-          .map((v) => v.toLowerCase())
-          .includes(targetValue.toLowerCase());
       return (
         dependentValue?.toString().toLowerCase() !== targetValue.toLowerCase()
       );
@@ -32,12 +24,16 @@ export function evaluateConditionalDisplay(
 
     case CONDITIONAL_OPERATOR.INCLUDES:
       if (Array.isArray(dependentValue))
-        return dependentValue.includes(targetValue.toLowerCase());
+        return dependentValue
+          .map((v) => v.toLowerCase())
+          .includes(targetValue.toLowerCase());
       return false;
 
     case CONDITIONAL_OPERATOR.EXCLUDES:
       if (Array.isArray(dependentValue))
-        return !dependentValue.includes(targetValue.toLowerCase());
+        return !dependentValue
+          .map((v) => v.toLowerCase())
+          .includes(targetValue.toLowerCase());
       return true;
 
     default:

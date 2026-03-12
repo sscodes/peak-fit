@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import type { FormikProps } from "formik/dist/types";
-import { useState } from "react";
 import type { MultiValue, SingleValue } from "react-select";
 import { DatePicker } from "../../../../../../components/date-picker/DatePicker";
 import Icon from "../../../../../../components/icon/Icon";
@@ -22,7 +21,6 @@ const Question = ({
   formik: FormikProps<FormValues>;
   question: QuestionWithSectionMeta;
 }) => {
-  const [sliderValue, setSliderValue] = useState(50);
   // console.log("Rendering Question Component with question:", question); // Debug log
   const getInputComponent = () => {
     switch (question.input_type) {
@@ -85,13 +83,19 @@ const Question = ({
               (formik.values[question.id] as string[])?.includes(opt.value),
             )}
             placeholder={question.placeholder}
+            isError={formik.touched[question.id] && formik.errors[question.id]}
+            error={formik.errors[question.id]}
           />
         );
       case INPUT_TYPE.DATE:
         return (
           <DatePicker
-            selected={formik.values[question.id] as Date | undefined}
-            onSelect={formik.handleChange}
+            selected={
+              formik.values[question.id]
+                ? new Date(formik.values[question.id] as string | Date)
+                : undefined
+            }
+            onSelect={(date) => formik.setFieldValue(question.id, date)}
             placeholder={question.placeholder}
             label={question.label}
             isError={formik.touched[question.id] && formik.errors[question.id]}
@@ -103,8 +107,8 @@ const Question = ({
           <Slider
             min={question.validation?.min ?? 0}
             max={question.validation?.max ?? 100}
-            value={sliderValue}
-            onChange={setSliderValue}
+            value={formik.values[question.id] as number}
+            onChange={formik.handleChange}
             label={question.label}
           />
         );
