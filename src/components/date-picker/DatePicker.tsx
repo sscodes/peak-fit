@@ -8,6 +8,7 @@ import classes from "./DatePicker.module.css";
 import "./Datepicker.css";
 import { MonthDropdown } from "./MonthDropdown";
 import YearDropDown from "./YearDropDown";
+import { clsx } from "clsx";
 
 interface DatePickerProps {
   selected?: Date;
@@ -18,6 +19,7 @@ interface DatePickerProps {
   maxDate?: Date;
   className?: string;
   label?: string;
+  subLabel?: string;
   error?: string;
   isError?: string | false | undefined;
   lowerYearLimit?: number;
@@ -33,6 +35,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   maxDate,
   className = "",
   label,
+  subLabel,
   error,
   isError,
   lowerYearLimit = 100,
@@ -54,6 +57,11 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   return (
     <div className={`${classes.container} ${className}`}>
       {label && <label className={`label ${classes.label}`}>{label}</label>}
+      {subLabel && (
+        <label className={clsx(classes.subLabel, "subtitle-small")}>
+          {subLabel}
+        </label>
+      )}
 
       <div className={classes.inputWrapper}>
         <div

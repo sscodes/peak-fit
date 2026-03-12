@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { SLIDER_SIZE, SLIDER_TYPE } from "../../helpers/types";
 import classes from "./Slider.module.css";
+import clsx from "clsx";
 
 interface SliderProps {
   min: number;
@@ -11,6 +12,7 @@ interface SliderProps {
   step?: number;
   size?: SLIDER_SIZE;
   label: string;
+  subLabel?: string;
   disabled?: boolean;
   showMinMax?: boolean;
   className?: string;
@@ -25,6 +27,7 @@ export const Slider: React.FC<SliderProps> = ({
   step = 1,
   size = SLIDER_SIZE.MEDIUM,
   label,
+  subLabel,
   disabled = false,
   showMinMax = true,
   className = "",
@@ -129,6 +132,11 @@ export const Slider: React.FC<SliderProps> = ({
   return (
     <div className={`${classes.container} ${className}`}>
       {label && <label className={`label ${classes.label}`}>{label}</label>}
+      {subLabel && (
+        <label className={clsx(classes.subLabel, "subtitle-small")}>
+          {subLabel}
+        </label>
+      )}
 
       <div className={classes.sliderWrapper}>
         {/* Min value */}

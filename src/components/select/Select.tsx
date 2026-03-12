@@ -32,6 +32,7 @@ interface SelectProps {
   name: string;
   isMulti?: boolean;
   label: string;
+  subLabel?: string;
   labelClasses?: string;
   isError?: string | false | undefined;
   error?: string;
@@ -51,6 +52,7 @@ const Select = ({
   name,
   isMulti = false,
   label,
+  subLabel,
   labelClasses,
   isError,
   error = "",
@@ -63,6 +65,14 @@ const Select = ({
       >
         {label}
       </label>
+      {subLabel && (
+        <label
+          htmlFor={name}
+          className={clsx(classes.subLabel, "subtitle-small")}
+        >
+          {subLabel}
+        </label>
+      )}
       <SelectRS
         id={name}
         className={`single-select ${customClass}`}
