@@ -25,6 +25,19 @@ const Question = ({
   const getInputComponent = () => {
     switch (question.input_type) {
       case INPUT_TYPE.TEXT:
+        return (
+          <Input
+            label={question.label}
+            id={question.id}
+            type={question.input_type}
+            placeholder={question.placeholder}
+            isError={formik.touched[question.id] && formik.errors[question.id]}
+            error={formik.errors[question.id]}
+            value={formik.values[question.id] as string}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+        );
       case INPUT_TYPE.NUMBER:
         return (
           <Input
@@ -34,8 +47,15 @@ const Question = ({
             placeholder={question.placeholder}
             isError={formik.touched[question.id] && formik.errors[question.id]}
             error={formik.errors[question.id]}
-            value={formik.values[question.id] as string | number}
-            onChange={formik.handleChange}
+            value={
+              (formik.values[question.id] as number | null | undefined) ?? ""
+            }
+            onChange={(event) =>
+              formik.setFieldValue(
+                question.id,
+                event.target.value === "" ? null : Number(event.target.value),
+              )
+            }
             onBlur={formik.handleBlur}
           />
         );
