@@ -61,53 +61,54 @@
   color: var(--text-disabled);
 }
 
-.single-select .select__menu-list {
+/* Menu is portaled to document.body, so selectors must not require .single-select parent */
+.select__menu-list {
   background: var(--surface-primary);
   padding-top: 4px;
   padding-bottom: 4px;
   border: 2px solid var(--border-subtle);
 }
 
-.single-select .select__menu-list::-webkit-scrollbar {
+.select__menu-list::-webkit-scrollbar {
   width: 6px;
 }
 
-.single-select .select__menu-list::-webkit-scrollbar-track {
+.select__menu-list::-webkit-scrollbar-track {
   background: var(--surface-secondary);
 }
 
-.single-select .select__menu-list::-webkit-scrollbar-thumb {
+.select__menu-list::-webkit-scrollbar-thumb {
   background: var(--border-default);
 }
 
-.single-select .select__option {
+.select__option {
   padding: 8px;
   cursor: pointer;
 }
 
 /* Hover / Focused State */
-.single-select .select__option--is-focused {
-  background-color: var(--surface-hover);
-  color: var(--text-primary);
+.select__option--is-focused {
+  background-color: var(--surface-hover) !important;
+  color: var(--text-primary) !important;
 }
 
-.single-select .select__option--is-focused:active {
-  background-color: var(--surface-active);
-  color: var(--text-primary);
+.select__option--is-focused:active {
+  background-color: var(--surface-active) !important;
+  color: var(--text-primary) !important;
 }
 
 /* Selected State */
-.single-select .select__option--is-selected {
-  background-color: var(--surface-active);
-  color: var(--text-primary);
+.select__option--is-selected {
+  background-color: var(--surface-active) !important;
+  color: var(--text-primary) !important;
 }
 
 /* Selected AND Focused (Hovering over the already selected item) */
-.single-select .select__option--is-selected.select__option--is-focused {
-  background-color: var(--surface-hover);
+.select__option--is-selected.select__option--is-focused {
+  background-color: var(--surface-hover) !important;
 }
 
-.single-select .select__menu-notice.select__menu-notice--no-options {
+.select__menu-notice.select__menu-notice--no-options {
   padding: 20px;
   color: var(--text-secondary);
 }

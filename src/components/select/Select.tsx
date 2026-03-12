@@ -1,3 +1,4 @@
+import { clsx } from "clsx";
 import SelectRS, {
   type ActionMeta,
   type MultiValue,
@@ -5,8 +6,9 @@ import SelectRS, {
 } from "react-select";
 import makeAnimated from "react-select/animated";
 import "./Select.css";
-import { clsx } from "clsx";
 import classes from "./Select.module.css";
+
+const animatedComponents = makeAnimated();
 
 interface Option {
   value: string;
@@ -53,7 +55,6 @@ const Select = ({
   isError,
   error = "",
 }: SelectProps) => {
-  const animatedComponents = makeAnimated();
   return (
     <div className={classes.inputGroup}>
       <label
@@ -66,7 +67,7 @@ const Select = ({
         id={name}
         className={`single-select ${customClass}`}
         classNamePrefix="select"
-        defaultValue={value}
+        value={value}
         options={options}
         isDisabled={isDisabled}
         isLoading={isLoading}
@@ -78,6 +79,8 @@ const Select = ({
         onChange={onChange}
         isMulti={isMulti}
         components={animatedComponents}
+        menuPortalTarget={document.body}
+        menuPosition="fixed"
       />
       {isError ? (
         <div className={classes.errors}>{error}</div>
