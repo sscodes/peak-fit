@@ -68,13 +68,21 @@ const OnboardingQuestionnaire = () => {
     validateOnChange: false,
     validateOnBlur: true,
     onSubmit: async (values) => {
-      await saveAnswers({
-        userId: user?.id || "",
-        answers: values,
-      });
-      await completeOnboarding({ userId: user?.id || "" });
-      formik.setSubmitting(false);
-      navigate(COACH);
+      if (!user?.id) {
+        return;
+      }
+      try {
+        await saveAnswers({
+          userId: user?.id,
+          answers: values,
+        });
+        await completeOnboarding({ userId: user?.id });
+        navigate(COACH);
+      } catch (error) {
+        console.error("Failed to complete onboarding:", error);
+      } finally {
+        formik.setSubmitting(false);
+      }
     },
   });
 
