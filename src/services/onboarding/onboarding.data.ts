@@ -1,16 +1,11 @@
 // onboarding.data.ts
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
-import { DASHBOARD } from "../../helpers/getters";
 import { notifyError } from "../../helpers/helper";
 import { useAppDispatch } from "../../hooks/redux";
 import { updateProfile } from "../../store/authSlice";
-import type { QuestionnaireData } from "../../types/profile";
+import type { SaveAnswersPayload } from "../../types/questions";
 import { onboardingKeys, profileKeys } from "../query-key-factory";
-import {
-  OnboardingService,
-  type SaveAnswersPayload,
-} from "./onboarding.service";
+import { OnboardingService } from "./onboarding.service";
 
 /**
  * Singleton instance of OnboardingService
@@ -95,7 +90,7 @@ export const useSaveAnswer = () => {
     }: {
       userId: string;
       questionId: string;
-      answerData: QuestionnaireData;
+      answerData: string | number | boolean | Date | string[] | null;
     }) => {
       const { error } = await onboardingService.saveAnswer(
         userId,
@@ -177,7 +172,6 @@ export const useGetProgress = (userId: string) => {
 export const useCompleteOnboarding = () => {
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: async ({ userId }: { userId: string }) => {
@@ -198,9 +192,6 @@ export const useCompleteOnboarding = () => {
       queryClient.invalidateQueries({
         queryKey: profileKeys.detail(data.userId),
       });
-
-      // Navigate to dashboard
-      navigate(DASHBOARD);
     },
     onError: (error: unknown) => {
       handleOnboardingError(error);

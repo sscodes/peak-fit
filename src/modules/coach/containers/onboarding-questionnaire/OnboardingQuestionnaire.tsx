@@ -5,7 +5,11 @@ import { Step, Stepper } from "../../../../components/stepper/Stepper";
 import { COACH, DASHBOARD } from "../../../../helpers/getters";
 import { STEPPER_PROGRESS, STEPPER_SIZE } from "../../../../helpers/types";
 import { useAppSelector } from "../../../../hooks/redux";
-import { useGetCrucialQuestionnaire } from "../../../../services/onboarding/onboarding.data";
+import {
+  useCompleteOnboarding,
+  useGetCrucialQuestionnaire,
+  useSaveAnswers,
+} from "../../../../services/onboarding/onboarding.data";
 import { selectProfile } from "../../../../store/authSlice";
 import {
   INPUT_TYPE,
@@ -15,6 +19,7 @@ import {
 import classes from "./OnboardingQuestionnaire.module.css";
 import Disclaimer from "./components/disclaimer/Disclaimer";
 import QuestionComponent from "./components/question/Question";
+import Review from "./components/review/Review";
 import { evaluateConditionalDisplay } from "./utils/helper";
 import { buildValidationSchema } from "./utils/validation";
 
@@ -22,6 +27,8 @@ const OnboardingQuestionnaire = () => {
   const user = useAppSelector(selectProfile);
   const navigate = useNavigate();
   const { data: crucialQuestions } = useGetCrucialQuestionnaire();
+  const { mutateAsync: saveAnswers } = useSaveAnswers();
+  const { mutateAsync: completeOnboarding } = useCompleteOnboarding();
 
   React.useEffect(() => {
     if (user?.is_onboarded) {
@@ -61,7 +68,21 @@ const OnboardingQuestionnaire = () => {
     validateOnChange: false,
     validateOnBlur: true,
     onSubmit: async (values) => {
-      console.log("payload:", values);
+      if (!user?.id) {
+        return;
+      }
+      try {
+        await saveAnswers({
+          userId: user?.id,
+          answers: values,
+        });
+        await completeOnboarding({ userId: user?.id });
+        navigate(COACH);
+      } catch (error) {
+        console.error("Failed to complete onboarding:", error);
+      } finally {
+        formik.setSubmitting(false);
+      }
     },
   });
 
@@ -75,7 +96,7 @@ const OnboardingQuestionnaire = () => {
     <div className={classes.onboardingQuestionnaireContainer}>
       <Stepper
         initialStep={1}
-        onFinalStepCompleted={() => {}}
+        onFinalStepCompleted={() => formik.handleSubmit()}
         backButtonText="Previous"
         nextButtonText="Next"
         progressIndicator={STEPPER_PROGRESS.LINE}
@@ -112,6 +133,12 @@ const OnboardingQuestionnaire = () => {
             </Step>
           );
         })}
+        <Step
+          backButtonText="Previous"
+          nextButtonText={formik.isSubmitting ? "Submitting..." : "Submit"}
+        >
+          <Review />
+        </Step>
       </Stepper>
     </div>
   );

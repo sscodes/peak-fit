@@ -13,6 +13,8 @@ const Coach = () => {
       navigate(ONBOARDING_QUESTIONNAIRE);
     }
   }, [user, navigate]);
+
+  console.log(user?.questionnaire_data);
   return <div></div>;
 };
 
