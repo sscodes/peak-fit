@@ -36,6 +36,7 @@ const Question = ({
             value={formik.values[question.id] as string}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            subLabel={question.sub_label}
           />
         );
       case INPUT_TYPE.NUMBER:
@@ -57,6 +58,7 @@ const Question = ({
               )
             }
             onBlur={formik.handleBlur}
+            subLabel={question.sub_label}
           />
         );
       case INPUT_TYPE.SELECT:

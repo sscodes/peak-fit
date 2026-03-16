@@ -48,8 +48,7 @@
 /* ===============================
       Headings
       =============================== */
-.heading-1,
-.h1 {
+.heading-1 {
   font-family: var(--font-ui);
   font-size: 2.25rem;
   font-weight: 700;
@@ -58,8 +57,7 @@
   font-style: normal;
 }
 
-.heading-2,
-.h2 {
+.heading-2 {
   font-family: var(--font-ui);
   font-size: 1.875rem;
   font-weight: 600;
@@ -68,8 +66,7 @@
   font-style: normal;
 }
 
-.heading-3,
-.h3 {
+.heading-3 {
   font-family: var(--font-ui);
   font-size: 1.5rem;
   font-weight: 600;
@@ -78,8 +75,7 @@
   font-style: normal;
 }
 
-.heading-4,
-.h4 {
+.heading-4 {
   font-family: var(--font-ui);
   font-size: 1.25rem;
   font-weight: 600;
@@ -88,8 +84,7 @@
   font-style: normal;
 }
 
-.heading-5,
-.h5 {
+.heading-5 {
   font-family: var(--font-ui);
   font-size: 1.125rem;
   font-weight: 500;
@@ -98,8 +93,7 @@
   font-style: normal;
 }
 
-.heading-6,
-.h6 {
+.heading-6 {
   font-family: var(--font-ui);
   font-size: 1rem;
   font-weight: 500;
@@ -108,8 +102,7 @@
   font-style: normal;
 }
 
-.heading-7,
-.h7 {
+.heading-7 {
   font-family: var(--font-ui);
   font-size: 0.8rem;
   font-weight: 500;
@@ -130,7 +123,6 @@
   font-style: normal;
 }
 
-.body,
 .body-regular {
   font-family: var(--font-content);
   font-size: 1rem;
@@ -205,10 +197,18 @@
   font-style: normal;
 }
 
-.subtitle,
 .subtitle-regular {
   font-family: var(--font-ui);
   font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.003em;
+  font-style: normal;
+}
+
+.subtitle-small {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.5;
   letter-spacing: 0.003em;

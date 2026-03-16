@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import React, { useState } from "react";
+import React, { useId, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { HiOutlineCalendar } from "react-icons/hi";
@@ -8,6 +8,7 @@ import classes from "./DatePicker.module.css";
 import "./Datepicker.css";
 import { MonthDropdown } from "./MonthDropdown";
 import YearDropDown from "./YearDropDown";
+import { clsx } from "clsx";
 
 interface DatePickerProps {
   selected?: Date;
@@ -18,6 +19,7 @@ interface DatePickerProps {
   maxDate?: Date;
   className?: string;
   label?: string;
+  subLabel?: string;
   error?: string;
   isError?: string | false | undefined;
   lowerYearLimit?: number;
@@ -33,6 +35,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   maxDate,
   className = "",
   label,
+  subLabel,
   error,
   isError,
   lowerYearLimit = 100,
@@ -40,6 +43,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [month, setMonth] = useState<Date>(selected || new Date());
+  const helperId = useId();
 
   const handleSelect = (date: Date | undefined) => {
     onSelect(date);
@@ -54,6 +58,11 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   return (
     <div className={`${classes.container} ${className}`}>
       {label && <label className={`label ${classes.label}`}>{label}</label>}
+      {subLabel && (
+        <label id={helperId} className={clsx(classes.subLabel, "subtitle-small")}>
+          {subLabel}
+        </label>
+      )}
 
       <div className={classes.inputWrapper}>
         <div
@@ -67,6 +76,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             }
           }}
           aria-disabled={disabled}
+          aria-describedby={subLabel ? helperId : undefined}
           className={`${classes.trigger} ${disabled ? classes.disabled : ""}`}
         >
           <div className={classes.triggerContent}>

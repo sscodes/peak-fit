@@ -4,6 +4,7 @@ import classes from "./Input.module.css";
 
 type InputProps = {
   label: string;
+  subLabel?: string;
   id: string;
   labelClasses?: string;
   inputClasses?: string;
@@ -14,6 +15,7 @@ type InputProps = {
 
 const Input = ({
   label,
+  subLabel,
   id,
   labelClasses,
   inputClasses,
@@ -30,6 +32,14 @@ const Input = ({
       >
         {label}
       </label>
+      {subLabel && (
+        <label
+          htmlFor={id}
+          className={clsx(classes.subLabel, "subtitle-small", labelClasses)}
+        >
+          {subLabel}
+        </label>
+      )}
       <input
         id={id}
         name={id}

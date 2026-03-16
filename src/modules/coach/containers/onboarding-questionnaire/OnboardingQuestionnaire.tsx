@@ -97,7 +97,6 @@ const OnboardingQuestionnaire = () => {
               <Step
                 key={question.id}
                 backButtonText="Previous"
-                nextButtonText="Next"
                 onNext={() => handleStepNext(question.id)}
               >
                 <QuestionComponent formik={formik} question={question} />
@@ -107,7 +106,6 @@ const OnboardingQuestionnaire = () => {
             <Step
               key={question.id}
               backButtonText="Previous"
-              nextButtonText="Next"
               onNext={() => handleStepNext(question.id)}
             >
               <QuestionComponent formik={formik} question={question} />
