@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import React, { useState } from "react";
+import React, { useId, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { HiOutlineCalendar } from "react-icons/hi";
@@ -43,6 +43,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [month, setMonth] = useState<Date>(selected || new Date());
+  const helperId = useId();
 
   const handleSelect = (date: Date | undefined) => {
     onSelect(date);
@@ -58,7 +59,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     <div className={`${classes.container} ${className}`}>
       {label && <label className={`label ${classes.label}`}>{label}</label>}
       {subLabel && (
-        <label className={clsx(classes.subLabel, "subtitle-small")}>
+        <label id={helperId} className={clsx(classes.subLabel, "subtitle-small")}>
           {subLabel}
         </label>
       )}
@@ -75,6 +76,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             }
           }}
           aria-disabled={disabled}
+          aria-describedby={subLabel ? helperId : undefined}
           className={`${classes.trigger} ${disabled ? classes.disabled : ""}`}
         >
           <div className={classes.triggerContent}>

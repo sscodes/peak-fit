@@ -87,7 +87,7 @@ const OnboardingQuestionnaire = () => {
           <Disclaimer />
         </Step>
 
-        {modifiedCrucialQuestions?.map((question, index) => {
+        {modifiedCrucialQuestions?.map((question) => {
           return question.conditional_display ? (
             evaluateConditionalDisplay(
               question.conditional_display.operator,
@@ -97,11 +97,6 @@ const OnboardingQuestionnaire = () => {
               <Step
                 key={question.id}
                 backButtonText="Previous"
-                nextButtonText={
-                  index === modifiedCrucialQuestions.length - 1
-                    ? "Submit"
-                    : "Next"
-                }
                 onNext={() => handleStepNext(question.id)}
               >
                 <QuestionComponent formik={formik} question={question} />
@@ -111,11 +106,6 @@ const OnboardingQuestionnaire = () => {
             <Step
               key={question.id}
               backButtonText="Previous"
-              nextButtonText={
-                index === modifiedCrucialQuestions.length - 1
-                  ? "Submit"
-                  : "Next"
-              }
               onNext={() => handleStepNext(question.id)}
             >
               <QuestionComponent formik={formik} question={question} />

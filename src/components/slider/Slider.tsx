@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useId, useRef, useState } from "react";
 import { SLIDER_SIZE, SLIDER_TYPE } from "../../helpers/types";
 import classes from "./Slider.module.css";
 import clsx from "clsx";
@@ -35,6 +35,9 @@ export const Slider: React.FC<SliderProps> = ({
   const [showTooltip, setShowTooltip] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef<HTMLDivElement>(null);
+  const baseId = useId();
+  const labelId = `${baseId}-label`;
+  const subLabelId = `${baseId}-subLabel`;
 
   // Calculate percentage from value
   const percentage = max === min ? 0 : ((value - min) / (max - min)) * 100;
@@ -131,9 +134,9 @@ export const Slider: React.FC<SliderProps> = ({
 
   return (
     <div className={`${classes.container} ${className}`}>
-      {label && <label className={`label ${classes.label}`}>{label}</label>}
+      {label && <label id={labelId} className={`label ${classes.label}`}>{label}</label>}
       {subLabel && (
-        <label className={clsx(classes.subLabel, "subtitle-small")}>
+        <label id={subLabelId} className={clsx(classes.subLabel, "subtitle-small")}>
           {subLabel}
         </label>
       )}
@@ -184,7 +187,8 @@ export const Slider: React.FC<SliderProps> = ({
             aria-valuemin={min}
             aria-valuemax={max}
             aria-valuenow={value}
-            aria-label={label}
+            aria-labelledby={labelId}
+            aria-describedby={subLabel ? subLabelId : undefined}
             aria-disabled={disabled}
             onKeyDown={(e) => {
               if (disabled) return;
