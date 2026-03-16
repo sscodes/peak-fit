@@ -1,7 +1,5 @@
 // onboarding.data.ts
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
-import { DASHBOARD } from "../../helpers/getters";
 import { notifyError } from "../../helpers/helper";
 import { useAppDispatch } from "../../hooks/redux";
 import { updateProfile } from "../../store/authSlice";
@@ -174,7 +172,6 @@ export const useGetProgress = (userId: string) => {
 export const useCompleteOnboarding = () => {
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: async ({ userId }: { userId: string }) => {
@@ -195,9 +192,6 @@ export const useCompleteOnboarding = () => {
       queryClient.invalidateQueries({
         queryKey: profileKeys.detail(data.userId),
       });
-
-      // Navigate to dashboard
-      navigate(DASHBOARD);
     },
     onError: (error: unknown) => {
       handleOnboardingError(error);

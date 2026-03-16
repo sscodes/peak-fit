@@ -13,6 +13,15 @@ import type {
  * OnboardingService - Handles all Supabase onboarding-related operations
  */
 export class OnboardingService {
+  private isAnswered(
+    value: string | number | string[] | Date | null | undefined,
+  ): boolean {
+    if (value === null || value === undefined) return false;
+    if (typeof value === "string") return value.trim().length > 0;
+    if (Array.isArray(value)) return value.length > 0;
+    return true;
+  }
+
   private toError(error: unknown): PostgrestError | Error {
     if (
       typeof error === "object" &&
@@ -209,7 +218,7 @@ export class OnboardingService {
           }
 
           const answer = answers[question.id];
-          if (answer && answer.is_answered) {
+          if (this.isAnswered(answer)) {
             answeredQuestions++;
 
             if (question.crucial) {
