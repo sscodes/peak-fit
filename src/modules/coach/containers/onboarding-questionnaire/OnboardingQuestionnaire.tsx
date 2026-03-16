@@ -3,9 +3,15 @@ import React from "react";
 import { useNavigate } from "react-router";
 import { Step, Stepper } from "../../../../components/stepper/Stepper";
 import { COACH, DASHBOARD } from "../../../../helpers/getters";
+import { notifyError } from "../../../../helpers/helper";
 import { STEPPER_PROGRESS, STEPPER_SIZE } from "../../../../helpers/types";
 import { useAppSelector } from "../../../../hooks/redux";
-import { useGetCrucialQuestionnaire } from "../../../../services/onboarding/onboarding.data";
+import {
+  useCompleteOnboarding,
+  useGetCrucialQuestionnaire,
+  useSaveAnswers,
+} from "../../../../services/onboarding/onboarding.data";
+import { OnboardingService } from "../../../../services/onboarding/onboarding.service";
 import { selectProfile } from "../../../../store/authSlice";
 import {
   INPUT_TYPE,
@@ -18,10 +24,14 @@ import QuestionComponent from "./components/question/Question";
 import { evaluateConditionalDisplay } from "./utils/helper";
 import { buildValidationSchema } from "./utils/validation";
 
+const onboardingService = new OnboardingService();
+
 const OnboardingQuestionnaire = () => {
   const user = useAppSelector(selectProfile);
   const navigate = useNavigate();
   const { data: crucialQuestions } = useGetCrucialQuestionnaire();
+  const { mutateAsync: saveAnswers } = useSaveAnswers();
+  const { mutateAsync: completeOnboarding } = useCompleteOnboarding();
 
   React.useEffect(() => {
     if (user?.is_onboarded) {
@@ -61,7 +71,19 @@ const OnboardingQuestionnaire = () => {
     validateOnChange: false,
     validateOnBlur: true,
     onSubmit: async (values) => {
-      console.log("payload:", values);
+      try {
+        await saveAnswers({
+          userId: user?.id || "",
+          answers: values,
+        });
+        await completeOnboarding({ userId: user?.id || "" });
+        navigate(COACH);
+      } catch (error) {
+        const message = onboardingService.getErrorMessage(error);
+        notifyError(message);
+      } finally {
+        formik.setSubmitting(false);
+      }
     },
   });
 
@@ -75,7 +97,7 @@ const OnboardingQuestionnaire = () => {
     <div className={classes.onboardingQuestionnaireContainer}>
       <Stepper
         initialStep={1}
-        onFinalStepCompleted={() => {}}
+        onFinalStepCompleted={() => formik.handleSubmit()}
         backButtonText="Previous"
         nextButtonText="Next"
         progressIndicator={STEPPER_PROGRESS.LINE}
@@ -106,6 +128,14 @@ const OnboardingQuestionnaire = () => {
             <Step
               key={question.id}
               backButtonText="Previous"
+              nextButtonText={
+                question.id ===
+                modifiedCrucialQuestions[modifiedCrucialQuestions.length - 1].id
+                  ? formik.isSubmitting
+                    ? "Submitting..."
+                    : "Submit"
+                  : "Next"
+              }
               onNext={() => handleStepNext(question.id)}
             >
               <QuestionComponent formik={formik} question={question} />

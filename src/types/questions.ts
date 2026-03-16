@@ -1,3 +1,5 @@
+import type { PostgrestError } from "@supabase/supabase-js";
+
 export type Questionnaire = QuestionSection[];
 
 export interface QuestionSection {
@@ -72,4 +74,22 @@ export enum CONDITIONAL_OPERATOR {
   LESS_THAN = "less_than",
   INCLUDES = "includes", // For multi-selects
   EXCLUDES = "excludes", // For multi-selects
+}
+
+export interface OnboardingResponse<T = QuestionSection[]> {
+  data: T | null;
+  error: PostgrestError | Error | null;
+}
+
+export interface SaveAnswersPayload {
+  userId: string;
+  answers: Record<string, string | number | Date | string[] | null | undefined>;
+}
+
+export interface OnboardingProgress {
+  totalQuestions: number;
+  answeredQuestions: number;
+  progressPercentage: number;
+  crucialAnswered: number;
+  crucialTotal: number;
 }

@@ -1,26 +1,13 @@
 // onboarding.service.ts
 import type { PostgrestError } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
-import type { Questionnaire, QuestionSection } from "../../types/questions";
-import type { QuestionnaireData } from "../../types/profile";
-
-export interface OnboardingResponse<T = QuestionSection[]> {
-  data: T | null;
-  error: PostgrestError | Error | null;
-}
-
-export interface SaveAnswersPayload {
-  userId: string;
-  answers: Record<string, QuestionnaireData>;
-}
-
-export interface OnboardingProgress {
-  totalQuestions: number;
-  answeredQuestions: number;
-  progressPercentage: number;
-  crucialAnswered: number;
-  crucialTotal: number;
-}
+import type {
+  OnboardingProgress,
+  OnboardingResponse,
+  Questionnaire,
+  QuestionSection,
+  SaveAnswersPayload,
+} from "../../types/questions";
 
 /**
  * OnboardingService - Handles all Supabase onboarding-related operations
@@ -52,16 +39,18 @@ export class OnboardingService {
       if (error) throw error;
 
       // Transform database rows into Questionnaire format
-      const questionnaire: Questionnaire = (data || []).map((section: QuestionSection) => ({
-        id: section.id,
-        title: section.title,
-        description: section.description,
-        icon: section.icon,
-        questions: section.questions,
-        created_at: section.created_at,
-        updated_at: section.updated_at,
-        display_order: section.display_order,
-      }));
+      const questionnaire: Questionnaire = (data || []).map(
+        (section: QuestionSection) => ({
+          id: section.id,
+          title: section.title,
+          description: section.description,
+          icon: section.icon,
+          questions: section.questions,
+          created_at: section.created_at,
+          updated_at: section.updated_at,
+          display_order: section.display_order,
+        }),
+      );
 
       return { data: questionnaire, error: null };
     } catch (error: unknown) {
@@ -137,20 +126,20 @@ export class OnboardingService {
    * Save a single answer to user's profile
    * Uses atomic RPC (prevents race conditions)
    */
+  // Updated saveAnswer - only send value
   async saveAnswer(
     userId: string,
     questionId: string,
-    answerData: QuestionnaireData,
+    value: string | number | Date | string[] | boolean | null,
   ): Promise<{ error: PostgrestError | null }> {
     try {
       const { error } = await supabase.rpc("update_questionnaire_answer", {
         user_id: userId,
         question_id: questionId,
-        answer_data: answerData,
+        answer_value: value, // Just the value!
       });
 
       if (error) throw error;
-
       return { error: null };
     } catch (error: unknown) {
       console.error(`Failed to save answer for question ${questionId}:`, error);
@@ -158,24 +147,19 @@ export class OnboardingService {
     }
   }
 
-  /**
-   * Save multiple answers at once
-   * Uses atomic server-side merge (prevents race conditions)
-   */
+  // Updated saveAnswers - only send values
   async saveAnswers(
     payload: SaveAnswersPayload,
   ): Promise<{ error: PostgrestError | null }> {
     try {
       const { userId, answers } = payload;
 
-      // Atomic server-side merge via RPC
       const { error } = await supabase.rpc("update_multiple_answers", {
         user_id: userId,
-        answers_data: answers,
+        answers_data: answers, // Just { age: 25, gender: "male" }
       });
 
       if (error) throw error;
-
       return { error: null };
     } catch (error: unknown) {
       console.error("Failed to save answers:", error);
