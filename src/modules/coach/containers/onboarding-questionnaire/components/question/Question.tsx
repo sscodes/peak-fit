@@ -85,7 +85,16 @@ const Question = ({
             placeholder={question.placeholder}
           />
         );
-      case INPUT_TYPE.MULTI_SELECT:
+      case INPUT_TYPE.MULTI_SELECT: {
+        const currentValues =
+          (formik.values[question.id] as string[]) ?? [];
+        const selectedOptions =
+          question.options?.filter((o) =>
+            currentValues.includes(o.value),
+          ) ?? [];
+        const hasExclusive = selectedOptions.some((o) => o.exclusive);
+        const hasNonExclusive = selectedOptions.some((o) => !o.exclusive);
+
         return (
           <Select
             label={question.label}
@@ -93,22 +102,35 @@ const Question = ({
             customClass={classes.selectContainer}
             isMulti
             onChange={(newValue) => {
-              const values = newValue
-                ? (newValue as MultiValue<Option>).map(
-                    (opt: Option) => opt.value,
-                  )
+              const selected = newValue
+                ? (newValue as MultiValue<Option>)
                 : [];
-              formik.setFieldValue(question.id, values);
+              const lastAdded = selected[selected.length - 1];
+
+              let finalValues: string[];
+              if (lastAdded?.exclusive) {
+                finalValues = [lastAdded.value];
+              } else {
+                finalValues = selected
+                  .filter((opt) => !opt.exclusive)
+                  .map((opt) => opt.value);
+              }
+              formik.setFieldValue(question.id, finalValues);
             }}
             name={question.id}
-            value={question.options?.filter((opt) =>
-              (formik.values[question.id] as string[])?.includes(opt.value),
-            )}
+            value={(question.options?.filter((opt) =>
+              currentValues.includes(opt.value),
+            ) ?? []) as MultiValue<Option>}
+            isOptionDisabled={(opt) =>
+              (hasExclusive && !opt.exclusive) ||
+              (hasNonExclusive && !!opt.exclusive)
+            }
             placeholder={question.placeholder}
             isError={formik.touched[question.id] && formik.errors[question.id]}
             error={formik.errors[question.id]}
           />
         );
+      }
       case INPUT_TYPE.DATE:
         return (
           <DatePicker

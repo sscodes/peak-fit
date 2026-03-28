@@ -40,6 +40,7 @@ export interface Option {
   label: string;
   icon?: string;
   description?: string;
+  exclusive?: boolean;
 }
 
 export interface ConditionalDisplay {

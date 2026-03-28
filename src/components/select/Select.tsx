@@ -13,6 +13,7 @@ const animatedComponents = makeAnimated();
 interface Option {
   value: string;
   label: string;
+  exclusive?: boolean;
 }
 
 interface SelectProps {
@@ -36,6 +37,7 @@ interface SelectProps {
   labelClasses?: string;
   isError?: string | false | undefined;
   error?: string;
+  isOptionDisabled?: (option: Option) => boolean;
 }
 
 const Select = ({
@@ -56,6 +58,7 @@ const Select = ({
   labelClasses,
   isError,
   error = "",
+  isOptionDisabled,
 }: SelectProps) => {
   return (
     <div className={classes.inputGroup}>
@@ -88,6 +91,7 @@ const Select = ({
         noOptionsMessage={noOptionsMessage}
         onChange={onChange}
         isMulti={isMulti}
+        isOptionDisabled={isOptionDisabled}
         components={animatedComponents}
         menuPortalTarget={document.body}
         menuPosition="fixed"
