@@ -2,7 +2,9 @@ import clsx from "clsx";
 import type { FormikProps } from "formik/dist/types";
 import type { MultiValue, SingleValue } from "react-select";
 import { DatePicker } from "../../../../../../components/date-picker/DatePicker";
-import Icon from "../../../../../../components/icon/Icon";
+import { lazy, Suspense } from "react";
+
+const LucideIcon = lazy(() => import("../../../../../../components/icon/LucideIcon"));
 import Input from "../../../../../../components/input/Input";
 import Select from "../../../../../../components/select/Select";
 import { Slider } from "../../../../../../components/slider/Slider";
@@ -163,7 +165,9 @@ const Question = ({
     <div className={classes.step}>
       <div className={classes.subContainer}>
         <div className={classes.iconContainer}>
-          <Icon name={question.section_icon} size={48} />
+          <Suspense>
+            <LucideIcon name={question.section_icon} size={48} />
+          </Suspense>
         </div>
         <div className={clsx(classes.title, "heading-1")}>
           {question.section_title}

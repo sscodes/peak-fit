@@ -1,17 +1,21 @@
-import * as React from "react";
+import { lazy, Suspense, type ReactNode } from "react";
 import { Navigate, Route, Routes } from "react-router";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { DASHBOARD } from "../../helpers/getters";
 import MasterLayout from "../../layout/master-layout/MasterLayout";
-import Coach from "../../modules/coach/containers/coach/Coach";
-import OnboardingQuestionnaire from "../../modules/coach/containers/onboarding-questionnaire/OnboardingQuestionnaire";
-import Dashboard from "../../modules/dashboard/containers/Dashboard";
-import Explore from "../../modules/explore/containers/Explore";
 
-const SuspendedView = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <React.Suspense fallback={<TopBarProgress />}>{children}</React.Suspense>
-  );
+const Dashboard = lazy(
+  () => import("../../modules/dashboard/containers/Dashboard"),
+);
+const Explore = lazy(() => import("../../modules/explore/containers/Explore"));
+const Coach = lazy(() => import("../../modules/coach/containers/coach/Coach"));
+const OnboardingQuestionnaire = lazy(
+  () =>
+    import("../../modules/coach/containers/onboarding-questionnaire/OnboardingQuestionnaire"),
+);
+
+const SuspendedView = ({ children }: { children: ReactNode }) => {
+  return <Suspense fallback={<TopBarProgress />}>{children}</Suspense>;
 };
 
 const PrivateRoutes = () => {

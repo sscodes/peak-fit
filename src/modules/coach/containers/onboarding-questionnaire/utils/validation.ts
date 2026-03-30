@@ -1,4 +1,4 @@
-import * as Yup from "yup";
+import { array, date, mixed, number, object, string, type ObjectSchema, type Schema } from "yup";
 import {
   INPUT_TYPE,
   type QuestionWithSectionMeta,
@@ -7,8 +7,8 @@ import { evaluateConditionalDisplay } from "./helper";
 
 export function buildValidationSchema(
   questions: QuestionWithSectionMeta[],
-): Yup.ObjectSchema<Record<string, unknown>> {
-  const shape: Record<string, Yup.Schema> = {};
+): ObjectSchema<Record<string, unknown>> {
+  const shape: Record<string, Schema> = {};
 
   for (const question of questions) {
     const { id, input_type, validation, conditional_display } = question;
@@ -21,13 +21,13 @@ export function buildValidationSchema(
       input_type !== INPUT_TYPE.MULTI_SELECT &&
       !conditional_display
     ) {
-      shape[id] = Yup.mixed().nullable().optional();
+      shape[id] = mixed().nullable().optional();
       continue;
     }
 
     switch (input_type) {
       case INPUT_TYPE.NUMBER: {
-        let schema = Yup.number()
+        let schema = number()
           .typeError(`${fieldLabel} must be a number`)
           .nullable();
 
@@ -49,7 +49,7 @@ export function buildValidationSchema(
       }
 
       case INPUT_TYPE.TEXT: {
-        let schema = Yup.string().nullable();
+        let schema = string().nullable();
 
         if (validation?.max_length !== undefined)
           schema = schema.max(
@@ -64,7 +64,7 @@ export function buildValidationSchema(
       }
 
       case INPUT_TYPE.SELECT: {
-        let schema = Yup.string().nullable();
+        let schema = string().nullable();
 
         if (validation?.required)
           schema = schema.required(`Please select an option for ${fieldLabel}`);
@@ -74,7 +74,7 @@ export function buildValidationSchema(
       }
 
       case INPUT_TYPE.MULTI_SELECT: {
-        let schema = Yup.array().of(Yup.string().required()).nullable();
+        let schema = array().of(string().required()).nullable();
 
         if (validation?.required)
           schema = schema
@@ -86,7 +86,7 @@ export function buildValidationSchema(
       }
 
       case INPUT_TYPE.DATE: {
-        let schema = Yup.date()
+        let schema = date()
           .typeError(`${fieldLabel} must be a valid date`)
           .nullable();
 
@@ -98,22 +98,22 @@ export function buildValidationSchema(
       }
 
       default: {
-        shape[id] = Yup.mixed().nullable().optional();
+        shape[id] = mixed().nullable().optional();
       }
     }
 
     if (conditional_display) {
       const { depends_on, operator, value: condValue } = conditional_display;
 
-      shape[id] = (shape[id] as Yup.Schema).when(depends_on, {
+      shape[id] = (shape[id] as Schema).when(depends_on, {
         is: (depVal: unknown) =>
           evaluateConditionalDisplay(operator, depVal, condValue),
-        then: (schema: Yup.Schema) =>
+        then: (schema: Schema) =>
           schema.required(`${fieldLabel} is required`),
-        otherwise: () => Yup.mixed().nullable().optional(),
+        otherwise: () => mixed().nullable().optional(),
       });
     }
   }
 
-  return Yup.object().shape(shape) as Yup.ObjectSchema<Record<string, unknown>>;
+  return object().shape(shape) as ObjectSchema<Record<string, unknown>>;
 }

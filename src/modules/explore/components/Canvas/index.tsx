@@ -8,7 +8,7 @@ import {
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import React, { Suspense, useState, type ReactNode } from "react";
-import * as THREE from "three";
+import { SRGBColorSpace } from "three";
 
 import EnhancedLighting from "./EnhancedLighting";
 
@@ -37,7 +37,7 @@ const Scene: React.FC<SceneProps> = ({
       gl={{
         antialias: true,
         alpha: false,
-        outputColorSpace: THREE.SRGBColorSpace,
+        outputColorSpace: SRGBColorSpace,
         depth: true,
         logarithmicDepthBuffer: true,
         // physicallyCorrectLights is not recognized in the current version

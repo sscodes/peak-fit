@@ -1,12 +1,12 @@
-import clsx from 'clsx';
-import * as React from 'react';
-import { useNavigate } from 'react-router';
-import classes from './Dock.module.css';
+import clsx from "clsx";
+import { useState, type ReactNode } from "react";
+import { useNavigate } from "react-router";
+import classes from "./Dock.module.css";
 
 export interface DockItem {
   id: string;
   route: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
 }
 
@@ -17,7 +17,7 @@ const Dock = ({
   routes: DockItem[];
   selectedRoute: string;
 }) => {
-  const [hoveredItem, setHoveredItem] = React.useState<string | null>(null);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const navigate = useNavigate();
 
   return (
@@ -29,7 +29,7 @@ const Dock = ({
         return (
           <button
             key={item.id}
-            type='button'
+            type="button"
             aria-label={item.label}
             className={classes.itemContainerStyle}
             onMouseEnter={() => setHoveredItem(item.id)}
@@ -39,7 +39,7 @@ const Dock = ({
             <span
               className={clsx(
                 classes.labelStyle,
-                isHovered ? classes.labelStyleHovered : ''
+                isHovered ? classes.labelStyleHovered : "",
               )}
             >
               {item.label}
@@ -47,8 +47,8 @@ const Dock = ({
             <div
               className={clsx(
                 classes.dockItem,
-                isHovered ? classes.dockItemHovered : '',
-                isActive ? classes.active : ''
+                isHovered ? classes.dockItemHovered : "",
+                isActive ? classes.active : "",
               )}
             >
               {item.icon}

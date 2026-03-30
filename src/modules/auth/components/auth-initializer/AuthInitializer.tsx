@@ -1,10 +1,12 @@
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
-import * as React from "react";
+import { useEffect, useRef, useState, type FC, type ReactNode } from "react";
 import { useNavigate } from "react-router";
 import { FORGOT_PASSWORD } from "../../../../helpers/getters";
 import { notifyError } from "../../../../helpers/helper";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
+import { AuthService } from "../../../../services/auth/auth.service";
+import { ProfileService } from "../../../../services/profile/profile.service";
 import {
   clearAuth,
   initializeAuth,
@@ -12,13 +14,11 @@ import {
   setAuthData,
   setInitialized,
 } from "../../../../store/authSlice";
-import classes from "./AuthInitializer.module.css";
 import type { Profile } from "../../../../types/profile";
-import { ProfileService } from "../../../../services/profile/profile.service";
-import { AuthService } from "../../../../services/auth/auth.service";
+import classes from "./AuthInitializer.module.css";
 
 interface AuthInitializerProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 /**
@@ -27,20 +27,20 @@ interface AuthInitializerProps {
 const profileService = new ProfileService();
 const authService = new AuthService();
 
-const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
+const AuthInitializer: FC<AuthInitializerProps> = ({ children }) => {
   const dispatch = useAppDispatch();
   const isInitialized = useAppSelector(selectIsInitialized);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const isMountedRef = React.useRef(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const isMountedRef = useRef(true);
   const navigate = useNavigate();
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       isMountedRef.current = false;
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let authListener: { unsubscribe: () => void } | null = null;
 
     const initializeAuthState = async () => {
@@ -175,7 +175,7 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
   }, [dispatch, isInitialized, navigate]);
 
   // Handle OAuth callback (for OAuth flows)
-  React.useEffect(() => {
+  useEffect(() => {
     const handleOAuthCallback = async () => {
       // Check if we're on the callback URL with an auth code
       const hashParams = new URLSearchParams(window.location.hash.substring(1));

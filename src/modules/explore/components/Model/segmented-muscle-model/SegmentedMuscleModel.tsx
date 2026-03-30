@@ -2,7 +2,7 @@
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import React, { useMemo, useRef } from "react";
-import * as THREE from "three";
+import { Box3, Color, FrontSide, Mesh, MeshStandardMaterial, type Group } from "three";
 import type { MuscleGroup } from "../../../../../types/workout";
 
 interface SegmentedMuscleModelProps {
@@ -24,17 +24,17 @@ const SegmentedMuscleModel: React.FC<SegmentedMuscleModelProps> = ({
   autoRotate = true,
   muscleGroups,
 }) => {
-  const group = useRef<THREE.Group>(null);
+  const group = useRef<Group>(null);
   const { scene } = useGLTF(path);
 
   // Create materials for highlighting - memoized to prevent recreation
   const primaryMaterial = useMemo(
     () =>
-      new THREE.MeshStandardMaterial({
-        color: new THREE.Color("#ff0000"),
+      new MeshStandardMaterial({
+        color: new Color("#ff0000"),
         roughness: 0.8,
         metalness: 0.0,
-        emissive: new THREE.Color("#ff0000"),
+        emissive: new Color("#ff0000"),
         emissiveIntensity: 0.2,
         transparent: false,
         opacity: 1.0,
@@ -44,11 +44,11 @@ const SegmentedMuscleModel: React.FC<SegmentedMuscleModelProps> = ({
 
   const secondaryMaterial = useMemo(
     () =>
-      new THREE.MeshStandardMaterial({
-        color: new THREE.Color("#ff9900"),
+      new MeshStandardMaterial({
+        color: new Color("#ff9900"),
         roughness: 0.8,
         metalness: 0.0,
-        emissive: new THREE.Color("#ff6600"),
+        emissive: new Color("#ff6600"),
         emissiveIntensity: 0.15,
         transparent: false,
         opacity: 1.0,
@@ -58,8 +58,8 @@ const SegmentedMuscleModel: React.FC<SegmentedMuscleModelProps> = ({
 
   const defaultMaterial = useMemo(
     () =>
-      new THREE.MeshStandardMaterial({
-        color: new THREE.Color("#8c5c3e"),
+      new MeshStandardMaterial({
+        color: new Color("#8c5c3e"),
         roughness: 0.95,
         metalness: 0.0,
         transparent: false,
@@ -74,7 +74,7 @@ const SegmentedMuscleModel: React.FC<SegmentedMuscleModelProps> = ({
     const clonedScene = scene.clone();
 
     // Center the model vertically
-    const boundingBox = new THREE.Box3().setFromObject(clonedScene);
+    const boundingBox = new Box3().setFromObject(clonedScene);
     const centerY = (boundingBox.max.y + boundingBox.min.y) / 2;
     clonedScene.position.y = -centerY;
 
@@ -102,7 +102,7 @@ const SegmentedMuscleModel: React.FC<SegmentedMuscleModelProps> = ({
 
     // Apply materials to meshes
     clonedScene.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
+      if (child instanceof Mesh) {
         const childName = child.name.toLowerCase();
 
         if (primaryMeshNames.has(childName)) {
@@ -116,7 +116,7 @@ const SegmentedMuscleModel: React.FC<SegmentedMuscleModelProps> = ({
         // Ensure proper rendering
         if (child.material) {
           child.material.needsUpdate = true;
-          child.material.side = THREE.FrontSide;
+          child.material.side = FrontSide;
           child.material.depthWrite = true;
           child.material.depthTest = true;
         }
