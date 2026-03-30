@@ -1,10 +1,12 @@
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
-import * as React from "react";
+import { useEffect, useRef, useState, type FC, type ReactNode } from "react";
 import { useNavigate } from "react-router";
 import { FORGOT_PASSWORD } from "../../../../helpers/getters";
 import { notifyError } from "../../../../helpers/helper";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
+import { AuthService } from "../../../../services/auth/auth.service";
+import { ProfileService } from "../../../../services/profile/profile.service";
 import {
   clearAuth,
   initializeAuth,
@@ -12,13 +14,11 @@ import {
   setAuthData,
   setInitialized,
 } from "../../../../store/authSlice";
-import classes from "./AuthInitializer.module.css";
 import type { Profile } from "../../../../types/profile";
-import { ProfileService } from "../../../../services/profile/profile.service";
-import { AuthService } from "../../../../services/auth/auth.service";
+import classes from "./AuthInitializer.module.css";
 
 interface AuthInitializerProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 /**
@@ -27,21 +27,80 @@ interface AuthInitializerProps {
 const profileService = new ProfileService();
 const authService = new AuthService();
 
-const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
+const AuthInitializer: FC<AuthInitializerProps> = ({ children }) => {
   const dispatch = useAppDispatch();
   const isInitialized = useAppSelector(selectIsInitialized);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const isMountedRef = React.useRef(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const isMountedRef = useRef(true);
   const navigate = useNavigate();
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       isMountedRef.current = false;
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    let cancelled = false;
     let authListener: { unsubscribe: () => void } | null = null;
+
+    // Subscribe immediately so no auth events are missed during async init
+    authListener = authService.onAuthStateChange(
+      async (event: AuthChangeEvent, session: Session | null) => {
+        if (cancelled) return;
+
+        switch (event) {
+          case "SIGNED_IN":
+            if (session) {
+              const { data: profile } =
+                await profileService.getCurrentUserProfile();
+              if (cancelled) return;
+              dispatch(
+                setAuthData({
+                  session,
+                  profile: (profile as Profile) || undefined,
+                }),
+              );
+            }
+            break;
+
+          case "SIGNED_OUT":
+            dispatch(clearAuth());
+            break;
+
+          case "TOKEN_REFRESHED":
+            if (session) {
+              const { data: profile } =
+                await profileService.getCurrentUserProfile();
+              if (cancelled) return;
+              dispatch(
+                setAuthData({
+                  session,
+                  profile: (profile as Profile) || undefined,
+                }),
+              );
+            }
+            break;
+
+          case "USER_UPDATED":
+            if (session) {
+              const { data: profile } =
+                await profileService.getCurrentUserProfile();
+              if (cancelled) return;
+              dispatch(
+                setAuthData({
+                  session,
+                  profile: (profile as Profile) || undefined,
+                }),
+              );
+            }
+            break;
+
+          default:
+            break;
+        }
+      },
+    );
 
     const initializeAuthState = async () => {
       try {
@@ -55,7 +114,6 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
         // If it's a recovery link, let the reset-password page handle it
         if (type === "recovery" && accessToken) {
           console.log("Password recovery link detected, skipping auto-auth");
-          // Don't initialize auth, let the reset-password page handle it
           dispatch(setInitialized(true));
           setIsLoading(false);
           return;
@@ -63,6 +121,7 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
 
         // Check for existing session (normal flow)
         const { session, error } = await authService.getSession();
+        if (cancelled) return;
 
         if (error) {
           console.error("Auth initialization error:", error);
@@ -71,89 +130,25 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
         }
 
         if (session) {
-          // We have a valid session, get the user profile
           const { data: profile } =
             await profileService.getCurrentUserProfile();
-
-          if (isMountedRef.current) {
-            dispatch(
-              initializeAuth({
-                session,
-                profile: (profile as Profile) || null,
-              }),
-            );
-          }
+          if (cancelled) return;
+          dispatch(
+            initializeAuth({
+              session,
+              profile: (profile as Profile) || null,
+            }),
+          );
         } else {
-          // No session found
-          if (isMountedRef.current) {
-            dispatch(setInitialized(true));
-          }
+          dispatch(setInitialized(true));
         }
-
-        // Set up auth state change listener
-        authListener = authService.onAuthStateChange(
-          async (event: AuthChangeEvent, session: Session | null) => {
-            if (!isMountedRef.current) return;
-
-            switch (event) {
-              case "SIGNED_IN":
-                if (session) {
-                  // Get user profile when signed in
-                  const { data: profile } =
-                    await profileService.getCurrentUserProfile();
-                  dispatch(
-                    setAuthData({
-                      session,
-                      profile: (profile as Profile) || undefined,
-                    }),
-                  );
-                }
-                break;
-
-              case "SIGNED_OUT":
-                dispatch(clearAuth());
-                break;
-
-              case "TOKEN_REFRESHED":
-                if (session) {
-                  // Update session with new tokens
-                  const { data: profile } =
-                    await profileService.getCurrentUserProfile();
-                  dispatch(
-                    setAuthData({
-                      session,
-                      profile: (profile as Profile) || undefined,
-                    }),
-                  );
-                }
-                break;
-
-              case "USER_UPDATED":
-                if (session) {
-                  // User data was updated (e.g., email change)
-                  const { data: profile } =
-                    await profileService.getCurrentUserProfile();
-                  dispatch(
-                    setAuthData({
-                      session,
-                      profile: (profile as Profile) || undefined,
-                    }),
-                  );
-                }
-                break;
-
-              default:
-                break;
-            }
-          },
-        );
       } catch (error: unknown) {
         console.error("Failed to initialize auth:", error);
-        if (isMountedRef.current) {
+        if (!cancelled) {
           dispatch(setInitialized(true));
         }
       } finally {
-        if (isMountedRef.current) {
+        if (!cancelled) {
           setIsLoading(false);
         }
       }
@@ -168,6 +163,7 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
 
     // Cleanup function
     return () => {
+      cancelled = true;
       if (authListener) {
         authListener.unsubscribe();
       }
@@ -175,7 +171,7 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
   }, [dispatch, isInitialized, navigate]);
 
   // Handle OAuth callback (for OAuth flows)
-  React.useEffect(() => {
+  useEffect(() => {
     const handleOAuthCallback = async () => {
       // Check if we're on the callback URL with an auth code
       const hashParams = new URLSearchParams(window.location.hash.substring(1));

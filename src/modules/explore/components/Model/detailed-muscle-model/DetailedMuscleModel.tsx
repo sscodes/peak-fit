@@ -1,8 +1,8 @@
 // src/components/Model/DetailedMuscleModel.tsx
-import React, { useRef } from 'react';
+import { type CSSProperties, type FC, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF, Html } from '@react-three/drei';
-import * as THREE from 'three';
+import { type Group } from 'three';
 
 interface DetailedMuscleModelProps {
   path: string;
@@ -15,19 +15,19 @@ interface DetailedMuscleModelProps {
 // Define a type for detailed muscle information
 interface MuscleRegion {
   name: string;
-  style: React.CSSProperties;
+  style: CSSProperties;
   isPrimary: boolean;
 }
 
 // This solution provides detailed muscle region highlighting
-const DetailedMuscleModel: React.FC<DetailedMuscleModelProps> = ({ 
+const DetailedMuscleModel: FC<DetailedMuscleModelProps> = ({ 
   path, 
   scale = 1, 
   position = [0, 0, 0],
   workoutId,
   autoRotate = true
 }) => {
-  const group = useRef<THREE.Group>(null);
+  const group = useRef<Group>(null);
   const { scene } = useGLTF(path);
   
   // Auto-rotate the model if enabled
@@ -843,7 +843,7 @@ const DetailedMuscleModel: React.FC<DetailedMuscleModelProps> = ({
   };
 
   // Clone and prepare the model
-  const clonedScene = React.useMemo(() => {
+  const clonedScene = useMemo(() => {
     return scene.clone();
   }, [scene]);
 

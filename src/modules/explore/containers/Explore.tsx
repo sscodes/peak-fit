@@ -1,5 +1,4 @@
-import React from "react";
-import { MODEL_PATH } from "../../../helpers/constants";
+import { lazy, Suspense, useState, type FC } from "react";
 import { useDebounce } from "../../../hooks/useDebounce";
 import useMediaQuery from "../../../hooks/useMediaQuery";
 import {
@@ -8,8 +7,6 @@ import {
   useSearchWorkouts,
 } from "../../../services/workouts/workouts.data";
 import type { Workout } from "../../../types/workout";
-import { Scene } from "../components";
-import SegmentedMuscleModel from "../components/Model/segmented-muscle-model/SegmentedMuscleModel";
 import {
   NoSelectionMessage,
   Sidebar,
@@ -19,9 +16,11 @@ import {
 } from "../components/UI";
 import classes from "./Explore.module.css";
 
-const Explore: React.FC = () => {
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [selectedWorkout, setSelectedWorkout] = React.useState<Workout | null>(
+const ModelViewer = lazy(() => import("../components/ModelViewer/ModelViewer"));
+
+const Explore: FC = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(
     null
   );
 
@@ -42,7 +41,7 @@ const Explore: React.FC = () => {
     useMuscleGroups();
 
   // Force re-render when workout changes
-  const [modelKey, setModelKey] = React.useState(0);
+  const [modelKey, setModelKey] = useState(0);
 
   const handleWorkoutChange = (workout: Workout) => {
     setSelectedWorkout(workout);
@@ -77,23 +76,13 @@ const Explore: React.FC = () => {
               muscleGroups={muscleGroups}
             />
           )}
-          <Scene>
-            {/* Segmented model that works with separate meshes */}
-            <SegmentedMuscleModel
-              key={modelKey}
-              path={MODEL_PATH}
-              scale={0.75}
-              position={[0, 0, 0]}
-              primaryMuscles={
-                selectedWorkout ? selectedWorkout.primary_muscles : []
-              }
-              secondaryMuscles={
-                selectedWorkout ? selectedWorkout.secondary_muscles : []
-              }
-              autoRotate={!selectedWorkout}
+          <Suspense>
+            <ModelViewer
+              selectedWorkout={selectedWorkout}
+              modelKey={modelKey}
               muscleGroups={muscleGroups}
             />
-          </Scene>
+          </Suspense>
 
           {/* Workout instructions overlay */}
           {!isMedium && selectedWorkout && (

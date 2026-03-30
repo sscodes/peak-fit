@@ -1,14 +1,14 @@
-import clsx from 'clsx';
-import * as React from 'react';
-import { BUTTON_SIZE, BUTTON_TYPE, BUTTON_VARIANT } from '../../helpers/types';
-import classes from './Button.module.css';
+import clsx from "clsx";
+import type { MouseEventHandler, ReactNode } from "react";
+import { BUTTON_SIZE, BUTTON_TYPE, BUTTON_VARIANT } from "../../helpers/types";
+import classes from "./Button.module.css";
 
 interface ButtonProps {
   variant?: BUTTON_VARIANT;
-  children: React.ReactNode;
+  children: ReactNode;
   type?: BUTTON_TYPE;
   disabled?: boolean;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   size?: BUTTON_SIZE;
 }
 
@@ -28,8 +28,8 @@ const Button = ({
       className={clsx(
         classes[variant],
         classes.button,
-        disabled ? classes.disabled : '',
-        classes[`button-${size}`]
+        disabled ? classes.disabled : "",
+        classes[`button-${size}`],
       )}
     >
       {children}

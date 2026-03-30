@@ -1,5 +1,6 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { visualizer } from "rollup-plugin-visualizer";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -7,17 +8,53 @@ export default defineConfig({
     react({
       babel: {
         plugins:
-          process.env.NODE_ENV === 'development'
+          process.env.NODE_ENV === "development"
             ? [
                 [
-                  '@locator/babel-jsx/dist',
+                  "@locator/babel-jsx/dist",
                   {
-                    env: 'development',
+                    env: "development",
                   },
                 ],
               ]
             : [],
       },
     }),
+    visualizer({
+      open: true,
+      gzipSize: true,
+      brotliSize: true,
+      filename: "dist/stats.html",
+    }),
   ],
+  build: {
+    chunkSizeWarningLimit: 1300,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "vendor-three": [
+            "three",
+            "@react-three/fiber",
+            "@react-three/drei",
+            "@react-three/postprocessing",
+            "postprocessing",
+          ],
+          "vendor-forms": ["formik", "yup"],
+          "vendor-router": ["react-router"],
+          "vendor-query": [
+            "@tanstack/react-query",
+            "@tanstack/react-query-devtools",
+          ],
+          "vendor-supabase": ["@supabase/supabase-js"],
+          "vendor-redux": ["@reduxjs/toolkit", "react-redux", "redux"],
+          "vendor-ui": [
+            "react-toastify",
+            "react-select",
+            "react-day-picker",
+            "date-fns",
+          ],
+        },
+      },
+    },
+  },
 });
