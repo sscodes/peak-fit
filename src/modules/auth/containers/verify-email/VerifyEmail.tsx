@@ -6,10 +6,7 @@ import Button from "../../../../components/button/Button";
 import Icon from "../../../../components/icon/Icon";
 import { notifyError, notifySuccess } from "../../../../helpers/helper";
 import { useResendConfirmationEmail } from "../../../../services/auth/auth.data";
-import { AuthService } from "../../../../services/auth/auth.service";
 import classes from "./VerifyEmail.module.css";
-
-const authService = new AuthService();
 
 const VerifyEmail = () => {
   const [clickedResend, setClickedResend] = useState(0);
@@ -20,8 +17,6 @@ const VerifyEmail = () => {
     mutateAsync: resendEmail,
     isPending,
     isSuccess,
-    isError,
-    error,
   } = useResendConfirmationEmail();
 
   useEffect(() => {
@@ -29,13 +24,6 @@ const VerifyEmail = () => {
       notifySuccess("Email re-sent successfully");
     }
   }, [clickedResend, isSuccess]);
-
-  useEffect(() => {
-    if (isError && clickedResend > 0) {
-      const message = authService.getErrorMessage(error);
-      notifyError(message);
-    }
-  }, [clickedResend, error, isError]);
 
   return (
     <>
@@ -49,19 +37,14 @@ const VerifyEmail = () => {
         </div>
         <Button
           onClick={async () => {
-            try {
-              if (!email) {
-                notifyError(
-                  "Missing email. Please sign in or restart the sign-up flow.",
-                );
-                return;
-              }
-              await resendEmail({ email });
-              setClickedResend((e) => e + 1);
-            } catch (error: unknown) {
-              const message = authService.getErrorMessage(error);
-              notifyError(message);
+            if (!email) {
+              notifyError(
+                "Missing email. Please sign in or restart the sign-up flow.",
+              );
+              return;
             }
+            await resendEmail({ email });
+            setClickedResend((e) => e + 1);
           }}
           disabled={isPending || !email}
         >

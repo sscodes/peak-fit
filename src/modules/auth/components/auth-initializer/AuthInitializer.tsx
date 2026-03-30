@@ -41,7 +41,66 @@ const AuthInitializer: FC<AuthInitializerProps> = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
     let authListener: { unsubscribe: () => void } | null = null;
+
+    // Subscribe immediately so no auth events are missed during async init
+    authListener = authService.onAuthStateChange(
+      async (event: AuthChangeEvent, session: Session | null) => {
+        if (cancelled) return;
+
+        switch (event) {
+          case "SIGNED_IN":
+            if (session) {
+              const { data: profile } =
+                await profileService.getCurrentUserProfile();
+              if (cancelled) return;
+              dispatch(
+                setAuthData({
+                  session,
+                  profile: (profile as Profile) || undefined,
+                }),
+              );
+            }
+            break;
+
+          case "SIGNED_OUT":
+            dispatch(clearAuth());
+            break;
+
+          case "TOKEN_REFRESHED":
+            if (session) {
+              const { data: profile } =
+                await profileService.getCurrentUserProfile();
+              if (cancelled) return;
+              dispatch(
+                setAuthData({
+                  session,
+                  profile: (profile as Profile) || undefined,
+                }),
+              );
+            }
+            break;
+
+          case "USER_UPDATED":
+            if (session) {
+              const { data: profile } =
+                await profileService.getCurrentUserProfile();
+              if (cancelled) return;
+              dispatch(
+                setAuthData({
+                  session,
+                  profile: (profile as Profile) || undefined,
+                }),
+              );
+            }
+            break;
+
+          default:
+            break;
+        }
+      },
+    );
 
     const initializeAuthState = async () => {
       try {
@@ -55,7 +114,6 @@ const AuthInitializer: FC<AuthInitializerProps> = ({ children }) => {
         // If it's a recovery link, let the reset-password page handle it
         if (type === "recovery" && accessToken) {
           console.log("Password recovery link detected, skipping auto-auth");
-          // Don't initialize auth, let the reset-password page handle it
           dispatch(setInitialized(true));
           setIsLoading(false);
           return;
@@ -63,6 +121,7 @@ const AuthInitializer: FC<AuthInitializerProps> = ({ children }) => {
 
         // Check for existing session (normal flow)
         const { session, error } = await authService.getSession();
+        if (cancelled) return;
 
         if (error) {
           console.error("Auth initialization error:", error);
@@ -71,89 +130,25 @@ const AuthInitializer: FC<AuthInitializerProps> = ({ children }) => {
         }
 
         if (session) {
-          // We have a valid session, get the user profile
           const { data: profile } =
             await profileService.getCurrentUserProfile();
-
-          if (isMountedRef.current) {
-            dispatch(
-              initializeAuth({
-                session,
-                profile: (profile as Profile) || null,
-              }),
-            );
-          }
+          if (cancelled) return;
+          dispatch(
+            initializeAuth({
+              session,
+              profile: (profile as Profile) || null,
+            }),
+          );
         } else {
-          // No session found
-          if (isMountedRef.current) {
-            dispatch(setInitialized(true));
-          }
+          dispatch(setInitialized(true));
         }
-
-        // Set up auth state change listener
-        authListener = authService.onAuthStateChange(
-          async (event: AuthChangeEvent, session: Session | null) => {
-            if (!isMountedRef.current) return;
-
-            switch (event) {
-              case "SIGNED_IN":
-                if (session) {
-                  // Get user profile when signed in
-                  const { data: profile } =
-                    await profileService.getCurrentUserProfile();
-                  dispatch(
-                    setAuthData({
-                      session,
-                      profile: (profile as Profile) || undefined,
-                    }),
-                  );
-                }
-                break;
-
-              case "SIGNED_OUT":
-                dispatch(clearAuth());
-                break;
-
-              case "TOKEN_REFRESHED":
-                if (session) {
-                  // Update session with new tokens
-                  const { data: profile } =
-                    await profileService.getCurrentUserProfile();
-                  dispatch(
-                    setAuthData({
-                      session,
-                      profile: (profile as Profile) || undefined,
-                    }),
-                  );
-                }
-                break;
-
-              case "USER_UPDATED":
-                if (session) {
-                  // User data was updated (e.g., email change)
-                  const { data: profile } =
-                    await profileService.getCurrentUserProfile();
-                  dispatch(
-                    setAuthData({
-                      session,
-                      profile: (profile as Profile) || undefined,
-                    }),
-                  );
-                }
-                break;
-
-              default:
-                break;
-            }
-          },
-        );
       } catch (error: unknown) {
         console.error("Failed to initialize auth:", error);
-        if (isMountedRef.current) {
+        if (!cancelled) {
           dispatch(setInitialized(true));
         }
       } finally {
-        if (isMountedRef.current) {
+        if (!cancelled) {
           setIsLoading(false);
         }
       }
@@ -168,6 +163,7 @@ const AuthInitializer: FC<AuthInitializerProps> = ({ children }) => {
 
     // Cleanup function
     return () => {
+      cancelled = true;
       if (authListener) {
         authListener.unsubscribe();
       }
