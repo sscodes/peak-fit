@@ -1,6 +1,12 @@
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
-import { useEffect, useRef, useState, type FC, type ReactNode } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FC,
+  type ReactNode,
+} from "react";
 import { useNavigate } from "react-router";
 import { FORGOT_PASSWORD } from "../../../../helpers/getters";
 import { notifyError } from "../../../../helpers/helper";
@@ -15,7 +21,9 @@ import {
   setInitialized,
 } from "../../../../store/authSlice";
 import type { Profile } from "../../../../types/profile";
+import { loadingMessages, type LoadingMessage } from "../../utils/constants";
 import classes from "./AuthInitializer.module.css";
+import "./loader.css";
 
 interface AuthInitializerProps {
   children: ReactNode;
@@ -200,14 +208,17 @@ const AuthInitializer: FC<AuthInitializerProps> = ({ children }) => {
     handleOAuthCallback();
   }, [navigate]);
 
+  const { title, subtitle } = useMemo((): LoadingMessage => {
+    const index = Math.floor(Math.random() * loadingMessages.length);
+    return loadingMessages[index];
+  }, []);
+
   if (!isInitialized && isLoading) {
     return (
       <div className={classes.authInitializerContainer}>
-        <DotLottieReact
-          src="https://lottie.host/2ecc5382-8ea7-4709-b6fb-41b9a3f527ad/O63lCPhknw.lottie"
-          loop
-          autoplay
-        />
+        <div className="heading-3">{title}</div>
+        <div className="subtitle-large">{subtitle}</div>
+        <div className="loader"></div>
       </div>
     );
   }

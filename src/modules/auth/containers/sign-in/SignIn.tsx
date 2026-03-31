@@ -95,7 +95,9 @@ const SignIn = () => {
               <img
                 src={ASSETS.illustrations.TimeToWorkOut}
                 width={200}
+                height={200}
                 alt=""
+                fetchPriority="high"
               />
             </div>
             <div className={clsx(classes.title, "heading-1")}>
