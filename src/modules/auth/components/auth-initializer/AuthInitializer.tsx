@@ -44,64 +44,6 @@ const AuthInitializer: FC<AuthInitializerProps> = ({ children }) => {
     let cancelled = false;
     let authListener: { unsubscribe: () => void } | null = null;
 
-    // Subscribe immediately so no auth events are missed during async init
-    authListener = authService.onAuthStateChange(
-      async (event: AuthChangeEvent, session: Session | null) => {
-        if (cancelled) return;
-
-        switch (event) {
-          case "SIGNED_IN":
-            if (session) {
-              const { data: profile } =
-                await profileService.getCurrentUserProfile();
-              if (cancelled) return;
-              dispatch(
-                setAuthData({
-                  session,
-                  profile: (profile as Profile) || undefined,
-                }),
-              );
-            }
-            break;
-
-          case "SIGNED_OUT":
-            dispatch(clearAuth());
-            break;
-
-          case "TOKEN_REFRESHED":
-            if (session) {
-              const { data: profile } =
-                await profileService.getCurrentUserProfile();
-              if (cancelled) return;
-              dispatch(
-                setAuthData({
-                  session,
-                  profile: (profile as Profile) || undefined,
-                }),
-              );
-            }
-            break;
-
-          case "USER_UPDATED":
-            if (session) {
-              const { data: profile } =
-                await profileService.getCurrentUserProfile();
-              if (cancelled) return;
-              dispatch(
-                setAuthData({
-                  session,
-                  profile: (profile as Profile) || undefined,
-                }),
-              );
-            }
-            break;
-
-          default:
-            break;
-        }
-      },
-    );
-
     const initializeAuthState = async () => {
       try {
         // First check if this is a recovery/magic link flow
@@ -142,6 +84,68 @@ const AuthInitializer: FC<AuthInitializerProps> = ({ children }) => {
         } else {
           dispatch(setInitialized(true));
         }
+
+        // Set up auth state change listener after session is resolved
+        authListener = authService.onAuthStateChange(
+          async (event: AuthChangeEvent, session: Session | null) => {
+            if (cancelled) return;
+
+            try {
+              switch (event) {
+                case "SIGNED_IN":
+                  if (session) {
+                    const { data: profile } =
+                      await profileService.getCurrentUserProfile();
+                    if (cancelled) return;
+                    dispatch(
+                      setAuthData({
+                        session,
+                        profile: (profile as Profile) || undefined,
+                      }),
+                    );
+                  }
+                  break;
+
+                case "SIGNED_OUT":
+                  dispatch(clearAuth());
+                  break;
+
+                case "TOKEN_REFRESHED":
+                  if (session) {
+                    const { data: profile } =
+                      await profileService.getCurrentUserProfile();
+                    if (cancelled) return;
+                    dispatch(
+                      setAuthData({
+                        session,
+                        profile: (profile as Profile) || undefined,
+                      }),
+                    );
+                  }
+                  break;
+
+                case "USER_UPDATED":
+                  if (session) {
+                    const { data: profile } =
+                      await profileService.getCurrentUserProfile();
+                    if (cancelled) return;
+                    dispatch(
+                      setAuthData({
+                        session,
+                        profile: (profile as Profile) || undefined,
+                      }),
+                    );
+                  }
+                  break;
+
+                default:
+                  break;
+              }
+            } catch (error: unknown) {
+              console.error("Auth state change handler error:", error);
+            }
+          },
+        );
       } catch (error: unknown) {
         console.error("Failed to initialize auth:", error);
         if (!cancelled) {
