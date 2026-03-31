@@ -107,7 +107,7 @@ const SignUp = () => {
       <Step hideBackButton>
         <div className={classes.step}>
           <div className={classes.welcomeIcon}>
-            <img src={ASSETS.illustrations.LetsGo} width={200} alt="" />
+            <img src={ASSETS.illustrations.LetsGo} width={200} height={200} alt="" fetchPriority="high" />
           </div>
           <div className={clsx(classes.title, "heading-1")}>
             Welcome to PeakFit
