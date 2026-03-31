@@ -1,7 +1,7 @@
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import {
-  useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type FC,
@@ -208,7 +208,7 @@ const AuthInitializer: FC<AuthInitializerProps> = ({ children }) => {
     handleOAuthCallback();
   }, [navigate]);
 
-  const getRandomLoadingMessage = useCallback((): LoadingMessage => {
+  const { title, subtitle } = useMemo((): LoadingMessage => {
     const index = Math.floor(Math.random() * loadingMessages.length);
     return loadingMessages[index];
   }, []);
@@ -216,10 +216,8 @@ const AuthInitializer: FC<AuthInitializerProps> = ({ children }) => {
   if (!isInitialized && isLoading) {
     return (
       <div className={classes.authInitializerContainer}>
-        <div className="heading-3">{getRandomLoadingMessage().title}</div>
-        <div className="subtitle-large">
-          {getRandomLoadingMessage().subtitle}
-        </div>
+        <div className="heading-3">{title}</div>
+        <div className="subtitle-large">{subtitle}</div>
         <div className="loader"></div>
       </div>
     );
