@@ -61,12 +61,12 @@
 
 .workoutItem:hover {
   background-color: var(--surface-hover);
-  transform: translateY(-2px);
+  transform: translateY(1px);
 }
 
 .workoutItem.selected {
   background-color: var(--surface-active);
-  border-left: 4px solid var(--secondary-500);
+  border: 2px solid var(--primary-700);
 }
 
 .workoutItem h3 {
