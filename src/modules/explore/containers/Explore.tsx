@@ -1,4 +1,5 @@
 import { lazy, Suspense, useState, type FC } from "react";
+import Loader from "../../../components/loader/Loader";
 import { useDebounce } from "../../../hooks/useDebounce";
 import useMediaQuery from "../../../hooks/useMediaQuery";
 import {
@@ -20,9 +21,7 @@ const ModelViewer = lazy(() => import("../components/ModelViewer/ModelViewer"));
 
 const Explore: FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(
-    null
-  );
+  const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
 
   const debouncedSearch = useDebounce(searchTerm);
 
@@ -76,7 +75,13 @@ const Explore: FC = () => {
               muscleGroups={muscleGroups}
             />
           )}
-          <Suspense>
+          <Suspense
+            fallback={
+              <div className={classes.loading}>
+                <Loader />
+              </div>
+            }
+          >
             <ModelViewer
               selectedWorkout={selectedWorkout}
               modelKey={modelKey}
