@@ -57,6 +57,7 @@
   padding: 15px;
   cursor: pointer;
   transition: all 0.2s ease;
+  border: 2px solid transparent;
 }
 
 .workoutItem:hover {
