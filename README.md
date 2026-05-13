@@ -1,118 +1,177 @@
-# PeakFit
+# 🏋️ PeakFit
 
-An interactive web application that helps users understand which muscles are targeted by specific exercises through detailed 3D visualization.
+**PeakFit** is an AI-powered fitness and diet planning portal that combines conversational AI, smart chart management, and 3D muscle visualization to help users build and refine their personal fitness routines — all in one place.
 
-## 🎯 Overview
+---
 
-This project bridges the gap between exercise theory and visual understanding by providing an engaging, educational tool that shows exactly which muscles are worked during different exercises. Users can explore a detailed 3D human anatomy model and see real-time muscle highlighting based on their exercise selection.
+## ✨ Overview
 
-## ✨ Features
+PeakFit is not just another fitness tracker. It's a feedback-driven fitness companion where your workout and diet plans evolve through natural conversation with AI — and every change is versioned, so you always have a full history of where you started and how you've grown.
 
-### 🏋️ Core Functionality
+---
 
-- **3D Human Anatomy Model**: Detailed anatomical figure with smooth rotation and zoom controls
-- **Workout Selection Interface**: Searchable exercise database with intuitive sidebar navigation
-- **Real-time Muscle Highlighting**:
-  - **Primary muscles** highlighted in red (main muscles worked)
-  - **Secondary muscles** highlighted in orange (supporting muscles)
-- **Exercise Information**: Comprehensive instructions and muscle group breakdowns
+## 🚀 Features
 
-### 🎨 Visual Experience
+### 🤖 AI-Powered Plan Generation
+- Chat naturally with the AI to create personalized workout and diet plans
+- The AI is context-aware — it already knows your profile details such as:
+  - Current weight, age, and fitness level
+  - Where you exercise (home, gym, outdoors)
+  - Any medical conditions or physical limitations
+  - Dietary preferences and restrictions
+- Simply say something like *"I'm planning to start exercising from tomorrow — give me a chart"* and the system generates a structured plan from that intent — the AI response is parsed and validated into typed chart entities before anything is persisted
 
-- **Realistic Materials**: Matte skin tones with proper lighting for enhanced visual quality
-- **Smooth Navigation**: Intuitive 3D controls for optimal viewing angles
-- **Responsive Design**: Works seamlessly across different screen sizes
+### 📊 Smart Charts Module
+- AI responses are not stored as raw text — they are **transformed into structured chart entities** and validated before being written to the database
+- Each chart entry is a well-defined record with typed fields:
+  - Exercise / food item name
+  - Number of sets
+  - Number of reps per set
+  - Step-by-step directions to perform the exercise correctly
+- Charts are **only updated when you explicitly ask** — the AI won't silently change your plan mid-conversation
 
-## 🚀 Technical Architecture
+### 🔄 Chart Versioning
+- Every time your chart is updated, a new version is created (e.g., Chart v1 → Chart v2)
+- Full **version history** is preserved so you can always look back at previous plans
+- Updates happen through real chat feedback — for example:
+  > *"Burpees are too exhausting and affecting my other exercises. Suggest less tiring alternatives with similar benefits."*
+  
+  The AI responds with alternatives and, on your instruction, updates the chart — creating a new version automatically
 
-### Frontend Stack
+### 💬 Conversational Feedback Loop
+- Feedback isn't a thumbs-up or thumbs-down button — it's a **real-world chat loop**
+- Discuss what's working, what's hurting, what you want to change
+- The AI uses that context to refine your plan, and the updated plan flows back into the Charts module seamlessly
 
-- **React + TypeScript**: Modern, type-safe component architecture
-- **Three.js/React Three Fiber**: Powerful 3D rendering and scene management
-- **Custom GLB Model**: Segmented 3D model with 29 separate muscle groups
+### 🫀 3D Muscle Visualizer
+- Search for any exercise and see a **3D model** highlighting exactly which muscles are targeted
+- Built with **Three.js** to render interactive, rotatable anatomy views
+- Designed to reinforce the **mind-muscle connection** — understand your body, not just your reps
+- Great for both beginners learning form and advanced users optimizing their splits
 
-### Key Technical Achievements
+### 🥗 Diet Charts
+- The same AI-chat + versioned-chart system applies to **diet planning**
+- Discuss your nutrition goals, restrictions, and preferences with the AI
+- Diet charts are generated, saved, and versioned just like workout charts
+- Update your diet plan anytime by telling the AI what's working or what needs to change
 
-- **Modular Structure**: Clean component organization with separated data layers
-- **Custom Muscle Segmentation**: Overcame single-mesh limitations through Blender model segmentation
-- **Optimized Performance**: Efficient 3D rendering with smooth real-time highlighting
+---
 
-## 🛠️ Installation & Setup
+## 🛠️ Tech Stack
+
+### Frontend
+
+| Layer | Technology |
+|---|---|
+| Framework | React 19.1.0 |
+| Build Tool | Vite |
+| 3D Visualization | Three.js |
+| Animations | Framer Motion |
+| Form Handling | Formik + Yup |
+| State Management | Zustand |
+| Bundle Strategy | Manual chunking + component-level lazy loading |
+
+### Backend
+
+| Layer | Technology |
+|---|---|
+| Database | PostgreSQL (via Supabase) |
+| Auth | Supabase Auth (JWT-based, row-level security) |
+| Serverless Logic | Supabase Edge Functions (Deno) |
+| Storage | Supabase Storage (for any media assets) |
+| AI Integration | Handled via Edge Functions — responses are parsed, validated into structured entities, and written to Postgres |
+
+### How the backend fits together
+- **Supabase Auth** handles user sessions with JWTs. Row-Level Security (RLS) policies on Postgres ensure users can only ever read and write their own charts, versions, and chat history.
+- **Edge Functions** sit between the AI and the database. When a plan generation or update is triggered, the Edge Function calls the AI, parses the response into a typed schema, validates the fields, and performs the Postgres insert/update — keeping that logic off the client entirely.
+- **PostgreSQL** is the source of truth for all chart data, version history, and user profiles. Chart versioning is handled at the DB level, with each version stored as an immutable row.
+
+### Frontend Bundle Architecture
+PeakFit uses a deliberate chunking strategy to keep initial load fast:
+- **Three.js** is isolated in its own vendor chunk (~1.2MB) and lazy-loaded only when the Muscle Visualizer is accessed
+- All major route-level components are **lazy loaded** to minimize the initial bundle
+- Core React runtime is kept lean on first paint
+
+---
+
+## 📁 Project Structure
+
+```
+peakfit/
+├── src/
+│   ├── components/        # Shared UI components
+│   ├── modules/
+│   │   ├── chat/          # AI chat interface
+│   │   ├── charts/        # Chart management + version history
+│   │   ├── visualizer/    # 3D muscle visualizer (Three.js)
+│   │   └── diet/          # Diet chart module
+│   ├── store/             # Zustand state management
+│   ├── hooks/             # Custom React hooks
+│   └── utils/             # Helpers and constants
+├── public/
+├── vite.config.js
+└── package.json
+```
+
+---
+
+## ⚡ Getting Started
+
+### Prerequisites
+- Node.js ≥ 18
+- pnpm
+
+### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/peak-fit.git
-
-# Navigate to project directory
-cd peak-fit
+git clone https://github.com/your-username/peakfit.git
+cd peakfit
 
 # Install dependencies
 pnpm install
 
-# Start development server
-pnpm run dev
-
-# Start production server
-pnpm run start
+# Start the development server
+pnpm dev
 ```
 
-## 🎮 Usage
+### Build for Production
 
-1. **Select an Exercise**: Browse or search through the exercise database in the sidebar
-2. **View Muscle Targeting**: Watch as the 3D model highlights primary (red) and secondary (orange) muscles
-3. **Explore the Model**: Use mouse controls to rotate, zoom, and examine the anatomy from different angles
-4. **Read Exercise Details**: Access comprehensive information about proper form and muscle engagement
-
-## 🎯 Use Cases
-
-### 🏃 Fitness Education
-
-- Understand which muscles are targeted by specific exercises
-- Learn proper muscle engagement for optimal workout results
-
-### 📊 Workout Planning
-
-- Visual guide for creating balanced muscle development routines
-- Identify complementary exercises for comprehensive training
-
-### 📚 Training Reference
-
-- Quick muscle group identification for exercise selection
-- Educational tool for fitness professionals and enthusiasts
-
-## 🚧 Development Journey
-
-1. **Initial Setup**: Basic 3D model loading and camera controls
-2. **Lighting & Materials**: Enhanced visual quality with proper lighting systems
-3. **Muscle Highlighting Challenge**: Solved single-mesh limitations through custom Blender segmentation
-4. **Visual Refinement**: Achieved realistic appearance and precise muscle highlighting
-5. **Feature Integration**: Combined all components into a cohesive, user-friendly application
-
-## 🤝 Contributing
-
-We welcome contributions! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-### Development Guidelines
-
-- Follow TypeScript best practices
-- Maintain component modularity
-- Test 3D rendering changes across different devices
-- Ensure accessibility standards are met
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Anatomy model created and segmented using Blender
-- Built with the powerful Three.js ecosystem
-- Inspired by the need for better fitness education tools
-
-## 📞 Support
-
-If you encounter any issues or have questions, please [open an issue](https://github.com/yourusername/peak-fit/issues) on GitHub.
+```bash
+pnpm build
+pnpm preview
+```
 
 ---
 
-**Made with ❤️ for the fitness and education community**
+## 🗺️ Roadmap
+
+- [ ] Wearable device integration (steps, heart rate)
+- [ ] Progress photos with timeline view
+- [ ] Social sharing of chart milestones
+- [ ] Push notifications for workout reminders
+- [ ] Export charts as PDF
+- [ ] User tiers — Free and Premium plans, with more tiers added over time
+- [ ] Human trainer layer — certified trainers working alongside the AI, reviewing plans and guiding users directly within the platform
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please open an issue first to discuss what you'd like to change, then submit a pull request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/your-feature`)
+3. Commit your changes (`git commit -m 'Add your feature'`)
+4. Push to the branch (`git push origin feature/your-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+> Built with React + Vite · Powered by AI · Visualized in 3D
