@@ -1,7 +1,7 @@
 // src/store/authSlice.ts
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Session, User as SupabaseUser } from "@supabase/supabase-js";
-import type { Profile } from "../types/profile";
+import type { Profile } from "@/types/profile";
 import type { RootState } from "./index";
 
 export interface AuthState {

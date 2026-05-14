@@ -3,8 +3,8 @@ import { HiCog, HiSearch } from "react-icons/hi";
 import { TbLayoutDashboardFilled } from "react-icons/tb";
 import { VscSparkleFilled } from "react-icons/vsc";
 import { Outlet, useLocation } from "react-router";
-import Dock, { type DockItem } from "../../components/dock/Dock";
-import { COACH, DASHBOARD, EXPLORE, SETTINGS } from "../../helpers/getters";
+import Dock, { type DockItem } from "@/components/dock/Dock";
+import { COACH, DASHBOARD, EXPLORE, SETTINGS } from "@/helpers/getters";
 import classes from "./MasterLayout.module.css";
 
 const dockItems: DockItem[] = [

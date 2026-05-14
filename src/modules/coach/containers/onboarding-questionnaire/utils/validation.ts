@@ -2,7 +2,7 @@ import { array, date, mixed, number, object, string, type ObjectSchema, type Sch
 import {
   INPUT_TYPE,
   type QuestionWithSectionMeta,
-} from "../../../../../types/questions";
+} from "@/types/questions";
 import { evaluateConditionalDisplay } from "./helper";
 
 export function buildValidationSchema(

@@ -7,13 +7,13 @@ import { RouterProvider, createBrowserRouter } from 'react-router';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import App from './App';
-import AuthInitializer from './modules/auth/components/auth-initializer/AuthInitializer';
-import ErrorBoundary from './modules/error/ErrorBoundary';
-import PageBrokenError from './modules/error/broken/PageBrokenError';
-import { store } from './store';
-import './styles/globals.css';
-import './styles/typography.css';
-import './styles/variables.css';
+import AuthInitializer from '@/modules/auth/components/auth-initializer/AuthInitializer';
+import ErrorBoundary from '@/modules/error/ErrorBoundary';
+import PageBrokenError from '@/modules/error/broken/PageBrokenError';
+import { store } from '@/store';
+import '@/styles/globals.css';
+import '@/styles/typography.css';
+import '@/styles/variables.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {

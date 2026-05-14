@@ -1,12 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
-import { DASHBOARD } from "../../helpers/getters";
-import { useAppDispatch } from "../../hooks/redux";
+import { DASHBOARD } from "@/helpers/getters";
+import { useAppDispatch } from "@/hooks/redux";
 import { ProfileService } from "./profile.service";
-import { updateProfile } from "../../store/authSlice";
-import type { Profile } from "../../types/profile";
-import { profileKeys } from "../query-key-factory";
-import { notifyError } from "../../helpers/helper";
+import { updateProfile } from "@/store/authSlice";
+import type { Profile } from "@/types/profile";
+import { profileKeys } from "@/services/query-key-factory";
+import { notifyError } from "@/helpers/helper";
 
 /**
  * Singleton instance of ProfileService

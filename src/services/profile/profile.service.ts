@@ -1,7 +1,7 @@
 import type { AuthError, PostgrestError } from "@supabase/supabase-js";
-import { supabase } from "../../lib/supabase";
-import type { Profile } from "../../types/profile";
-import { notifyError } from "../../helpers/helper";
+import { supabase } from "@/lib/supabase";
+import type { Profile } from "@/types/profile";
+import { notifyError } from "@/helpers/helper";
 
 export interface ProfileResponse<T = Profile> {
   data: T | null;

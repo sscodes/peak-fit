@@ -1,5 +1,5 @@
 import React from "react";
-import type { MuscleGroup, Workout } from "../../../../../types/workout";
+import type { MuscleGroup, Workout } from "@/types/workout";
 import classes from "./WorkoutDetails.module.css";
 import clsx from "clsx";
 

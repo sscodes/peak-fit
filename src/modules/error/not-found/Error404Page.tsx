@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import { useNavigate } from 'react-router';
-import Button from '../../../components/button/Button';
-import { ASSETS } from '../../../helpers/assets';
-import { DASHBOARD } from '../../../helpers/getters';
-import { BUTTON_TYPE } from '../../../helpers/types';
+import Button from '@/components/button/Button';
+import { ASSETS } from '@/helpers/assets';
+import { DASHBOARD } from '@/helpers/getters';
+import { BUTTON_TYPE } from '@/helpers/types';
 import classes from './Error404Page.module.css';
 
 const Error404Page = () => {

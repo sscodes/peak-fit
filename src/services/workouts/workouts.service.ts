@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import type { MuscleGroup, Workout } from "../../types/workout";
+import type { MuscleGroup, Workout } from "@/types/workout";
 
 /**
  * Service Configuration

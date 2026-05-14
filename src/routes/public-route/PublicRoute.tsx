@@ -1,11 +1,11 @@
 import { type ReactElement } from 'react';
 import { Navigate, Outlet } from 'react-router';
-import { useAppSelector } from '../../hooks/redux';
+import { useAppSelector } from '@/hooks/redux';
 import {
   selectIsAuthenticated,
   selectIsInitialized,
-} from '../../store/authSlice';
-import { DASHBOARD } from '../../helpers/getters';
+} from '@/store/authSlice';
+import { DASHBOARD } from '@/helpers/getters';
 
 const PublicRoute = (): ReactElement => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);

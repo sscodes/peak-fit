@@ -1,18 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
-import { AUTH_HOME, DASHBOARD, VERIFY_EMAIL } from "../../helpers/getters";
-import { notifyError } from "../../helpers/helper";
-import { useAppDispatch } from "../../hooks/redux";
+import { AUTH_HOME, DASHBOARD, VERIFY_EMAIL } from "@/helpers/getters";
+import { notifyError } from "@/helpers/helper";
+import { useAppDispatch } from "@/hooks/redux";
 import {
   clearAuth,
   setAuthData,
   setAuthError,
   setLoading,
   updateProfile,
-} from "../../store/authSlice";
-import type { LoginPayload, SignUpPayload } from "../../types/auth";
-import { ProfileService } from "../profile/profile.service";
-import { authKeys } from "../query-key-factory";
+} from "@/store/authSlice";
+import type { LoginPayload, SignUpPayload } from "@/types/auth";
+import { ProfileService } from "@/services/profile/profile.service";
+import { authKeys } from "@/services/query-key-factory";
 import { AuthService } from "./auth.service";
 
 /**

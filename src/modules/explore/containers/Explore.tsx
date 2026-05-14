@@ -1,23 +1,23 @@
 import { lazy, Suspense, useState, type FC } from "react";
-import Loader from "../../../components/loader/Loader";
-import { useDebounce } from "../../../hooks/useDebounce";
-import useMediaQuery from "../../../hooks/useMediaQuery";
+import Loader from "@/components/loader/Loader";
+import { useDebounce } from "@/hooks/useDebounce";
+import useMediaQuery from "@/hooks/useMediaQuery";
 import {
   useInfiniteWorkouts,
   useMuscleGroups,
   useSearchWorkouts,
-} from "../../../services/workouts/workouts.data";
-import type { Workout } from "../../../types/workout";
+} from "@/services/workouts/workouts.data";
+import type { Workout } from "@/types/workout";
 import {
   NoSelectionMessage,
   Sidebar,
   WorkoutDetails,
   WorkOutDetailsSmall,
   WorkoutInstructions,
-} from "../components/UI";
+} from "@/modules/explore/components/UI";
 import classes from "./Explore.module.css";
 
-const ModelViewer = lazy(() => import("../components/ModelViewer/ModelViewer"));
+const ModelViewer = lazy(() => import("@/modules/explore/components/ModelViewer/ModelViewer"));
 
 const Explore: FC = () => {
   const [searchTerm, setSearchTerm] = useState("");

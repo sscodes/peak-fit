@@ -4,12 +4,12 @@ import type {
   Session,
   User,
 } from "@supabase/supabase-js";
-import { supabase } from "../../lib/supabase";
+import { supabase } from "@/lib/supabase";
 import type {
   AuthResponse,
   LoginPayload,
   SignUpPayload,
-} from "../../types/auth";
+} from "@/types/auth";
 
 /**
  * AuthService - Handles all Supabase auth-related operations

@@ -1,10 +1,10 @@
 // onboarding.data.ts
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { notifyError } from "../../helpers/helper";
-import { useAppDispatch } from "../../hooks/redux";
-import { updateProfile } from "../../store/authSlice";
-import type { SaveAnswersPayload } from "../../types/questions";
-import { onboardingKeys, profileKeys } from "../query-key-factory";
+import { notifyError } from "@/helpers/helper";
+import { useAppDispatch } from "@/hooks/redux";
+import { updateProfile } from "@/store/authSlice";
+import type { SaveAnswersPayload } from "@/types/questions";
+import { onboardingKeys, profileKeys } from "@/services/query-key-factory";
 import { OnboardingService } from "./onboarding.service";
 
 /**

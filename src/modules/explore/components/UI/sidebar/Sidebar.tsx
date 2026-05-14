@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
-import Skeleton from "../../../../../components/skeleton/Skeleton";
-import type { Workout } from "../../../../../types/workout";
+import Skeleton from "@/components/skeleton/Skeleton";
+import type { Workout } from "@/types/workout";
 import classes from "./Sidebar.module.css";
 
 interface SidebarProps {

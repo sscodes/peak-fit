@@ -1,21 +1,21 @@
 import { useFormik } from "formik";
 import React from "react";
 import { useNavigate } from "react-router";
-import { Step, Stepper } from "../../../../components/stepper/Stepper";
-import { COACH, DASHBOARD } from "../../../../helpers/getters";
-import { STEPPER_PROGRESS, STEPPER_SIZE } from "../../../../helpers/types";
-import { useAppSelector } from "../../../../hooks/redux";
+import { Step, Stepper } from "@/components/stepper/Stepper";
+import { COACH, DASHBOARD } from "@/helpers/getters";
+import { STEPPER_PROGRESS, STEPPER_SIZE } from "@/helpers/types";
+import { useAppSelector } from "@/hooks/redux";
 import {
   useCompleteOnboarding,
   useGetCrucialQuestionnaire,
   useSaveAnswers,
-} from "../../../../services/onboarding/onboarding.data";
-import { selectProfile } from "../../../../store/authSlice";
+} from "@/services/onboarding/onboarding.data";
+import { selectProfile } from "@/store/authSlice";
 import {
   INPUT_TYPE,
   type FormValues,
   type QuestionWithSectionMeta,
-} from "../../../../types/questions";
+} from "@/types/questions";
 import classes from "./OnboardingQuestionnaire.module.css";
 import Disclaimer from "./components/disclaimer/Disclaimer";
 import QuestionComponent from "./components/question/Question";

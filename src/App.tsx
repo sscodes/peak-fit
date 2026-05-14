@@ -1,13 +1,13 @@
 import { Navigate, Route, Routes } from 'react-router';
 import './App.css';
-import { AUTH_HOME, DASHBOARD } from './helpers/getters';
-import { useAppSelector } from './hooks/redux';
-import AuthRouter from './modules/auth/AuthRouter';
-import Error404Page from './modules/error/not-found/Error404Page';
-import PrivateRoute from './routes/private-route/PrivateRoute';
-import PrivateRoutes from './routes/private-route/PrivateRoutes';
-import PublicRoute from './routes/public-route/PublicRoute';
-import { selectIsAuthenticated } from './store/authSlice';
+import { AUTH_HOME, DASHBOARD } from '@/helpers/getters';
+import { useAppSelector } from '@/hooks/redux';
+import AuthRouter from '@/modules/auth/AuthRouter';
+import Error404Page from '@/modules/error/not-found/Error404Page';
+import PrivateRoute from '@/routes/private-route/PrivateRoute';
+import PrivateRoutes from '@/routes/private-route/PrivateRoutes';
+import PublicRoute from '@/routes/public-route/PublicRoute';
+import { selectIsAuthenticated } from '@/store/authSlice';
 
 function App() {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);

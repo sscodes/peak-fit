@@ -1,4 +1,4 @@
-import { CONDITIONAL_OPERATOR } from "../../../../../types/questions";
+import { CONDITIONAL_OPERATOR } from "@/types/questions";
 
 export function evaluateConditionalDisplay(
   operator: CONDITIONAL_OPERATOR,

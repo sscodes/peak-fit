@@ -66,9 +66,8 @@ PeakFit is not just another fitness tracker. It's a feedback-driven fitness comp
 | Framework | React 19.1.0 |
 | Build Tool | Vite |
 | 3D Visualization | Three.js |
-| Animations | Framer Motion |
 | Form Handling | Formik + Yup |
-| State Management | Zustand |
+| State Management | Redux Toolkit |
 | Bundle Strategy | Manual chunking + component-level lazy loading |
 
 ### Backend

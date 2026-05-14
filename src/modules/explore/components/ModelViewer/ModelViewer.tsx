@@ -1,7 +1,7 @@
-import { MODEL_PATH } from "../../../../helpers/constants";
-import type { MuscleGroup, Workout } from "../../../../types/workout";
-import Scene from "../Canvas";
-import SegmentedMuscleModel from "../Model/segmented-muscle-model/SegmentedMuscleModel";
+import { MODEL_PATH } from "@/helpers/constants";
+import type { MuscleGroup, Workout } from "@/types/workout";
+import Scene from "@/modules/explore/components/Canvas";
+import SegmentedMuscleModel from "@/modules/explore/components/Model/segmented-muscle-model/SegmentedMuscleModel";
 
 interface ModelViewerProps {
   selectedWorkout: Workout | null;

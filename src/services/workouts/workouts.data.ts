@@ -4,8 +4,8 @@ import {
   type UseQueryOptions,
   type UseQueryResult,
 } from "@tanstack/react-query";
-import type { MuscleGroup, Workout } from "../../types/workout";
-import { workoutKeys } from "../query-key-factory";
+import type { MuscleGroup, Workout } from "@/types/workout";
+import { workoutKeys } from "@/services/query-key-factory";
 import { WorkoutService } from "./workouts.service";
 
 /**

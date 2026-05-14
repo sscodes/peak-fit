@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import type { MouseEventHandler, ReactNode } from "react";
-import { BUTTON_SIZE, BUTTON_TYPE, BUTTON_VARIANT } from "../../helpers/types";
+import { BUTTON_SIZE, BUTTON_TYPE, BUTTON_VARIANT } from "@/helpers/types";
 import classes from "./Button.module.css";
 
 interface ButtonProps {

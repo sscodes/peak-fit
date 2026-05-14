@@ -1,8 +1,8 @@
 import { lazy, Suspense, type ReactNode } from "react";
 import { Navigate, Route, Routes } from "react-router";
 import TopBarProgress from "react-topbar-progress-indicator";
-import { SIGN_UP } from "../../helpers/getters";
-import AuthLayout from "../../layout/auth/AuthLayout";
+import { SIGN_UP } from "@/helpers/getters";
+import AuthLayout from "@/layout/auth/AuthLayout";
 
 const SignIn = lazy(() => import("./containers/sign-in/SignIn"));
 const SignUp = lazy(() => import("./containers/sign-up/SignUp"));

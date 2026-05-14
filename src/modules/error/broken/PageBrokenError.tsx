@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router';
-import Button from '../../../components/button/Button';
-import { ASSETS } from '../../../helpers/assets';
-import { DASHBOARD } from '../../../helpers/getters';
-import { BUTTON_TYPE, BUTTON_VARIANT } from '../../../helpers/types';
+import Button from '@/components/button/Button';
+import { ASSETS } from '@/helpers/assets';
+import { DASHBOARD } from '@/helpers/getters';
+import { BUTTON_TYPE, BUTTON_VARIANT } from '@/helpers/types';
 import classes from './PageBrokenError.module.css';
 import { IoReloadSharp } from 'react-icons/io5';
 

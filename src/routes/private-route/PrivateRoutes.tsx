@@ -1,17 +1,17 @@
 import { lazy, Suspense, type ReactNode } from "react";
 import { Navigate, Route, Routes } from "react-router";
 import TopBarProgress from "react-topbar-progress-indicator";
-import { DASHBOARD } from "../../helpers/getters";
-import MasterLayout from "../../layout/master-layout/MasterLayout";
+import { DASHBOARD } from "@/helpers/getters";
+import MasterLayout from "@/layout/master-layout/MasterLayout";
 
 const Dashboard = lazy(
-  () => import("../../modules/dashboard/containers/Dashboard"),
+  () => import("@/modules/dashboard/containers/Dashboard"),
 );
-const Explore = lazy(() => import("../../modules/explore/containers/Explore"));
-const Coach = lazy(() => import("../../modules/coach/containers/coach/Coach"));
+const Explore = lazy(() => import("@/modules/explore/containers/Explore"));
+const Coach = lazy(() => import("@/modules/coach/containers/coach/Coach"));
 const OnboardingQuestionnaire = lazy(
   () =>
-    import("../../modules/coach/containers/onboarding-questionnaire/OnboardingQuestionnaire"),
+    import("@/modules/coach/containers/onboarding-questionnaire/OnboardingQuestionnaire"),
 );
 
 const SuspendedView = ({ children }: { children: ReactNode }) => {

@@ -1,15 +1,15 @@
 import clsx from "clsx";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router";
-import { Step, Stepper } from "../../../../components/stepper/Stepper";
-import { ASSETS } from "../../../../helpers/assets";
-import { notifyError, notifySuccess } from "../../../../helpers/helper";
-import useMediaQuery from "../../../../hooks/useMediaQuery";
-import { useSendPasswordResetEmail } from "../../../../services/auth/auth.data";
-import { AuthService } from "../../../../services/auth/auth.service";
-import { emailValidation } from "../../utils/validation";
+import { Step, Stepper } from "@/components/stepper/Stepper";
+import { ASSETS } from "@/helpers/assets";
+import { notifyError, notifySuccess } from "@/helpers/helper";
+import useMediaQuery from "@/hooks/useMediaQuery";
+import { useSendPasswordResetEmail } from "@/services/auth/auth.data";
+import { AuthService } from "@/services/auth/auth.service";
+import { emailValidation } from "@/modules/auth/utils/validation";
 import classes from "./ForgotPassword.module.css";
-import Input from "../../../../components/input/Input";
+import Input from "@/components/input/Input";
 
 const authService = new AuthService();
 

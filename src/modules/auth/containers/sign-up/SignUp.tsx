@@ -1,20 +1,20 @@
 import clsx from "clsx";
 import { useFormik } from "formik";
 import { useNavigate, type NavigateFunction } from "react-router";
-import Button from "../../../../components/button/Button";
-import Input from "../../../../components/input/Input";
-import { Step, Stepper } from "../../../../components/stepper/Stepper";
-import { ASSETS } from "../../../../helpers/assets";
-import { SIGN_IN } from "../../../../helpers/getters";
-import { notifyError } from "../../../../helpers/helper";
-import { BUTTON_VARIANT } from "../../../../helpers/types";
-import useMediaQuery from "../../../../hooks/useMediaQuery";
+import Button from "@/components/button/Button";
+import Input from "@/components/input/Input";
+import { Step, Stepper } from "@/components/stepper/Stepper";
+import { ASSETS } from "@/helpers/assets";
+import { SIGN_IN } from "@/helpers/getters";
+import { notifyError } from "@/helpers/helper";
+import { BUTTON_VARIANT } from "@/helpers/types";
+import useMediaQuery from "@/hooks/useMediaQuery";
 import {
   useCreateUser,
   useOAuthSignIn,
-} from "../../../../services/auth/auth.data";
-import { AuthService } from "../../../../services/auth/auth.service";
-import { signUpValidation } from "../../utils/validation";
+} from "@/services/auth/auth.data";
+import { AuthService } from "@/services/auth/auth.service";
+import { signUpValidation } from "@/modules/auth/utils/validation";
 import classes from "./SignUp.module.css";
 
 const authService = new AuthService();

@@ -1,14 +1,14 @@
 import clsx from "clsx";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router";
-import Button from "../../../../components/button/Button";
-import { notifyError } from "../../../../helpers/helper";
-import useMediaQuery from "../../../../hooks/useMediaQuery";
-import { AuthService } from "../../../../services/auth/auth.service";
-import { useUpdateUserPassword } from "../../../../services/auth/auth.data";
-import { passwordResetValidation } from "../../utils/validation";
+import Button from "@/components/button/Button";
+import { notifyError } from "@/helpers/helper";
+import useMediaQuery from "@/hooks/useMediaQuery";
+import { AuthService } from "@/services/auth/auth.service";
+import { useUpdateUserPassword } from "@/services/auth/auth.data";
+import { passwordResetValidation } from "@/modules/auth/utils/validation";
 import classes from "./ResetPassword.module.css";
-import Input from "../../../../components/input/Input";
+import Input from "@/components/input/Input";
 
 const authService = new AuthService();
 

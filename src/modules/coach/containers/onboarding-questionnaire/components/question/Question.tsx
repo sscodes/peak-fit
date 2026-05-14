@@ -1,19 +1,19 @@
 import clsx from "clsx";
 import type { FormikProps } from "formik/dist/types";
 import type { MultiValue, SingleValue } from "react-select";
-import { DatePicker } from "../../../../../../components/date-picker/DatePicker";
+import { DatePicker } from "@/components/date-picker/DatePicker";
 import { lazy, Suspense } from "react";
 
-const LucideIcon = lazy(() => import("../../../../../../components/icon/LucideIcon"));
-import Input from "../../../../../../components/input/Input";
-import Select from "../../../../../../components/select/Select";
-import { Slider } from "../../../../../../components/slider/Slider";
+const LucideIcon = lazy(() => import("@/components/icon/LucideIcon"));
+import Input from "@/components/input/Input";
+import Select from "@/components/select/Select";
+import { Slider } from "@/components/slider/Slider";
 import {
   INPUT_TYPE,
   type FormValues,
   type Option,
   type QuestionWithSectionMeta,
-} from "../../../../../../types/questions";
+} from "@/types/questions";
 import classes from "./Question.module.css";
 
 const Question = ({

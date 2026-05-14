@@ -1,13 +1,13 @@
 // onboarding.service.ts
 import type { PostgrestError } from "@supabase/supabase-js";
-import { supabase } from "../../lib/supabase";
+import { supabase } from "@/lib/supabase";
 import type {
   OnboardingProgress,
   OnboardingResponse,
   Questionnaire,
   QuestionSection,
   SaveAnswersPayload,
-} from "../../types/questions";
+} from "@/types/questions";
 
 /**
  * OnboardingService - Handles all Supabase onboarding-related operations

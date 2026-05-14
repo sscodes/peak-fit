@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Outlet, useNavigate } from "react-router";
-import useMediaQuery from "../../hooks/useMediaQuery";
+import useMediaQuery from "@/hooks/useMediaQuery";
 import classes from "./AuthLayout.module.css";
 
 const AuthLayout = () => {

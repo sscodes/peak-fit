@@ -2,19 +2,19 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { useEffect, useRef, useState, type FC, type ReactNode } from "react";
 import { useNavigate } from "react-router";
-import { FORGOT_PASSWORD } from "../../../../helpers/getters";
-import { notifyError } from "../../../../helpers/helper";
-import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
-import { AuthService } from "../../../../services/auth/auth.service";
-import { ProfileService } from "../../../../services/profile/profile.service";
+import { FORGOT_PASSWORD } from "@/helpers/getters";
+import { notifyError } from "@/helpers/helper";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { AuthService } from "@/services/auth/auth.service";
+import { ProfileService } from "@/services/profile/profile.service";
 import {
   clearAuth,
   initializeAuth,
   selectIsInitialized,
   setAuthData,
   setInitialized,
-} from "../../../../store/authSlice";
-import type { Profile } from "../../../../types/profile";
+} from "@/store/authSlice";
+import type { Profile } from "@/types/profile";
 import classes from "./AuthInitializer.module.css";
 
 interface AuthInitializerProps {

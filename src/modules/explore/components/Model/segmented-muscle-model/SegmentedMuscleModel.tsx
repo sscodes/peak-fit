@@ -3,7 +3,7 @@ import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import React, { useMemo, useRef } from "react";
 import { Box3, Color, FrontSide, Mesh, MeshStandardMaterial, type Group } from "three";
-import type { MuscleGroup } from "../../../../../types/workout";
+import type { MuscleGroup } from "@/types/workout";
 
 interface SegmentedMuscleModelProps {
   path: string;

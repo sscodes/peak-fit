@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useId, useRef, useState } from "react";
-import { SLIDER_SIZE, SLIDER_TYPE } from "../../helpers/types";
+import { SLIDER_SIZE, SLIDER_TYPE } from "@/helpers/types";
 import classes from "./Slider.module.css";
 import clsx from "clsx";
 

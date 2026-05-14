@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import type { Workout } from "../../../../../types/workout";
+import type { Workout } from "@/types/workout";
 import classes from "./WorkoutInstructions.module.css";
 
 interface WorkoutInstructionsProps {

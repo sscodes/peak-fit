@@ -1,11 +1,11 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router';
-import { AUTH_HOME } from '../../helpers/getters';
-import { useAppSelector } from '../../hooks/redux';
+import { AUTH_HOME } from '@/helpers/getters';
+import { useAppSelector } from '@/hooks/redux';
 import {
   selectIsAuthenticated,
   selectIsInitialized,
-} from '../../store/authSlice';
+} from '@/store/authSlice';
 
 const PrivateRoute = (): React.ReactElement => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);

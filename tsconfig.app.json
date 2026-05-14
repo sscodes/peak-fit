@@ -23,7 +23,11 @@
     /* Added for Three.js support */
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["three"]
+    "types": ["three"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "include": ["src", "custom.d.ts", "src/types/workout.ts"]
 }

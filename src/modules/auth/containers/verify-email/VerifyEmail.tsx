@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { FaRedo } from "react-icons/fa";
 import { useLocation } from "react-router";
 import { ToastContainer } from "react-toastify";
-import Button from "../../../../components/button/Button";
-import Icon from "../../../../components/icon/Icon";
-import { notifyError, notifySuccess } from "../../../../helpers/helper";
-import { useResendConfirmationEmail } from "../../../../services/auth/auth.data";
+import Button from "@/components/button/Button";
+import Icon from "@/components/icon/Icon";
+import { notifyError, notifySuccess } from "@/helpers/helper";
+import { useResendConfirmationEmail } from "@/services/auth/auth.data";
 import classes from "./VerifyEmail.module.css";
 
 const VerifyEmail = () => {

@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router";
-import { ONBOARDING_QUESTIONNAIRE } from "../../../../helpers/getters";
-import { useAppSelector } from "../../../../hooks/redux";
-import { selectProfile } from "../../../../store/authSlice";
+import { ONBOARDING_QUESTIONNAIRE } from "@/helpers/getters";
+import { useAppSelector } from "@/hooks/redux";
+import { selectProfile } from "@/store/authSlice";
 
 const Coach = () => {
   const user = useAppSelector(selectProfile);

@@ -5,11 +5,11 @@ import {
   BUTTON_VARIANT,
   STEPPER_PROGRESS,
   STEPPER_SIZE,
-} from "../../helpers/types";
-import Button from "../button/Button";
-import Icon from "../icon/Icon";
+} from "@/helpers/types";
+import Button from "@/components/button/Button";
+import Icon from "@/components/icon/Icon";
 import classes from "./Stepper.module.css";
-import useMediaQuery from "../../hooks/useMediaQuery";
+import useMediaQuery from "@/hooks/useMediaQuery";
 
 interface StepperProps {
   children: ReactNode;
